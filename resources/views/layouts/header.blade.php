@@ -11,22 +11,24 @@
                             {{-- <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li> --}}
                             @auth
                                 {{-- todo --}}
-                                <li><i class="ti-location-pin"></i><a href="{{ route('login.form') }}">English</a>
+                                <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
                                 </li>
-                                <li><i class="ti-user"></i> <a href="{{ route('zshop-user-home') }}"
+                                <li><i class="ti-user"></i> <a href="{{ route('index') }}"
                                         target="_blank">會員中心</a>
                                 </li>
-                                <li><a href="{{ route('zshop-cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
-                                        <span class="total-count">{{ Helper::cartCount() }}</span></a></li>
-                                <li><i class="ti-email"></i><a href="{{ route('zshop-contact') }}">聯絡客服</a>
+                                <li><a href="{{ route('index') }}" class="single-icon"><i class="ti-shopping-cart"></i>
+                                        {{-- <span class="total-count">{{ Helper::cartCount() }}</span> --}}
+                                    </a></li>
+                                <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>
+                                <li><i class="ti-shift-right-alt"></i><a href="{{ route('z-logout') }}">登出</a></li>
 
                             @else
-                                <li><i class="ti-location-pin"></i><a href="{{ route('login.form') }}">English</a>
+                                <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
                                 </li>
-                                <li><i class="ti-power-off"></i><a href="{{ route('zshop-login-register') }}">登入 /
+                                <li><i class="ti-power-off"></i><a href="{{ route('z-login') }}">登入 /
                                         註冊</a></li>
-                                <li><i class="ti-email"></i><a href="{{ route('zshop-contact') }}">聯絡客服</a>
+                                <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>
                             @endauth
                         </ul>
@@ -43,11 +45,11 @@
                 <div class="col-lg-2 col-md-2 col-12">
                     <!-- Logo -->
                     <div class="logo">
-                        @php
+                        {{-- @php
                             $settings = DB::table('settings')->get();
                         @endphp
-                        <a href="{{ route('zshop-index') }}"><img src="@foreach ($settings
-                                as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
+                        <a href="{{ route('index') }}"><img src="@foreach ($settings
+                                as $data) {{ $data->logo }} @endforeach" alt="logo"></a> --}}
                     </div>
                     <!--/ End Logo -->
                     <!-- Search Form -->
@@ -73,8 +75,8 @@
                                 <div class="navbar-collapse col-12">
                                     <div class="nav-inner col-12">
                                         <ul class="nav main-menu menu navbar-nav d-flex justify-content-between">
-                                            @foreach ($category as $cat_info)
-                                                <li><a href="{{ route('zshop-productlist-category',['slug'=>$cat_info->slug,'title'=>$cat_info->title]) }}">{{ $cat_info->title }}</a></li>
+                                            @foreach ($categories as $category)
+                                                <li><a href="{{ route('productlist',['slug'=>$category->slug,'title'=>$category->title]) }}">{{ $category->title }}</a></li>
                                             @endforeach                             
                                         </ul>
                                     </div>
@@ -98,41 +100,4 @@
             </div>
         </div>
     </div>
-    <!-- Header Inner -->
-    <div class="header-inner">
-        <div class="container">
-            <div class="cat-nav-head">
-                <div class="row">
-                    <div class="col-lg-12 col-12">
-                        {{-- <div class="menu-area">
-                            <!-- Main Menu -->
-                            <nav class="navbar navbar-expand-lg">
-                                <div class="navbar-collapse">
-                                    <div class="nav-inner">
-                                        <ul class="nav main-menu menu navbar-nav">
-                                            <li class="{{ Request::path() == 'home' ? 'active' : '' }}"><a
-                                                    href="{{ route('home') }}">Home</a></li>
-                                            <li class="{{ Request::path() == 'about-us' ? 'active' : '' }}"><a
-                                                    href="{{ route('about-us') }}">About Us</a></li>
-                                            <li class="@if (Request::path() == 'product-grids' || Request::path() == 'product-lists') active @endif"><a
-                                                    href="{{ route('product-grids') }}">Products</a><span
-                                                    class="new">New</span></li>
-                                            {{ Helper::getHeaderCategory() }}
-                                            <li class="{{ Request::path() == 'blog' ? 'active' : '' }}"><a
-                                                    href="{{ route('blog') }}">Blog</a></li>
-
-                                            <li class="{{ Request::path() == 'contact' ? 'active' : '' }}"><a
-                                                    href="{{ route('contact') }}">Contact Us</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </nav>
-                            <!--/ End Main Menu -->
-                        </div> --}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/ End Header Inner -->
 </header>

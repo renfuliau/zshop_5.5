@@ -1,107 +1,77 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
-@section('title', 'ZShop - 註冊')
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register</div>
 
-@section('main-content')
-    <!-- Shop Login -->
-    <section class="shop login section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 offset-lg-3 col-12">
-                    <div class="login-form">
-                        <ul class="nav nav-tabs nav-fill" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">登入</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#tabs-2">註冊</a>
-                            </li>
+                <div class="panel-body">
+                    <form class="form-horizontal" method="POST" action="{{ route('register') }}">
+                        {{ csrf_field() }}
 
-                        </ul><!-- Tab panes -->
-                        <div class="tab-content">
-                            <div class="tab-pane" id="tabs-1" role="tabpanel">
-                                <h2 class="mt-3">登入</h2>
-                                <!-- Form -->
-                                <form class="form" method="post" action="{{ route('register-submit') }}">
-                                    {{ csrf_field() }}
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <input type="email" name="email" placeholder="請輸入 Email" required="required"
-                                                    value="{{ old('email') }}">
-                                                {{-- @error('email')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror --}}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <input type="password" name="password" placeholder="請輸入密碼"
-                                                    required="required" value="{{ old('password') }}">
-                                                {{-- @error('password')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror --}}
-                                            </div>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-center">
-                                            <div class="form-group login-btn">
-                                                <button class="btn" type="submit">登入</button>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-center align-item-center">
-                                            <a class="lost-pass my-auto" href="">
-                                                忘記密碼?
-                                            </a>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tab-pane active" id="tabs-2" role="tabpanel">
-                                <h2 class="mt-3">註冊</h2>
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Name</label>
+
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
                                 @endif
-                                <!-- Form -->
-                                <form class="form" method="post" action="{{ route('register-submit') }}">
-                                    {{ csrf_field() }}
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <input type="text" name="email" placeholder="請輸入 Email" required="required"
-                                                    value="{{ old('email') }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <input type="password" name="password" placeholder="請輸入密碼（至少6個字元）"
-                                                    required="required" value="{{ old('password') }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <input type="password" name="password_confirmation" placeholder="請再輸入一次密碼"
-                                                    required="required" value="{{ old('password_confirmation') }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-center">
-                                            <div class="form-group login-btn">
-                                                <button class="btn" type="submit">立即註冊</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+
+                                @if ($errors->has('email'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password" class="col-md-4 control-label">Password</label>
+
+                            <div class="col-md-6">
+                                <input id="password" type="password" class="form-control" name="password" required>
+
+                                @if ($errors->has('password'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
+
+                            <div class="col-md-6">
+                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Register
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
-    <!--/ End Login -->
+    </div>
+</div>
 @endsection

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     @include('layouts.head')
@@ -8,7 +8,7 @@
 <body class="js">
     @include('layouts.notification')
     <!-- Header -->
-    {{-- @include('layouts.header') --}}
+    @include('layouts.header')
     <!--/ End Header -->
     @yield('main-content')
 

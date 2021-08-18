@@ -1,4 +1,5 @@
 <?php
+use \Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,21 +23,22 @@ Route::group(['prefix' => 'zshop'], function () {
 
     // 會員註冊 登入 忘記密碼 聯絡客服
     // Route::get('/login-register', 'FrontendController@loginRegister')->name('login-register');
-    Route::get('/login', 'FrontendController@login')->name('login');
+    Route::get('/login', 'FrontendController@login')->name('z-login');
     Route::post('/login', 'FrontendController@loginSubmit')->name('login-submit');
-    Route::get('/register', 'FrontendController@register')->name('register');
+    Route::get('/register', 'FrontendController@register')->name('z-register');
     Route::post('/register', 'FrontendController@registerSubmit')->name('register-submit');
+    Route::get('/logout', 'FrontendController@logout')->name('z-logout');
     Route::get('/forget-password', 'FrontendController@forgetPassword')->name('forget-password');
     Route::get('/contact', 'FrontendController@contact')->name('contact');
     // Route::post('/contact/message', 'MessageController@store')->name('contact.store');
 
     // 商品搜尋 商品分類 商品介紹
-    Route::get('/productlist', 'FrontendController@productlist')->name('productlist');
-    Route::get('/productlist-category/{slug}', 'FrontendController@productlistByCategory')->name('productlist-category');
-    Route::get('/productlist-category/{slug}/{sub_slug}', 'FrontendController@productSubcategory')->name('productlist-subcategory');
-    Route::get('/product-detail/{slug}', 'FrontendController@productDetail')->name('product-detail');
-    Route::post('/product/search', 'FrontendController@productSearch')->name('product.search');
-    Route::get('/product-brand/{slug}', 'FrontendController@productBrand')->name('product-brand');
+    Route::get('/productlist', 'ProductController@productlistByCategory')->name('productlist');
+    Route::get('/productlist-category/{slug}', 'ProductController@productlistByCategory')->name('productlist-category');
+    Route::get('/productlist-category/{slug}/{sub_slug}', 'ProductController@productSubcategory')->name('productlist-subcategory');
+    Route::get('/product-detail/{slug}', 'ProductController@productDetail')->name('product-detail');
+    Route::post('/product/search', 'ProductController@productSearch')->name('product.search');
+    Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
 
     // 購物車
     Route::get('/cart', 'FrontendController@cart')->name('cart');
@@ -50,20 +52,24 @@ Route::group(['prefix' => 'zshop'], function () {
 
 Route::group(['prefix' => 'zshop/user'], function () {
     // 個人中心 購物金 訂單查詢 退貨查詢 收藏清單 問答中心
-    Route::get('/home', 'FrontendController@home')->name('user-home');
-    Route::post('/profile/{id}', 'FrontendController@profileUpdate')->name('user-profile-update');
-    Route::get('/change-password', 'FrontendController@changePassword')->name('user-change-password');
-    Route::post('/change-password', 'FrontendController@changPasswordStore')->name('user-change-password-update');
+    Route::get('/profile', 'UserController@profile')->name('user-profile');
+    Route::post('/profile/{id}', 'UserController@profileUpdate')->name('user-profile-update');
+    Route::get('/change-password', 'UserController@changePassword')->name('user-change-password');
+    Route::post('/change-password', 'UserController@changPasswordStore')->name('user-change-password-update');
 
-    Route::get('/reward-money', 'FrontendController@rewardMoney')->name('user-reward-money');
+    Route::get('/reward-money', 'UserController@rewardMoney')->name('user-reward-money');
 
-    Route::get('/orders', 'FrontendController@orders')->name('user-orders');
+    Route::get('/orders', 'UserController@orders')->name('user-orders');
 
-    Route::get('/returned', 'FrontendController@returned')->name('user-returned');
+    Route::get('/returned', 'UserController@returned')->name('user-returned');
 
-    Route::get('/wishlist', 'FrontendController@wishlist')->name('user-wishlist');
-    Route::get('/wishlist/{slug}', 'FrontendController@addToWishlist')->name('add-to-wishlist')->middleware('user');
-    Route::get('/wishlist-delete/{id}', 'FrontendController@wishlistDelete')->name('wishlist-delete');
+    Route::get('/wishlist', 'UserController@wishlist')->name('user-wishlist');
+    Route::get('/wishlist/{slug}', 'UserController@addToWishlist')->name('add-to-wishlist')->middleware('user');
+    Route::get('/wishlist-delete/{id}', 'UserController@wishlistDelete')->name('wishlist-delete');
 
-    Route::get('/qa-center', 'FrontendController@qaCenter')->name('user-qa-center');
+    Route::get('/qa-center', 'UserController@qaCenter')->name('user-qa-center');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

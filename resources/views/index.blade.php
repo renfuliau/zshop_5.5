@@ -4,6 +4,6 @@
 
 @section('main-content')
 
-    @include('welcome')
+    {{-- @include('welcome') --}}
 
 @endsection

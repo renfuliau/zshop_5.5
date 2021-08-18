@@ -1,5 +1,5 @@
 <!-- Meta Tag -->
-@yield('meta')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- Title Tag  -->
 <title>@yield('title')</title>
 <!-- Favicon -->
