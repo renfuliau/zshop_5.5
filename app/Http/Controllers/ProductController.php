@@ -50,9 +50,9 @@ class ProductController extends Controller
             $products = $products->where('status', 'active')->paginate(9);
         }
         return view('products.productlist')
+            ->with('categories', $this->categories)
             ->with('products', $products)
-            ->with('recent_products', $recent_products)
-            ->with('categories', $this->categories);
+            ->with('recent_products', $recent_products);
     }
 
     public function productlistByCategory(Request $request)
@@ -63,9 +63,41 @@ class ProductController extends Controller
         // dd($products);
         $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
         return view('products.productlist')
+            ->with('categories', $this->categories)
             ->with('products', $products->products)
             ->with('recent_products', $recent_products)
-            ->with('categories', $this->categories)
             ->with('title', $title);
+    }
+
+    public function productSubcategory(Request $request)
+    {
+        $products = Category::getProductBySubcategory($request->sub_slug);
+        $title = $request->title;
+        $subtitle = $request->subtitle;
+        // return $products;
+        // dd($this->categories[1]->subcategory->count());
+        // dd($products);
+        $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
+
+        // if (request()->is('e-shop.loc/product-grids')) {
+        //     return view('frontend.pages.product-grids')->with('products', $products->sub_products)->with('recent_products', $recent_products);
+        // } else {
+        return view('products.productlist')
+            ->with('categories', $this->categories)
+            ->with('products', $products->subcategoryProducts)
+            ->with('recent_products', $recent_products)
+            ->with('title', $title)
+            ->with('subtitle', $subtitle);
+        // }
+    }
+
+    public function productDetail($slug)
+    {
+        // dd($slug);
+        $product_detail = Product::getProductBySlug($slug);
+        // dd($product_detail->title);
+        return view('products.product-detail')
+            ->with('categories', $this->categories)
+            ->with('product_detail', $product_detail);
     }
 }

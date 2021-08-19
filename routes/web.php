@@ -41,13 +41,13 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
 
     // 購物車
-    Route::get('/cart', 'FrontendController@cart')->name('cart');
-    Route::get('/checkout', 'FrontendController@checkout')->name('checkout')->middleware('user');
-    Route::post('/checkout/store', 'FrontendController@checkoutStore')->name('checkoutStore');
-    Route::get('/add-to-cart/{slug}', 'FrontendController@addToCart')->name('add-to-cart')->middleware('user');
-    Route::post('/add-to-cart', 'FrontendController@singleAddToCart')->name('single-add-to-cart')->middleware('user');
-    Route::get('cart-delete/{id}', 'FrontendController@cartDelete')->name('cart-delete');
-    Route::post('cart-update', 'FrontendController@cartUpdate')->name('cart.update');
+    Route::get('/cart', 'CartController@cart')->name('cart');
+    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
+    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
+    Route::get('/add-to-cart/{slug}', 'CartController@addToCart')->name('add-to-cart')->middleware('user');
+    Route::post('/add-to-cart', 'CartController@singleAddToCart')->name('single-add-to-cart')->middleware('user');
+    Route::get('cart-delete/{id}', 'CartController@cartDelete')->name('cart-delete');
+    Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');       
 });
 
 Route::group(['prefix' => 'zshop/user'], function () {

@@ -13,11 +13,12 @@
                                 {{-- todo --}}
                                 <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
                                 </li>
-                                <li><i class="ti-user"></i> <a href="{{ route('index') }}"
+                                <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}"
                                         target="_blank">會員中心</a>
                                 </li>
-                                <li><a href="{{ route('index') }}" class="single-icon"><i class="ti-shopping-cart"></i>
+                                <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                         {{-- <span class="total-count">{{ Helper::cartCount() }}</span> --}}
+                                        <span id="cartTotalQuantity"></span> 
                                     </a></li>
                                 <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>
