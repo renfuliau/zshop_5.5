@@ -7,7 +7,7 @@
         <div class="card shadow mb-4">
             <div class="row">
                 <div class="col-md-12">
-                    @include('backend.layouts.notification')
+                    @include('layouts.notification')
                 </div>
             </div>
             <div class="card-header py-3">
@@ -43,87 +43,30 @@
                     <li><a href="" class="active text-primary">訂單查詢</a></li>
                 </ul>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="image">
-                                @if ($profile->photo)
-                                    <img class="card-img-top img-fluid roundend-circle mt-4"
-                                        style="border-radius:50%;height:80px;width:80px;margin:auto;"
-                                        src="{{ $profile->photo }}" alt="profile picture">
-                                @else
-                                    <img class="card-img-top img-fluid roundend-circle mt-4"
-                                        style="border-radius:50%;height:80px;width:80px;margin:auto;"
-                                        src="{{ asset('backend/img/avatar.png') }}" alt="profile picture">
-                                @endif
-                            </div>
-                            <div class="card-body mt-4 ml-2">
-                                <h5 class="card-title text-left"><small><i class="fas fa-user"></i>
-                                        {{ $profile->name }}</small></h5>
-                                <p class="card-text text-left"><small><i class="fas fa-envelope"></i>
-                                        {{ $profile->email }}</small></p>
-                                <p class="card-text text-left"><small class="text-muted"><i class="fas fa-hammer"></i>
-                                        {{ $profile->role }}</small></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <form class="border px-4 pt-2 pb-3" method="POST"
-                            action="{{ route('user-profile-update', $profile->id) }}">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <label for="inputTitle" class="col-form-label">Name</label>
-                                <input id="inputTitle" type="text" name="name" placeholder="Enter name"
-                                    value="{{ $profile->name }}" class="form-control">
-                                @error('name')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label for="inputEmail" class="col-form-label">Email</label>
-                                <input id="inputEmail" disabled type="email" name="email" placeholder="Enter email"
-                                    value="{{ $profile->email }}" class="form-control">
-                                @error('email')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label for="inputPhoto" class="col-form-label">Photo</label>
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                                            <i class="fa fa-picture-o"></i> Choose
-                                        </a>
-                                    </span>
-                                    <input id="thumbnail" class="form-control" type="text" name="photo"
-                                        value="{{ $profile->photo }}">
-                                </div>
-                                @error('photo')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="role" class="col-form-label">Role</label>
-                                <select name="role" class="form-control">
-                                    <option value="">-----Select Role-----</option>
-                                    <option value="admin" {{ $profile->role == 'admin' ? 'selected' : '' }}>Admin
-                                    </option>
-                                    <option value="user" {{ $profile->role == 'user' ? 'selected' : '' }}>User
-                                    </option>
-                                </select>
-                                @error('role')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <button type="submit" class="btn btn-success btn-sm">Update</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <table class="table shopping-summery">
+                <thead>
+                    <tr class="main-hading">
+                        <th>訂單編號</th>
+                        <th>訂單日期</th>
+                        <th class="text-center">合計</th>
+                        <th class="text-center">訂單狀態</th>
+                        <th class="text-center">明細</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($orders)
+                        @foreach($orders as $key => $value)
+                            <tr>
+                                <td class="date" data-title="date"><span>{{$value['order_number']}}</span></td>
+                                <td class="reward_item" data-title="reward_item"><span>{{$value['created_at']}}</span></td>
+                                <td class="amount" data-title="amount"><span>${{$value['total_amount']}}</span></td>
+                                <td class="total" data-title="total"><span>{{$value['order_status']}}</span></td>
+                                <td class="text-center"><a href="{{route('zshop-index')}}"><i class="ti-layout-media-overlay-alt-2"></i></a></td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
         </div>
     </div>
 

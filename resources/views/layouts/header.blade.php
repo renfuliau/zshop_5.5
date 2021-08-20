@@ -29,7 +29,7 @@
                                 </li>
                                 <li><i class="ti-power-off"></i><a href="{{ route('z-login') }}">登入 /
                                         註冊</a></li>
-                                <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
+                                <li><i class="ti-email"></i><a href="{{ route('contact') }}">聯絡客服</a>
                                 </li>
                             @endauth
                         </ul>
@@ -46,11 +46,11 @@
                 <div class="col-lg-2 col-md-2 col-12">
                     <!-- Logo -->
                     <div class="logo">
-                        {{-- @php
+                        @php
                             $settings = DB::table('settings')->get();
                         @endphp
                         <a href="{{ route('index') }}"><img src="@foreach ($settings
-                                as $data) {{ $data->logo }} @endforeach" alt="logo"></a> --}}
+                                as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
                     </div>
                     <!--/ End Logo -->
                     <!-- Search Form -->

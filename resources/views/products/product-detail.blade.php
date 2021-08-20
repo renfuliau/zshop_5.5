@@ -93,7 +93,7 @@
                                 <!--/ End Size -->
                                 <!-- Product Buy -->
                                 <div class="product-buy">
-                                    <form action="{{ route('single-add-to-cart') }}" method="POST">
+                                    <form action="{{ route('add-to-cart') }}" method="POST">
                                         {{ csrf_field() }}
                                         <div class="quantity">
                                             <h6>數量 :</h6>

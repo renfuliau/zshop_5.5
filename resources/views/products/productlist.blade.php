@@ -176,11 +176,24 @@
                                                         <del>原價 ${{ $product->price }}</del>
                                                         <h5 class="text-danger">特價
                                                             ${{ $product->special_price }}</h5>
-                                                        <a href="{{ route('add-to-cart', $product->slug) }}"
-                                                            class="btn cart" data-id="{{ $product->id }}">加入購物車</a>
-                                                        <a href="{{ route('add-to-wishlist', $product->slug) }}"
+                                                        {{-- <a href="{{ route('add-to-cart', $product->slug) }}"
+                                                            class="btn cart add-to-cart"
+                                                            data-user_id="{{ Auth::user()->id }}"
+                                                            data-produt_id="{{ $product->id }}">加入購物車</a> --}}
+                                                        <a class="btn cart add-to-cart"
+                                                            @if (!empty(Auth::user()->id))
+                                                                data-user_id="{{ Auth::user()->id }}"
+                                                            @endif
+                                                            data-product_id="{{ $product->id }}">加入購物車</a>
+                                                        {{-- <a href="{{ route('add-to-wishlist', $product->slug) }}"
                                                             class="btn cart" data-id="{{ $product->id }}"><i
-                                                                class=" ti-heart "> 加入收藏</i></a>
+                                                                class=" ti-heart "> 加入收藏</i></a> --}}
+                                                        <a class="btn cart add-to-wishlist"
+                                                            @if (!empty(Auth::user()->id))
+                                                                data-user_id="{{ Auth::user()->id }}"
+                                                            @endif
+                                                            data-product_id="{{ $product->id }}"><i class=" ti-heart ">
+                                                                加入收藏</i></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,6 +228,13 @@
             color: white;
         }
 
+        .add-to-wishlist {
+            cursor: pointer;
+        }
+
+        .add-to-cart {
+            cursor: pointer;
+        }
     </style>
 @endpush
 @push('scripts')
@@ -269,6 +289,66 @@
                 return false;
             });
         });
+
+        $('.add-to-cart').on('click', function() {
+            // console.log(this.getAttribute("data-productid"));
+            var user_id = this.getAttribute("data-user_id");
+            var product_id = this.getAttribute("data-product_id");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/add-to-cart',
+                data: {
+                    user_id: user_id,
+                    product_id: product_id
+                },
+                success: function(response) {
+                    // document.location.reload(true);
+                    // console.log(response);
+                    alert(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + " " + errorThrown);
+                    // console.error(textStatus + " " + errorThrown);
+                }
+            });
+        })
+
+        $('.add-to-wishlist').on('click', function() {
+            // console.log(this.getAttribute("data-productid"));
+            var user_id = this.getAttribute("data-user_id");
+            var product_id = this.getAttribute("data-product_id");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/user/add-to-wishlist',
+                data: {
+                    user_id: user_id,
+                    product_id: product_id
+                },
+                success: function(response) {
+                    // document.location.reload(true);
+                    // console.log(response);
+                    alert(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + " " + errorThrown);
+                    // console.error(textStatus + " " + errorThrown);
+                }
+            });
+        })
     </script>
 
 @endpush

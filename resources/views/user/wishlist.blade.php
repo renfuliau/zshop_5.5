@@ -7,7 +7,7 @@
         <div class="card shadow mb-4">
             <div class="row">
                 <div class="col-md-12">
-                    @include('backend.layouts.notification')
+                    @include('layouts.notification')
                 </div>
             </div>
             <div class="card-header py-3">
@@ -54,8 +54,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Helper::getAllProductFromWishlist())
-                        @foreach (Helper::getAllProductFromWishlist() as $key => $wishlist)
+                    @if ($wishlist)
+                        @foreach ($wishlist as $key => $wishlist)
                             <tr>
                                 @php
                                     $photo = explode(',', $wishlist->product['photo']);
@@ -64,17 +64,37 @@
                                 </td>
                                 <td class="product-des text-center" data-title="Description">
                                     <p class="product-name"><a
-                                            href="{{ route('zshop-product-detail', $wishlist->product['slug']) }}">{{ $wishlist->product['title'] }}</a>
+                                            href="{{ route('product-detail', $wishlist->product['slug']) }}">{{ $wishlist->product['title'] }}</a>
                                     </p>
                                     <p class="product-des">{!! $wishlist['summary'] !!}</p>
                                 </td>
-                                <td class="total-amount" data-title="Total"><span>${{ $wishlist['amount'] }}</span></td>
-                                <td class="text-center"><a
-                                        href="{{ route('zshop-add-to-cart', $wishlist->product['slug']) }}"><i
-                                            class="ti-shopping-cart"></i></a></td>
-                                <td class="action" data-title="Remove"><a
-                                        href="{{ route('zshop-wishlist-delete', $wishlist->id) }}"><i
-                                            class="ti-trash remove-icon"></i></a></td>
+                                <td class="total-amount" data-title="Total">
+                                    <span>${{ $wishlist->product['special_price'] }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <a class="add-to-cart" @if (!empty(Auth::user()->id)) data-user_id="{{ Auth::user()->id }}" @endif
+                                        data-product_id="{{ $wishlist->product->id }}"><i
+                                        class="ti-shopping-cart"></i></a>
+                                </td>
+
+                                <td class="text-center">
+                                    <a class="remove-item" @if (!empty(Auth::user()->id)) data-user_id="{{ Auth::user()->id }}" @endif
+                                        data-product_id="{{ $wishlist->product->id }}"><i
+                                        class="ti-trash"></i></a>
+                                </td>
+
+                                {{-- <td class="action" data-title="Remove"><a
+                                        href="{{ route('wishlist-delete', $wishlist->id) }}"><i
+                                            class="ti-trash remove-icon"></i></a>
+                                </td> --}}
+                                {{-- <a class="btn cart add-to-cart" @if (!empty(Auth::user()->id)) data-user_id="{{ Auth::user()->id }}" @endif
+                                    data-product_id="{{ $product->id }}">加入購物車</a> --}}
+                                {{-- <a href="{{ route('add-to-wishlist', $product->slug) }}"
+                                                            class="btn cart" data-id="{{ $product->id }}"><i
+                                                                class=" ti-heart "> 加入收藏</i></a> --}}
+                                {{-- <a class="btn cart add-to-wishlist" @if (!empty(Auth::user()->id)) data-user_id="{{ Auth::user()->id }}" @endif
+                                    data-product_id="{{ $product->id }}"><i class=" ti-heart ">
+                                        加入收藏</i></a> --}}
                             </tr>
                         @endforeach
                     @endif
@@ -114,10 +134,82 @@
     }
 
 </style>
+@push('styles')
+    <style>
+        .add-to-wishlist {
+            cursor: pointer;
+        }
 
+        .remove-item {
+            cursor: pointer;
+        }
+    </style>
+@endpush
 @push('scripts')
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script>
-        $('#lfm').filemanager('image');
+        // $('#lfm').filemanager('image');
+
+        $('.add-to-cart').on('click', function() {
+            // console.log(this.getAttribute("data-productid"));
+            var user_id = this.getAttribute("data-user_id");
+            var product_id = this.getAttribute("data-product_id");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/add-to-cart',
+                data: {
+                    user_id: user_id,
+                    product_id: product_id
+                },
+                success: function(response) {
+                    // document.location.reload(true);
+                    // console.log(response);
+                    alert(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + " " + errorThrown);
+                    // console.error(textStatus + " " + errorThrown);
+                }
+            });
+        })
+
+        $('.remove-item').on('click', function() {
+            // console.log(this.getAttribute("data-productid"));
+            var user_id = this.getAttribute("data-user_id");
+            var product_id = this.getAttribute("data-product_id");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/user/remove-wishlist',
+                data: {
+                    user_id: user_id,
+                    product_id: product_id
+                },
+                success: function(response) {
+                    // document.location.reload(true);
+                    // console.log(response);
+                    alert(response);
+                    document.location.reload(true);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + " " + errorThrown);
+                    // console.error(textStatus + " " + errorThrown);
+                }
+            });
+        })
     </script>
 @endpush

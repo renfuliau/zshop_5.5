@@ -29,4 +29,9 @@ class Cart extends Model
     {
         return Cart::with('product')->where('user_id', $user_id)->sum('');
     }
+
+    public static function getCartItem($user_id, $product_id)
+    {
+        return Cart::where('user_id', $user_id)->where('product_id', $product_id)->first();
+    }
 }

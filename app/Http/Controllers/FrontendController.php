@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Models\Setting;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,5 +90,13 @@ class FrontendController extends Controller
     public function forgetPassword()
     {
         return view('z-auth.forget-password')->with('categories', $this->categories);
+    }
+
+    public function contact()
+    {
+        $photo_path = Setting::getPhoto()->photo;
+        return view('contact.contact')
+        ->with('categories', $this->categories)
+        ->with('photo_path', $photo_path);
     }
 }
