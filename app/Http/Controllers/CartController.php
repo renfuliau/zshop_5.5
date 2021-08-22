@@ -2,24 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Models\Cart;
-use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\JsonEncodingException;
 
 class CartController extends Controller
 {
-    protected $product = null;
+    protected $product;
+    protected $user;
+    protected $cart_total_qty;
     protected $categories;
 
     public function __construct(Product $product)
     {
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+            if (!empty($this->user)) {
+                $this->cart_total_qty = Cart::getTotalQty(Auth::user()->id);
+            }
+            // dd($this->cart_total_qty);
+            return $next($request);
+        });
         $this->product = $product;
         $this->categories = Category::getAllParentCategory();
     }
@@ -34,7 +42,8 @@ class CartController extends Controller
         if (empty($carts)) {
             // dd($carts);
             return view('cart.cart')
-            ->with('categories', $this->categories);
+                ->with('categories', $this->categories)
+                ->with('cart_total_qty', $this->cart_total_qty);
         }
 
         $total = 0;
@@ -46,27 +55,32 @@ class CartController extends Controller
         $coupon1 = Coupon::where([
             ['coupon_line', '=', Coupon::where([
                 ['coupon_line', '<', $total],
-                ['coupon_type', '=', 1]
+                ['coupon_type', '=', 1],
             ])->get()->max('coupon_line')],
-            ['coupon_type', '=', 1]
+            ['coupon_type', '=', 1],
         ])->first();
-        // dd($coupon1);
+        // dd($coupon1->coupon_amount);
 
         $coupon2 = Coupon::where([
             ['coupon_line', '=', Coupon::where([
                 ['coupon_line', '<', $total],
-                ['coupon_type', '=', 2]
+                ['coupon_type', '=', 2],
             ])->get()->max('coupon_line')],
-            ['coupon_type', '=', 2]
+            ['coupon_type', '=', 2],
         ])->first();
         // dd($coupon2);
 
+        $user_info = User::findOrFail($user->id);
+        // dd($user_info);
+
         return view('cart.cart')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('carts', $carts)
             ->with('total', $total)
             ->with('coupon1', $coupon1)
-            ->with('coupon2', $coupon2);
+            ->with('coupon2', $coupon2)
+            ->with('user_info', $user_info);
     }
 
     public function checkout()
@@ -212,11 +226,10 @@ class CartController extends Controller
     {
         dd($request);
         $request->validate([
-            'slug'      =>  'required',
-            'quant'      =>  'required',
+            'slug' => 'required',
+            'quant' => 'required',
         ]);
         // dd($request->quant[1]);
-
 
         $product = Product::where('slug', $request->slug)->first();
         if ($product->stock < $request->quant[1]) {
@@ -236,7 +249,9 @@ class CartController extends Controller
             // $already_cart->price = ($product->price * $request->quant[1]) + $already_cart->price ;
             $already_cart->amount = ($product->price * $request->quant[1]) + $already_cart->amount;
 
-            if ($already_cart->product->stock < $already_cart->quantity || $already_cart->product->stock <= 0) return back()->with('error', 'Stock not sufficient!.');
+            if ($already_cart->product->stock < $already_cart->quantity || $already_cart->product->stock <= 0) {
+                return back()->with('error', 'Stock not sufficient!.');
+            }
 
             $already_cart->save();
         } else {
@@ -247,7 +262,10 @@ class CartController extends Controller
             $cart->price = ($product->price - ($product->price * $product->discount) / 100);
             $cart->quantity = $request->quant[1];
             $cart->amount = ($product->price * $request->quant[1]);
-            if ($cart->product->stock < $cart->quantity || $cart->product->stock <= 0) return back()->with('error', 'Stock not sufficient!.');
+            if ($cart->product->stock < $cart->quantity || $cart->product->stock <= 0) {
+                return back()->with('error', 'Stock not sufficient!.');
+            }
+
             // return $cart;
             $cart->save();
         }

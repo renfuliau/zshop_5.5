@@ -7,8 +7,6 @@
                     <!-- Top Right -->
                     <div class="right-content">
                         <ul class="list-main">
-                            {{-- <li><i class="ti-location-pin"></i> <a href="{{route('order.track')}}">繁體中文</a></li> --}}
-                            {{-- <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li> --}}
                             @auth
                                 {{-- todo --}}
                                 <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
@@ -18,7 +16,7 @@
                                 </li>
                                 <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                         {{-- <span class="total-count">{{ Helper::cartCount() }}</span> --}}
-                                        <span id="cartTotalQuantity"></span> 
+                                        <span id="cartTotalQuantity">{{ $cart_total_qty }}</span> 
                                     </a></li>
                                 <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>
@@ -47,6 +45,7 @@
                     <!-- Logo -->
                     <div class="logo">
                         @php
+                            // dd($cart_total_qty);
                             $settings = DB::table('settings')->get();
                         @endphp
                         <a href="{{ route('index') }}"><img src="@foreach ($settings

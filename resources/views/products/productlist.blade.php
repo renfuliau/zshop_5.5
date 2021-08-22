@@ -176,18 +176,11 @@
                                                         <del>原價 ${{ $product->price }}</del>
                                                         <h5 class="text-danger">特價
                                                             ${{ $product->special_price }}</h5>
-                                                        {{-- <a href="{{ route('add-to-cart', $product->slug) }}"
-                                                            class="btn cart add-to-cart"
-                                                            data-user_id="{{ Auth::user()->id }}"
-                                                            data-produt_id="{{ $product->id }}">加入購物車</a> --}}
                                                         <a class="btn cart add-to-cart"
                                                             @if (!empty(Auth::user()->id))
                                                                 data-user_id="{{ Auth::user()->id }}"
                                                             @endif
                                                             data-product_id="{{ $product->id }}">加入購物車</a>
-                                                        {{-- <a href="{{ route('add-to-wishlist', $product->slug) }}"
-                                                            class="btn cart" data-id="{{ $product->id }}"><i
-                                                                class=" ti-heart "> 加入收藏</i></a> --}}
                                                         <a class="btn cart add-to-wishlist"
                                                             @if (!empty(Auth::user()->id))
                                                                 data-user_id="{{ Auth::user()->id }}"
@@ -238,7 +231,8 @@
     </style>
 @endpush
 @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <!-- Sweetalert JS -->
+    <script src="{{asset('frontend/js/sweetalert.min.js')}}"></script>
 
     <script>
         $(document).ready(function() {

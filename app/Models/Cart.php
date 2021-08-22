@@ -25,9 +25,9 @@ class Cart extends Model
         return Cart::with('product')->where('user_id', $user_id)->get();
     }
 
-    public static function getCartTotal($user_id)
+    public static function getTotalQty($user_id)
     {
-        return Cart::with('product')->where('user_id', $user_id)->sum('');
+        return Cart::where('user_id', $user_id)->sum('quantity');
     }
 
     public static function getCartItem($user_id, $product_id)

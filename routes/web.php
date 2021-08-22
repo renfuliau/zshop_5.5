@@ -44,15 +44,9 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/cart', 'CartController@cart')->name('cart');
     Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
     Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
-    // Route::get('/add-to-cart/{slug}', 'CartController@addToCart')->name('add-to-cart')->middleware('user');
     Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
-    // Route::get('/add-to-cart', function(){
-        
-    // });
-    // Route::post('/add-to-cart', 'CartController@singleAddToCart')->name('single-add-to-cart')->middleware('user');
-    // Route::get('cart-delete/{id}', 'CartController@cartDelete')->name('cart-delete');
     Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
-    Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
+    // Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
 });
 
 Route::group(['prefix' => 'zshop/user'], function () {

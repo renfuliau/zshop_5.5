@@ -2,26 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Models\Setting;
+use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Setting;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class FrontendController extends Controller
 {
+    protected $user;
+    protected $cart_total_qty;
     protected $categories;
 
     public function __construct()
     {
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+            if (!empty($this->user)) {
+                $this->cart_total_qty = Cart::getTotalQty(Auth::user()->id);
+            }
+            return $next($request);
+        });
         $this->categories = Category::getAllParentCategory();
     }
 
     public function index()
     {
-        return view('index')->with('categories', $this->categories);
+        return view('index')
+            ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty);
     }
 
     public function loginRegister()
@@ -62,12 +73,12 @@ class FrontendController extends Controller
             [
                 'unique' => ':attribute 已存在，請更換 :attribute 註冊',
                 'min' => '密碼最少 6 個字元',
-                'confirmed' => '確認密碼錯誤，請重新輸入!'
+                'confirmed' => '確認密碼錯誤，請重新輸入!',
             ]
         );
 
         $data = $request->all();
-        $check = User::new($data);
+        $check = User::new ($data);
         // dd($check);
         Session::put('user', $data['email']);
         if ($check) {
@@ -96,7 +107,7 @@ class FrontendController extends Controller
     {
         $photo_path = Setting::getPhoto()->photo;
         return view('contact.contact')
-        ->with('categories', $this->categories)
-        ->with('photo_path', $photo_path);
+            ->with('categories', $this->categories)
+            ->with('photo_path', $photo_path);
     }
 }

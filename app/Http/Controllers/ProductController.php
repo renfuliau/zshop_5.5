@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    protected $user;
+    protected $cart_total_qty;
     protected $categories;
 
     public function __construct()
     {
-        $this->categories = Category::getAllParentWithChild();
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+            // dd($this->user);
+            if (!empty($this->user)) {
+                $this->cart_total_qty = Cart::getTotalQty(Auth::user()->id);
+            }
+            return $next($request);
+        });
+        $this->categories = Category::getAllParentCategory();
     }
 
     public function productlist()
@@ -51,6 +63,7 @@ class ProductController extends Controller
         }
         return view('products.productlist')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products)
             ->with('recent_products', $recent_products);
     }
@@ -64,6 +77,7 @@ class ProductController extends Controller
         $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
         return view('products.productlist')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products->products)
             ->with('recent_products', $recent_products)
             ->with('title', $title);
@@ -84,6 +98,7 @@ class ProductController extends Controller
         // } else {
         return view('products.productlist')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products->subcategoryProducts)
             ->with('recent_products', $recent_products)
             ->with('title', $title)
@@ -98,6 +113,7 @@ class ProductController extends Controller
         // dd($product_detail->title);
         return view('products.product-detail')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('product_detail', $product_detail);
     }
 }

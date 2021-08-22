@@ -14,4 +14,9 @@ class Order extends Model
     {
         return Order::where('user_id', $user_id)->get();
     }
+
+    public static function getReturnedOrdersByUser($user_id)
+    {
+        return Order::where('status', '>', '4')->get();
+    }
 }

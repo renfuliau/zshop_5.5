@@ -2,29 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Models\Order;
-use App\Models\Product;
+use App\Models\Cart;
 use App\Models\Category;
-use App\Models\Wishlist;
-use App\Models\UserLevel;
-use Illuminate\Http\Request;
-use App\Rules\MatchOldPassword;
+use App\Models\Order;
 use App\Models\RewardMoneyHistory;
+use App\Models\UserLevel;
+use App\Models\Wishlist;
+use App\Rules\MatchOldPassword;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    protected $user;
+    protected $cart_total_qty;
     protected $categories;
 
     public function __construct()
     {
+        $this->middleware(function ($request, $next) {
+            $this->user = Auth::user();
+            if (!empty($this->user)) {
+                $this->cart_total_qty = Cart::getTotalQty(Auth::user()->id);
+            }
+            return $next($request);
+        });
         $this->categories = Category::getAllParentCategory();
     }
 
     public function profile()
     {
+        // dd(Auth()->user());
         $profile = Auth()->user();
         // dd($profile->user_level_id);
         $user_level = UserLevel::getUserLevelName($profile->user_level_id);
@@ -32,6 +42,7 @@ class UserController extends Controller
         // return $profile;
         return view('user.profile')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('user_level', $user_level);
     }
@@ -56,6 +67,7 @@ class UserController extends Controller
         $profile = Auth()->user();
         return view('user.change-password')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile);
         // return view('user.change-password');
     }
@@ -68,7 +80,7 @@ class UserController extends Controller
                 'new_confirm_password' => ['same:new_password'],
             ],
             [
-                'same' => '確認密碼錯誤，請重新輸入!'
+                'same' => '確認密碼錯誤，請重新輸入!',
             ]
         );
 
@@ -88,6 +100,7 @@ class UserController extends Controller
         // return $profile;
         return view('user.reward-money')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('reward_money_history', $reward_money_history);
     }
@@ -99,6 +112,7 @@ class UserController extends Controller
         $orders = Order::getAllOrdersByUser($profile->id);
         return view('user.orders')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('orders', $orders);
     }
@@ -107,9 +121,12 @@ class UserController extends Controller
     {
         $profile = Auth()->user();
         // return $profile;
+        $return_orders = Order::getReturnedOrdersByUser($profile->id);
         return view('user.returned')
             ->with('categories', $this->categories)
-            ->with('profile', $profile);
+            ->with('cart_total_qty', $this->cart_total_qty)
+            ->with('profile', $profile)
+            ->with('return_orders', $return_orders);
     }
 
     public function wishlist()
@@ -118,47 +135,14 @@ class UserController extends Controller
         $profile = Auth()->user();
         // dd($profile);
         $wishlist = Wishlist::getWishlistByUser($profile->id);
-        // dd($wishlist);   
+        // dd($wishlist);
         // return $profile;
         return view('user.wishlist')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('wishlist', $wishlist);
     }
-
-    // public function addToWishlist(Request $request)
-    // {
-    //     // dd($request->all());
-    //     if (empty($request->slug)) {
-    //         request()->session()->flash('error', '未知的產品，請聯絡客服');
-    //         return back();
-    //     }
-    //     $product = Product::where('slug', $request->slug)->first();
-    //     // return $product;
-    //     if (empty($product)) {
-    //         request()->session()->flash('error', '未知的產品，請聯絡客服');
-    //         return back();
-    //     }
-
-    //     $already_wishlist = Wishlist::where('user_id', auth()->user()->id)->where('cart_id', null)->where('product_id', $product->id)->first();
-    //     // return $already_wishlist;
-    //     if ($already_wishlist) {
-    //         request()->session()->flash('error', '此商品已經存在於收藏清單');
-    //         return back();
-    //     } else {
-
-    //         $wishlist = new Wishlist;
-    //         $wishlist->user_id = auth()->user()->id;
-    //         $wishlist->product_id = $product->id;
-    //         $wishlist->price = ($product->price - ($product->price * $product->discount) / 100);
-    //         $wishlist->quantity = 1;
-    //         $wishlist->amount = $wishlist->price * $wishlist->quantity;
-    //         if ($wishlist->product->stock < $wishlist->quantity || $wishlist->product->stock <= 0) return back()->with('error', 'Stock not sufficient!.');
-    //         $wishlist->save();
-    //     }
-    //     request()->session()->flash('success', '商品已加入收藏清單');
-    //     return back();
-    // }
 
     public function addToWishlist(Request $request)
     {
@@ -202,6 +186,7 @@ class UserController extends Controller
         // return $profile;
         return view('user.qa-center')
             ->with('categories', $this->categories)
+            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile);
     }
 }
