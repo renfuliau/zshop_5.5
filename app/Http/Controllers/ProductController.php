@@ -30,7 +30,7 @@ class ProductController extends Controller
     public function productlist()
     {
         $products = Product::query();
-
+dd($products);
         if (!empty($_GET['category'])) {
             $slug = explode(',', $_GET['category']);
             // dd($slug);

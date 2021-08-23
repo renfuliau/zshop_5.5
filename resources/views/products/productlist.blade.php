@@ -286,6 +286,8 @@
 
         $('.add-to-cart').on('click', function() {
             // console.log(this.getAttribute("data-productid"));
+            var cart_qty = $('.cartTotalQuantity').text();
+            var new_qty = parseInt(cart_qty) + 1;
             var user_id = this.getAttribute("data-user_id");
             var product_id = this.getAttribute("data-product_id");
 
@@ -303,9 +305,10 @@
                     product_id: product_id
                 },
                 success: function(response) {
-                    // document.location.reload(true);
-                    // console.log(response);
-                    alert(response);
+                    if (response['status'] == 0) {
+                        $('.cartTotalQuantity').html(new_qty);
+                    }
+                    alert(response['message']);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     alert(textStatus + " " + errorThrown);

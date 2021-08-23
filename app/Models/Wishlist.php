@@ -15,6 +15,11 @@ class Wishlist extends Model
         return $this->belongsTo(Product::class, 'product_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }   
+
     public static function checkItem($user_id, $product_id)
     {
         $item = Wishlist::where('user_id', $user_id)->where('product_id', $product_id)->first();

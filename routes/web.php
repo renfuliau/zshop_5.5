@@ -1,4 +1,5 @@
 <?php
+
 use \Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,6 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'zshop'], function () {
     Route::get('/', 'FrontendController@index')->name('index');
-// dd('ddd');
     // 會員註冊 登入 忘記密碼 聯絡客服
     // Route::get('/login-register', 'FrontendController@loginRegister')->name('login-register');
     Route::get('/login', 'FrontendController@login')->name('z-login');
@@ -32,8 +32,8 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/contact', 'FrontendController@contact')->name('contact');
     Route::post('/contact-store', 'MessageController@messageStore')->name('contact-store');
 
-    // 商品搜尋 商品分類 商品介紹
-    Route::get('/productlist', 'ProductController@productlistByCategory')->name('productlist');
+    // 商品搜尋 商品分類 商品介紹p
+    Route::get('/product', 'ProductController@productlistByCategory')->name('productlist');
     Route::get('/productlist-category/{slug}', 'ProductController@productlistByCategory')->name('productlist-category');
     Route::get('/productlist-category/{slug}/{sub_slug}', 'ProductController@productSubcategory')->name('productlist-subcategory');
     Route::get('/product-detail/{slug}', 'ProductController@productDetail')->name('product-detail');
@@ -41,12 +41,18 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
 
     // 購物車
-    Route::get('/cart', 'CartController@cart')->name('cart');
-    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
-    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
-    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
-    Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
+    // Route::get('/cart', 'CartController@cart')->name('cart');
+    // Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
+    // Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
+    // Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
+    // Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
     // Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
+
+    //購物車
+    Route::post('/addToCart', 'NewCartController@addToCart');
+    Route::get('/cart', 'NewCartController@cart'); 
+    Route::post('/changeProductQty', 'NewCartController@changeProductQty'); 
+    Route::post('/remove_item', 'NewCartController@remove_item'); 
 });
 
 Route::group(['prefix' => 'zshop/user'], function () {

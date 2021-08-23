@@ -155,6 +155,7 @@ class UserController extends Controller
         $wishlist = new Wishlist;
         $wishlist->user_id = $request->user_id;
         $wishlist->product_id = $request->product_id;
+        // return($wishlist);
         $wishlist->save();
         return response('成功加入收藏');
     }

@@ -16,7 +16,7 @@
                                 </li>
                                 <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                         {{-- <span class="total-count">{{ Helper::cartCount() }}</span> --}}
-                                        <span id="cartTotalQuantity">{{ $cart_total_qty }}</span> 
+                                        <span class="cartTotalQuantity">{{ $cart_total_qty }}</span> 
                                     </a></li>
                                 <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>

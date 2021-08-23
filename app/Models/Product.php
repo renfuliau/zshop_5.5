@@ -31,4 +31,9 @@ class Product extends Model
     {
         return Product::with('category')->where('slug', $slug)->first();
     }
+
+    public static function getStock($product_id)
+    {
+        return Product::select('stock')->where('id', $product_id)->first();
+    }
 }

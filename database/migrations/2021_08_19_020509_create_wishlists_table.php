@@ -18,7 +18,7 @@ class CreateWishlistsTable extends Migration
             $table->unsignedInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('carts');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
