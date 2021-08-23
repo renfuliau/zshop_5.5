@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Darryldecode\Cart\Cart;
 use Illuminate\Http\Request;
 
 class NewCartController extends Controller
 {
+    protected $product;
+    protected $categories;
+
+    public function __construct(Product $product)
+    {
+        $this->product = $product;
+        $this->categories = Category::getAllParentCategory();
+    }
+
     public function addToCart(Request $request)
     {
         $product_id = $request->product_id;

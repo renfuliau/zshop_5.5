@@ -1,5 +1,7 @@
 @extends('layouts.main')
+
 @section('title', 'Zshop - 購物車')
+
 @section('main-content')
     <!-- Breadcrumbs -->
     <div class="breadcrumbs">
@@ -140,14 +142,6 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        {{-- <div class="coupon">
-                                        <h6>選擇優惠:</h6>
-                                        <input type="hidden" name="coupon_value" value="" />
-                                        <select id="coupon_name" class="custom-select">
-                                            <option selected value="1">{{ $coupon1->name }}</option>
-                                <option value="2">{{ $coupon2->name }}</option>
-                                </select>
-                            </div> --}}
                                     @endif
                                     @if (!empty($coupon1) && empty($coupon2))
                                         <div class="coupon">
@@ -206,19 +200,6 @@
                                             </li>
                                         @endif
                                         <span class="usd"></span>
-                                        {{-- @php
-                                        $total_amount = {{ $total }};
-                                if (session()->has('coupon')) {
-                                $total_amount = $total_amount - Session::get('coupon')['value'];
-                                }
-                                @endphp
-                                @if (session()->has('coupon'))
-                                <li class="last" id="order_total_price">You
-                                    Pay<span>${{ number_format($total_amount, 2) }}</span></li>
-                                @else
-                                <li class="last" id="order_total_price">You
-                                    Pay<span>${{ number_format($total_amount, 2) }}</span></li>
-                                @endif --}}
                                     </ul>
                                     @if (!empty($carts))
                                         <div class="button5">
