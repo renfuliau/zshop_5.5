@@ -77,7 +77,8 @@
                                             <button type="submit" class="filter_button">送出</button>
                                             <div class="label-input">
                                                 <input style="" type="text" id="amount" readonly />
-                                                <input type="hidden" name="price_range" id="price_range" value="@if (!empty($_GET['price'])) {{ $_GET['price'] }} @endif" />
+                                                <input type="hidden" name="price_range" id="price_range"
+                                                    value="@if (!empty($_GET['price'])) {{ $_GET['price'] }} @endif" />
                                             </div>
                                         </div>
                                     </div>
@@ -176,30 +177,28 @@
                                                         <del>原價 ${{ $product->price }}</del>
                                                         <h5 class="text-danger">特價
                                                             ${{ $product->special_price }}</h5>
-                                                        <a class="btn cart add-to-cart"
-                                                            @if (!empty(Auth::user()->id))
-                                                                data-user_id="{{ Auth::user()->id }}"
-                                                            @endif
-                                                            data-product_id="{{ $product->id }}">加入購物車</a>
-                                                        <a class="btn cart add-to-wishlist"
-                                                            @if (!empty(Auth::user()->id))
-                                                                data-user_id="{{ Auth::user()->id }}"
-                                                            @endif
-                                                            data-product_id="{{ $product->id }}"><i class=" ti-heart ">
-                                                                加入收藏</i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Single List -->
-                                @endforeach
-                            @else
-                                <h4 class="text-warning" style="margin:100px auto;">目前沒有符合的商品</h4>
+                                                        <a class="btn cart add-to-cart" @if (!empty(Auth::user()->id))
+                                                            data-user_id="{{ Auth::user()->id }}"
+                                @endif
+                                data-product_id="{{ $product->id }}">加入購物車</a>
+                                <a class="btn cart add-to-wishlist" @if (!empty(Auth::user()->id))
+                                    data-user_id="{{ Auth::user()->id }}"
                             @endif
+                            data-product_id="{{ $product->id }}"><i class=" ti-heart ">
+                                加入收藏</i></a>
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
+            <!-- End Single List -->
+            @endforeach
+        @else
+            <h4 class="text-warning" style="margin:100px auto;">目前沒有符合的商品</h4>
+            @endif
+            </div>
+            </div>
+            </div>
             </div>
         </section>
         <!--/ End Product Style 1  -->
@@ -228,11 +227,12 @@
         .add-to-cart {
             cursor: pointer;
         }
+
     </style>
 @endpush
 @push('scripts')
     <!-- Sweetalert JS -->
-    <script src="{{asset('frontend/js/sweetalert.min.js')}}"></script>
+    <script src="{{ asset('frontend/js/sweetalert.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -284,12 +284,43 @@
             });
         });
 
-        $('.add-to-cart').on('click', function() {
-            // console.log(this.getAttribute("data-productid"));
-            var cart_qty = $('.cartTotalQuantity').text();
-            var new_qty = parseInt(cart_qty) + 1;
-            var user_id = this.getAttribute("data-user_id");
-            var product_id = this.getAttribute("data-product_id");
+        // $('.add-to-cart').on('click', function() {
+        //     // console.log(this.getAttribute("data-productid"));
+        //     var cart_qty = $('.cartTotalQuantity').text();
+        //     var new_qty = parseInt(cart_qty) + 1;
+        //     var user_id = this.getAttribute("data-user_id");
+        //     var product_id = this.getAttribute("data-product_id");
+
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+
+        //     $.ajax({
+        //         method: 'POST',
+        //         url: '/zshop/add-to-cart',
+        //         data: {
+        //             user_id: user_id,
+        //             product_id: product_id
+        //         },
+        //         success: function(response) {
+        //             if (response['status'] == 0) {
+        //                 $('.cartTotalQuantity').html(new_qty);
+        //             }
+        //             alert(response['message']);
+        //         },
+        //         error: function(jqXHR, textStatus, errorThrown) {
+        //             alert(textStatus + " " + errorThrown);
+        //             // console.error(textStatus + " " + errorThrown);
+        //         }
+        //     });
+        // })
+
+        $('.add-to-cart').click(function() {
+
+            var product_id = $(this).data("product_id");
+            console.log(product_id);
 
             $.ajaxSetup({
                 headers: {
@@ -301,18 +332,15 @@
                 method: 'POST',
                 url: '/zshop/add-to-cart',
                 data: {
-                    user_id: user_id,
                     product_id: product_id
                 },
-                success: function(response) {
-                    if (response['status'] == 0) {
-                        $('.cartTotalQuantity').html(new_qty);
-                    }
-                    alert(response['message']);
+                success: function(res) {
+                    console.log(res);
+                    $('.cartTotalQuantity').text(res['qty']);
+                    alert(res['message']);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    alert(textStatus + " " + errorThrown);
-                    // console.error(textStatus + " " + errorThrown);
+                    console.error(textStatus + " " + errorThrown);
                 }
             });
         })

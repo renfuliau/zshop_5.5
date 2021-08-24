@@ -87,9 +87,7 @@
                                         {{-- <button type="submit" class="btn">加入購物車</button>
                                             <a href="{{ route('add-to-wishlist', $product_detail->slug) }}"
                                         class="btn min"><i class="ti-heart"></i></a> --}}
-                                        <a class="btn cart add-to-cart text-white" @if (!empty(Auth::user()->id))
-                                            data-user_id="{{ Auth::user()->id }}"
-                                            @endif
+                                        <a class="btn cart add-to-cart text-white" 
                                             data-product_id="{{ $product_detail->id }}">加入購物車</a>
                                         <a class="btn cart add-to-wishlist text-white" @if (!empty(Auth::user()->id))
                                             data-user_id="{{ Auth::user()->id }}"
@@ -231,34 +229,6 @@
         //     });
         // })
 
-        $('.add-to-cart').click(function() {
-
-            var product_id = $(this).data("product_id");
-            console.log(product_id);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: '/zshop/add-to-cart',
-                data: {
-                    product_id: product_id
-                },
-                success: function(res) {
-                    console.log(res);
-                    $('.cartTotalQuantity').text(res['qty']);
-                    alert(res['message']);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus + " " + errorThrown);
-                }
-            });
-        })
-
         $('.add-to-wishlist').on('click', function() {
             // console.log(this.getAttribute("data-productid"));
             var user_id = this.getAttribute("data-user_id");
@@ -288,6 +258,35 @@
                     // console.error(textStatus + " " + errorThrown);
                 }
             });
+        })
+
+        $('.add-to-cart').click(function() {
+
+            var product_id = $(this).data("product_id");
+            console.log(product_id);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/ㄏ',
+                data: {
+                    product_id: product_id
+                },
+                success: function(res) {
+                    $('.cartTotalQuantity').text(res);
+                    alert('成功加入購物車');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus + " " + errorThrown);
+                }
+            });
+
+
         })
     </script>
 

@@ -30,7 +30,7 @@ class ProductController extends Controller
     public function productlist()
     {
         $products = Product::query();
-dd($products);
+        dd($products);
         if (!empty($_GET['category'])) {
             $slug = explode(',', $_GET['category']);
             // dd($slug);
@@ -111,9 +111,8 @@ dd($products);
         // dd($slug);
         $product_detail = Product::getProductBySlug($slug);
         // dd($product_detail->title);
-        return view('products.product-detail')
+        return view('products.product-detail', compact('product_detail'))
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
-            ->with('product_detail', $product_detail);
+            ->with('cart_total_qty', $this->cart_total_qty);
     }
 }

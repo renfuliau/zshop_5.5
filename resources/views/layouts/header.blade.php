@@ -11,12 +11,13 @@
                                 {{-- todo --}}
                                 <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
                                 </li>
-                                <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}"
-                                        target="_blank">會員中心</a>
+                                <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}" target="_blank">會員中心</a>
                                 </li>
+                                {{-- <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
+                                        <span class="cartTotalQuantity">{{ $cart_total_qty }}</span>
+                                    </a></li> --}}
                                 <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
-                                        {{-- <span class="total-count">{{ Helper::cartCount() }}</span> --}}
-                                        <span class="cartTotalQuantity">{{ $cart_total_qty }}</span> 
+                                        <span class="cartTotalQuantity">{{ \Cart::session(Auth::user()->id)->getTotalQuantity() }}</span>
                                     </a></li>
                                 <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
                                 </li>
@@ -48,8 +49,7 @@
                             // dd($cart_total_qty);
                             $settings = DB::table('settings')->get();
                         @endphp
-                        <a href="{{ route('index') }}"><img src="@foreach ($settings
-                                as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
+                        <a href="{{ route('index') }}"><img src="@foreach ($settings as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
                     </div>
                     <!--/ End Logo -->
                     <!-- Search Form -->
@@ -76,8 +76,10 @@
                                     <div class="nav-inner col-12">
                                         <ul class="nav main-menu menu navbar-nav d-flex justify-content-between">
                                             @foreach ($categories as $category)
-                                                <li><a href="{{ route('productlist',['slug'=>$category->slug,'title'=>$category->title]) }}">{{ $category->title }}</a></li>
-                                            @endforeach                             
+                                                <li><a
+                                                        href="{{ route('productlist', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>

@@ -29,7 +29,7 @@
                             <thead>
                                 <tr class="main-hading">
                                     <th>商品圖片</th>
-                                    <th>商品名稱</th>
+                                    <th class="col-4">商品名稱</th>
                                     <th class="text-center">單價</th>
                                     <th class="text-center">數量</th>
                                     <th class="text-center">小計</th>
@@ -41,23 +41,19 @@
                                 @foreach ($carts as $key => $value)
                                     <tr>
                                         @php
-                                            $photo = explode(',', $value->product['photo']);
+                                            $photo = explode(',', $value->attributes['photos']);
                                         @endphp
                                         <td class="image" data-title="No"><img src="{{ $photo[0] }}"
                                                 alt="{{ $photo[0] }}"></td>
                                         <td class="product-des" data-title="Description">
                                             <p class="product-name"><a
                                                     href="{{ route('product-detail', $value->product['slug']) }}"
-                                                    target="_blank">{{ $value->product['title'] }}</a></p>
-                                            <p class="product-des">{!! $value['summary'] !!}</p>
+                                                    target="_blank">{{ $value->name }}</a></p>
                                         </td>
                                         <td class="price" data-title="Price">
-                                            <input class="price_key" type="number" value="{{ $key }}"
-                                                style="display:none;">
-
-                                            <input class="price_input[{{ $key }}]" type="number"
-                                                value="{{ $value->product['special_price'] }}" style="display:none;">
-                                            <span>${{ $value->product['special_price'] }}</span>
+                                            <input class="price_input{{ $value->id }}" type="number"
+                                                value="{{ $value->price }}" style="display:none;">
+                                            <span>${{ $value->price }}</span>
                                         </td>
                                         <td class="qty" data-title="Qty">
                                             <!-- Input Order -->
@@ -65,33 +61,31 @@
                                                 <div class="button minus">
                                                     <button type="button" class="btn btn-primary btn-number"
                                                         disabled="disabled" data-type="minus"
-                                                        data-field="quant[{{ $key }}]">
+                                                        data-field="quant{{ $value->id }}">
                                                         <i class="ti-minus"></i>
                                                     </button>
                                                 </div>
-                                                <input type="text" name="quant[{{ $key }}]" class="input-number"
-                                                    autocomplete="off" data-min="1"
-                                                    data-max="{{ $value->product->stock }}" data-product_id=""
-                                                    data-price="{{ $value->product['special_price'] }}"
+                                                <input type="text" name="quant{{ $value->id }}" class="input-number"
+                                                    autocomplete="off" data-min="1" data-max="{{ $value->attributes['stock'] }}" data-product_id="{{ $value->id }}" data-price="{{ $value->price }}"
                                                     value="{{ $value->quantity }}">
                                                 <input type="hidden" name="qty_id[]" value="{{ $value->id }}">
                                                 <div class="button plus">
                                                     <button type="button" class="btn btn-primary btn-number"
-                                                        data-type="plus" data-field="quant[{{ $key }}]">
+                                                        data-type="plus" data-field="quant{{ $value->id }}      ">
                                                         <i class="ti-plus"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                             <!--/ End Input Order -->
                                         </td>
-                                        <td class="total-amount cart_single_price" data-title="Total"><span
-                                                class="money">${{ $value->product['special_price'] * $value->quantity }}</span>
+                                        <td class="total-amount{{ $value->id }} cart_single_price" data-title="Total"><span
+                                                class="money">$ {{ $value->price * $value->quantity }}</span>
                                         </td>
                                         <td class="text-center">
-                                            <a class="remove-item" @if (!empty(Auth::user()->id))
+                                            <a class="remove_item" style="cursor: pointer;" @if (!empty(Auth::user()->id))
                                                 data-user_id="{{ Auth::user()->id }}"
                                 @endif
-                                data-product_id="{{ $value->product['id'] }}"><i class="ti-trash"></i></a>
+                                data-product_id="{{ $value->id }}"><i class="ti-trash"></i></a>
                                 </td>
                                 </tr>
                     @endforeach
@@ -123,7 +117,8 @@
                                                     id="coupon_type{{ $coupon1->coupon_type }}" autocomplete="off"
                                                     value="{{ $coupon1->coupon_amount }}"
                                                     data-subtotal="{{ $total }}"
-                                                    data-coupon1_amount={{ $coupon1->coupon_amount }}>
+                                                    data-coupon1_amount={{ $coupon1->coupon_amount }}
+                                                    data-coupon1_id="{{ $coupon1->id }}">
                                                 <label class="form-check-label" for="exampleRadios1">
                                                     {{ $coupon1->name }}
                                                 </label>
@@ -134,7 +129,8 @@
                                                     id="coupon_type{{ $coupon2->coupon_type }}" autocomplete="off"
                                                     value="{{ $coupon2->coupon_amount }}"
                                                     data-subtotal="{{ $total }}"
-                                                    data-coupon2_amount={{ $coupon2->coupon_amount }}>
+                                                    data-coupon2_amount={{ $coupon2->coupon_amount }}
+                                                    data-coupon2_id="{{ $coupon2->id }}">
                                                 <label class="form-check-label" for="exampleRadios2">
                                                     {{ $coupon2->name }}
                                                 </label>
@@ -401,7 +397,8 @@
             // console.log("onchangeValue:",this.value);
             // console.log("onchangeProductID:",this.getAttribute("data-productid"));
             var new_qty = this.value;
-            var product_id = this.getAttribute("data-productid");
+            var product_id = this.getAttribute("data-product_id");
+            var price_value = parseInt($(this).attr('data-price'));
 
             $.ajaxSetup({
                 headers: {
@@ -411,13 +408,28 @@
 
             $.ajax({
                 method: 'POST',
-                url: '/zshop/changeProductQty',
+                url: '/zshop/change-product-qty',
                 data: {
                     product_id: product_id,
                     new_qty: new_qty
                 },
                 success: function(res) {
-                    document.location.reload(true);
+                    console.log(res);
+                    var current_qty = res['qty'];
+                    console.log(current_qty);
+                    console.log(price_value);
+                    var sub_total = current_qty * price_value;
+                    console.log(sub_total);
+                    var total_class = '.total-amount' + product_id;
+                    console.log(total_class);
+                    // $('.cart_single_price').html('<span>$ ' + sub_total + '</span>');
+                    $('.cartTotalQuantity').text(res['total_qty']);
+                    $('.subtotal').html('小計<span>$ ' + res['total'] + '</span>');
+                    $('.subtotal').attr('data-subtotal', res['total']);
+                    $('.total').html('總計<span>$ ' + res['total'] + '</span>');
+                    $(total_class).html('<span>$ ' + res['qty'] * price_value + '</span>');
+                    // alert(res['message']);
+                    // document.location.reload(true);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error(textStatus + " " + errorThrown);
@@ -427,7 +439,7 @@
 
         $('.remove_item').on('click', function() {
             // console.log(this.getAttribute("data-productid"));
-            var product_id = this.getAttribute("data-productid");
+            var product_id = this.getAttribute("data-product_id");
 
             $.ajaxSetup({
                 headers: {
@@ -442,6 +454,7 @@
                     product_id: product_id
                 },
                 success: function(res) {
+                    alert(res)
                     document.location.reload(true);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -449,6 +462,113 @@
                 }
             });
         })
+
+        $(".coupon_type1").on("change", function() {
+            if ($(".coupon_type1").prop("checked")) {
+                var subtotal = $('.subtotal').attr("data-subtotal");
+                console.log(subtotal);
+                var coupon_value = this.getAttribute("data-coupon1_amount");
+                console.log(coupon_value);
+                var reward_money = $("#reward_money").val();
+                console.log(reward_money);
+                var total = parseInt(subtotal) - parseInt(coupon_value) - parseInt(reward_money);
+                console.log(total);
+                var coupon_id = this.getAttribute("data-coupon1_id");
+                console.log(coupon_id);
+                $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
+                $(".coupon2_price").html("贈送購物金<span>$ 0</span>");
+                $(".total").html("總計<span>$ " + total + "</span>")
+                $('.total').attr('data-total', total);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    method: 'POST',
+                    url: '/zshop/change-coupon',
+                    data: {
+                        coupon_id: coupon_id
+                    },
+                    success: function(res) {
+                        alert(res);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error(textStatus + " " + errorThrown);
+                    }
+                });
+            }
+        });
+
+        $(".coupon_type2").on("change", function() {
+            if ($(".coupon_type2").prop("checked")) {
+                var subtotal = $('.subtotal').attr("data-subtotal");
+                var coupon_value = this.getAttribute("data-coupon2_amount");
+                var reward_money = $("#reward_money").val();
+                var total = parseInt(subtotal) - parseInt(reward_money);
+                var coupon_id = this.getAttribute("data-coupon2_id");
+                console.log(coupon_id);
+                $(".coupon1_price").html("折扣<span>$ 0</span>");
+                $(".coupon2_price").html("贈送購物金<span>$ " + coupon_value + "</span>");
+                $(".total").html("總計<span>$ " + total + "</span>");
+                $('.total').attr('data-total', total);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    method: 'POST',
+                    url: '/zshop/change-coupon',
+                    data: {
+                        coupon_id: coupon_id
+                    },
+                    success: function(res) {
+                        alert(res);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error(textStatus + " " + errorThrown);
+                    }
+                });
+            }
+        });
+
+        $("#reward_money").on("change", function() {
+            var reward_money = $("#reward_money").val();
+            var subtotal = $(".subtotal").attr('data-subtotal');
+            var total = parseInt(subtotal) - parseInt(reward_money);
+            if ($(".coupon_type1").prop("checked")) {
+                var coupon1_value = $(".coupon_type1").attr('data-coupon1_amount');
+                var total = parseInt(subtotal) - parseInt(coupon1_value) - parseInt(reward_money);
+            }
+            $('.reward_money').html("使用購物金<span>$ -" + $("#reward_money").val() + "</span>");
+            $(".total").html("總計<span>$ " + total + "</span>");
+            $('.total').attr('data-total', total);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/change-reward-money',
+                data: {
+                    reward_money: reward_money,
+                },
+                success: function(res) {
+                    // alert(res);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus + " " + errorThrown);
+                }
+            });
+        });
     </script>
 
 @endpush

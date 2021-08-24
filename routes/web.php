@@ -44,15 +44,17 @@ Route::group(['prefix' => 'zshop'], function () {
     // Route::get('/cart', 'CartController@cart')->name('cart');
     // Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
     // Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
-    // Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
-    // Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
+    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
+    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
     // Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
 
     //購物車
-    Route::post('/addToCart', 'NewCartController@addToCart');
-    Route::get('/cart', 'NewCartController@cart'); 
-    Route::post('/changeProductQty', 'NewCartController@changeProductQty'); 
-    Route::post('/remove_item', 'NewCartController@remove_item'); 
+    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
+    Route::get('/cart', 'CartController@cart')->name('cart'); 
+    Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty'); 
+    Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item');
+    Route::post('/change-reward-money', 'CartController@changeRewardMoney');
+    Route::post('/change-coupon', 'CartController@changeCoupon');
 });
 
 Route::group(['prefix' => 'zshop/user'], function () {
