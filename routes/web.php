@@ -50,7 +50,7 @@ Route::group(['prefix' => 'zshop'], function () {
 
     //購物車
     Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
-    Route::get('/cart', 'CartController@cart')->name('cart'); 
+    Route::get('/cart', 'CartController@cart')->name('cart')->middleware('user'); 
     Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty'); 
     Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item');
     Route::post('/change-reward-money', 'CartController@changeRewardMoney');

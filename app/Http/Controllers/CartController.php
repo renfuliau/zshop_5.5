@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Product;
-use App\Models\Category;
+use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -93,11 +93,15 @@ class CartController extends Controller
         $product_id = $request->product_id;
         $product = Product::find($product_id);
         $cart_item = \Cart::session($user_id)->get($product_id);
+        // dd($cart_item);
+        // $cart_conditions = \Cart::getConditions();
+        // dd($cart_conditions);
+
         if (!empty($cart_item && $cart_item->quantity >= $product->stock)) {
             return response(['status' => 0, 'message' => '超出該商品庫存', 'qty' => $cart_item->quantity]);
         }
         \Cart::session($user_id)->add($product_id, $product->title, $product->special_price, 1, array(
-            'photos' => $product->photo
+            'photos' => $product->photo,
         ));
         $cartTotalQuantity = \Cart::session($user_id)->getTotalQuantity();
         return response(['status' => 0, 'message' => '成功加入購物車', 'qty' => $cartTotalQuantity]);
@@ -111,7 +115,6 @@ class CartController extends Controller
 
     //     $cart_item = Cart::getCartItem($request->user_id, $request->product_id);
     //     // return response(!empty($cart_item));
-
 
     //     if (!empty($cart_item)) {
     //         $product_stock = Product::getStock($request->product_id);
@@ -176,14 +179,15 @@ class CartController extends Controller
     {
         $user_id = Auth::user()->id;
         $reward_money = $request->reward_money;
-        $reward_money_condition = new \Darryldecode\Cart\CartCondition(array(
-            'user' => $user_id,
-            'name' => 'reward_money',
-            'type' => 'reward_money',
-            'value' => $reward_money
-        ));
-        \Cart::session($user_id)->condition($reward_money_condition);
-        
+
+        // $reward_money_condition = new \Darryldecode\Cart\CartCondition(array(
+        //     'user' => $user_id,
+        //     'name' => 'reward_money',
+        //     'type' => 'reward_money',
+        //     'value' => $reward_money,
+        // ));
+        // \Cart::session($user_id)->condition($reward_money_condition);
+
         // $cart_conditions = \Cart::getConditions();
         // foreach ($cart_conditions as $condition) {
         //     $condition->getValue();
@@ -197,14 +201,20 @@ class CartController extends Controller
         $user_id = Auth::user()->id;
         $coupon_id = $request->coupon_id;
         $coupon = Coupon::find($coupon_id);
-        $coupon_condition = new \Darryldecode\Cart\CartCondition(array(
-            'user' => $user_id,
-            'name' => 'coupon',
-            'type' => $coupon->coupon_type,
-            'value' => $coupon->coupon_amount
-        ));
+        $cart_conditions = \Cart::session($user_id)->getConditions();
+        // dd($cart_conditions);
+        if ($cart_conditions->isEmpty()) {
+            dd($cart_conditions);
+            $coupon_condition = new \Darryldecode\Cart\CartCondition(array(
+                'user' => $user_id,
+                'name' => 'coupon',
+                'type' => $coupon->coupon_type,
+                'value' => $coupon->coupon_amount,
+            ));
+        }
+        dd('123');
         \Cart::session($user_id)->condition($coupon_condition);
-        
+
         $cart_conditions = \Cart::getConditions();
         $c_group = array();
         foreach ($cart_conditions as $condition) {
@@ -220,6 +230,6 @@ class CartController extends Controller
         $carts = \Cart::session($user_id)->getContent()->sort();
         $total = \Cart::session($user_id)->getTotal();
         return view('cart.checkout', compact('carts', 'total'))
-        ->with('categories', $this->categories);
+            ->with('categories', $this->categories);
     }
 }
