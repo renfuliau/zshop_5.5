@@ -19,7 +19,7 @@
                                 <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                         <span class="cartTotalQuantity">{{ \Cart::session(Auth::user()->id)->getTotalQuantity() }}</span>
                                     </a></li>
-                                <li><i class="ti-email"></i><a href="{{ route('index') }}">聯絡客服</a>
+                                <li><i class="ti-email"></i><a href="{{ route('contact') }}">聯絡客服</a>
                                 </li>
                                 <li><i class="ti-shift-right-alt"></i><a href="{{ route('z-logout') }}">登出</a></li>
 

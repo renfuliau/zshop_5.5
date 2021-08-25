@@ -35,13 +35,6 @@
                         <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
                     </li>
                 </ul>
-
-
-
-                <ul class="breadcrumbs">
-                    <li><a href="" style="color:#999">會員中心</a></li>
-                    <li><a href="" class="active text-primary">購物金</a></li>
-                </ul>
             </div>
             <div class="card-body">
                 <div class="row d-flex justify-content-center">
@@ -68,8 +61,8 @@
                     @if ($reward_money_history)
                         @foreach ($reward_money_history as $key => $value)
                             <tr>
-                                <td class="date text-center" data-title="date"><span>${{ $value['created_at'] }}</span></td>
-                                <td class="reward_item text-center" data-title="reward_item"><span>${{ $value['reward_item'] }}</span>
+                                <td class="date text-center" data-title="date"><span>{{ $value['created_at'] }}</span></td>
+                                <td class="reward_item text-center" data-title="reward_item"><span>{{ $value['reward_item'] }}</span>
                                 </td>
                                 <td class="amount text-center" data-title="amount"><span>${{ $value['amount'] }}</span></td>
                                 <td class="total text-center" data-title="total"><span>${{ $value['total'] }}</span></td>

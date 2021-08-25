@@ -38,35 +38,8 @@ $(document).ready(function () {
                         minlength: "至少10個字元"
                     }
                 },
-                // submitHandler: function (form) {
-                //     $.ajaxSetup({
-                //         headers: {
-                //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                //         }
-                //     });
-                //     $(form).ajaxSubmit({
-                //         type: "POST",
-                //         data: $(form).serialize(),
-                //         url: $(form).attr('action'),
-                //         success: function () {
-                //             $('#contactForm :input').attr('disabled', 'disabled');
-                //             $('#contactForm').fadeTo("slow", 1, function () {
-                //                 $(this).find(':input').attr('disabled', 'disabled');
-                //                 $(this).find('label').css('cursor', 'default');
-                //                 $('#success').fadeIn()
-                //                 $('.modal').modal('hide');
-                //                 $('#success').modal('show');
-                //             })
-                //         },
-                //         error: function () {
-                //             $('#contactForm').fadeTo("slow", 1, function () {
-                //                 $('#error').fadeIn()
-                //                 $('.modal').modal('hide');
-                //                 $('#error').modal('show');
-                //             })
-                //         }
-                //     })
-                // }
+                // 
+                
             })
         })
 

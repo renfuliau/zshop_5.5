@@ -31,9 +31,9 @@
 
 
                 <ul class="breadcrumbs">
-                    <li><a href="" style="color:#999">會員中心</a></li>
+                    <li><a href="{{ route('user-profile') }}" style="color:#999">會員中心</a></li>
                     <li><a href="{{ route('user-profile') }}" style="color:#999">個人中心</a></li>
-                    <li><a href="" class="active text-primary">變更密碼</a></li>
+                    <li><a href="#" class="active text-primary">變更密碼</a></li>
                 </ul>
             </div>
             <div class="card-body">

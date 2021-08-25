@@ -8,7 +8,12 @@ class Order extends Model
 {
     protected $table = 'orders';
 
-    protected $fillable = ['order_number', 'user_id', 'sub_total', 'shipping_id', 'coupon_id', ' reward-money', 'total_amount', 'quantity', 'status', 'name', 'email', 'phone', 'post_code', 'address'];
+    protected $fillable = ['order_number', 'user_id', 'subtotal', 'shipping_id', 'coupon_id', ' reward-money', 'total', 'quantity', 'status', 'name', 'email', 'phone', 'post_code', 'address'];
+
+    public function orderItems()
+    {
+       return $this->hasMany('App\Models\OrderItem','order_id')->with('product');
+    }
 
     public static function getAllOrdersByUser($user_id)
     {

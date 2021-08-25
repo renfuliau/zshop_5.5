@@ -35,13 +35,6 @@
                         <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
                     </li>
                 </ul>
-
-
-
-                <ul class="breadcrumbs">
-                    <li><a href="" style="color:#999">會員中心</a></li>
-                    <li><a href="" class="active text-primary">訂單查詢</a></li>
-                </ul>
             </div>
             <table class="table shopping-summery">
                 <thead>
@@ -57,11 +50,11 @@
                     @if($orders)
                         @foreach($orders as $key => $value)
                             <tr>
-                                <td class="date" data-title="date"><span>{{$value['order_number']}}</span></td>
-                                <td class="reward_item" data-title="reward_item"><span>{{$value['created_at']}}</span></td>
-                                <td class="amount" data-title="amount"><span>${{$value['total_amount']}}</span></td>
-                                <td class="total" data-title="total"><span>{{$value['order_status']}}</span></td>
-                                <td class="text-center"><a href="{{route('zshop-index')}}"><i class="ti-layout-media-overlay-alt-2"></i></a></td>
+                                <td class="text-center date" data-title="date"><span>{{$value['order_number']}}</span></td>
+                                <td class="text-center reward_item" data-title="reward_item"><span>{{$value['created_at']}}</span></td>
+                                <td class="text-center amount" data-title="amount"><span>$ {{$value['total']}}</span></td>
+                                <td class="text-center total" data-title="total"><span>{{$value['order_status']}}</span></td>
+                                <td class="text-center text-center"><a href="{{route('user-order-detail', $value['order_number'])}}"><i class="ti-layout-media-overlay-alt-2"></i></a></td>
                             </tr>
                         @endforeach
                     @endif

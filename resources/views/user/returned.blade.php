@@ -35,19 +35,12 @@
                     <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
                 </li>
             </ul>
-
-
-
-            <ul class="breadcrumbs">
-                <li><a href="" style="color:#999">會員中心</a></li>
-                <li><a href="" class="active text-primary">訂單查詢</a></li>
-            </ul>
         </div>
         <table class="table shopping-summery">
             <thead>
                 <tr class="main-hading">
-                    <th>訂單編號</th>
                     <th>訂單日期</th>
+                    <th>訂單編號</th>
                     <th class="text-center">合計</th>
                     <th class="text-center">訂單狀態</th>
                     <th class="text-center">明細</th>
@@ -57,11 +50,11 @@
                 @if($return_orders)
                 @foreach($return_orders as $key => $value)
                 <tr>
-                    <td class="date" data-title="date"><span>{{$value['order_number']}}</span></td>
-                    <td class="reward_item" data-title="reward_item"><span>{{$value['created_at']}}</span></td>
-                    <td class="amount" data-title="amount"><span>${{$value['total_amount']}}</span></td>
-                    <td class="total" data-title="total"><span>{{$value['order_status']}}</span></td>
-                    <td class="text-center"><a href="{{route('zshop-index')}}"><i
+                    <td class="text-center date" data-title="date"><span>{{$value['created_at']}}</span></td>
+                    <td class="text-center order_number" data-title="order_number"><span>{{$value['order_number']}}</span></td>
+                    <td class="text-center amount" data-title="amount"><span>${{$value['total']}}</span></td>
+                    <td class="text-center total" data-title="total"><span>{{$value['order_status']}}</span></td>
+                    <td class="text-center text-center"><a href="{{route('index')}}"><i
                                 class="ti-layout-media-overlay-alt-2"></i></a></td>
                 </tr>
                 @endforeach

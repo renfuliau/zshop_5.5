@@ -53,7 +53,7 @@
                                         <td class="price" data-title="Price">
                                             <input class="price_input{{ $value->id }}" type="number"
                                                 value="{{ $value->price }}" style="display:none;">
-                                            <span>${{ $value->price }}</span>
+                                            <span>$ {{ $value->price }}</span>
                                         </td>
                                         <td class="qty" data-title="Qty">
                                             <!-- Input Order -->
@@ -66,20 +66,22 @@
                                                     </button>
                                                 </div>
                                                 <input type="text" name="quant{{ $value->id }}" class="input-number"
-                                                    autocomplete="off" data-min="1" data-max="{{ $value->attributes['stock'] }}" data-product_id="{{ $value->id }}" data-price="{{ $value->price }}"
-                                                    value="{{ $value->quantity }}">
+                                                    autocomplete="off" data-min="1"
+                                                    data-max="{{ $value->attributes['stock'] }}"
+                                                    data-product_id="{{ $value->id }}"
+                                                    data-price="{{ $value->price }}" value="{{ $value->quantity }}">
                                                 <input type="hidden" name="qty_id[]" value="{{ $value->id }}">
                                                 <div class="button plus">
                                                     <button type="button" class="btn btn-primary btn-number"
-                                                        data-type="plus" data-field="quant{{ $value->id }}      ">
+                                                        data-type="plus" data-field="quant{{ $value->id }}">
                                                         <i class="ti-plus"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                             <!--/ End Input Order -->
                                         </td>
-                                        <td class="total-amount{{ $value->id }} cart_single_price" data-title="Total"><span
-                                                class="money">$ {{ $value->price * $value->quantity }}</span>
+                                        <td class="total-amount{{ $value->id }} cart_single_price" data-title="Total">
+                                            <span class="money">$ {{ $value->price * $value->quantity }}</span>
                                         </td>
                                         <td class="text-center">
                                             <a class="remove_item" style="cursor: pointer;" @if (!empty(Auth::user()->id))
@@ -119,7 +121,7 @@
                                                     data-subtotal="{{ $total }}"
                                                     data-coupon1_amount={{ $coupon1->coupon_amount }}
                                                     data-coupon1_id="{{ $coupon1->id }}">
-                                                <label class="form-check-label" for="exampleRadios1">
+                                                <label class="form-check-label coupon-label1" for="exampleRadios1">
                                                     {{ $coupon1->name }}
                                                 </label>
                                             </div>
@@ -131,19 +133,11 @@
                                                     data-subtotal="{{ $total }}"
                                                     data-coupon2_amount={{ $coupon2->coupon_amount }}
                                                     data-coupon2_id="{{ $coupon2->id }}">
-                                                <label class="form-check-label" for="exampleRadios2">
+                                                <label class="form-check-label coupon-label2" for="exampleRadios2">
                                                     {{ $coupon2->name }}
                                                 </label>
                                             </div>
                                         </div>
-                                        {{-- <div class="coupon">
-                                        <h6>選擇優惠:</h6>
-                                        <input type="hidden" name="coupon_value" value="" />
-                                        <select id="coupon_name" class="custom-select">
-                                            <option selected value="1">{{ $coupon1->name }}</option>
-                                <option value="2">{{ $coupon2->name }}</option>
-                                </select>
-                            </div> --}}
                                     @endif
                                     @if (!empty($coupon1) && empty($coupon2))
                                         <div class="coupon">
@@ -184,10 +178,10 @@
 
                                         @if (!empty($coupon1))
                                             <li class="coupon1_price" data-coupon1="{{ $coupon1['coupon_amount'] }}">
-                                                折扣<span>0</span>
+                                                折扣<span>$ 0</span>
                                             </li>
                                             <li class="reward_money">
-                                                使用購物金<span>0</span>
+                                                使用購物金<span>$ 0</span>
                                             </li>
                                         @endif
                                         @if (!empty($carts))
@@ -198,30 +192,26 @@
                                         @endif
                                         @if (!empty($coupon2))
                                             <li class="coupon2_price" data-coupon2="{{ $coupon1['coupon_amount'] }}">
-                                                贈送購物金<span>0</span>
+                                                贈送購物金<span>$ 0</span>
                                             </li>
                                         @endif
-                                        <span class="usd"></span>
-                                        {{-- @php
-                                        $total_amount = {{ $total }};
-                                if (session()->has('coupon')) {
-                                $total_amount = $total_amount - Session::get('coupon')['value'];
-                                }
-                                @endphp
-                                @if (session()->has('coupon'))
-                                <li class="last" id="order_total_price">You
-                                    Pay<span>${{ number_format($total_amount, 2) }}</span></li>
-                                @else
-                                <li class="last" id="order_total_price">You
-                                    Pay<span>${{ number_format($total_amount, 2) }}</span></li>
-                                @endif --}}
                                     </ul>
-                                    @if (!empty($carts))
+                                    {{-- @if (!empty($carts))
                                         <div class="button5">
                                             <a href="{{ route('checkout') }}" class="btn go-to-checkout"
                                                 data-total="{{ $total }}" data-reward_money_amount="0">前往結帳</a>
                                         </div>
-                                    @endif
+                                    @endif --}}
+                                    <form class="border px-4 pt-2 pb-3" method="POST" action="{{ route('checkout') }}">
+                                        {{ csrf_field() }}
+                                        <div class="row d-flex justify-content-center">
+                                            <input id="input_coupon_id" type="hidden" name="coupon_id" value=""
+                                                class="form-control">
+                                            <input id="input_reward_money" type="hidden" name="reward_money" value="0"
+                                                class="form-control">
+                                            <button type="submit" class="btn btn-success btn-sm">前往結帳</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -300,98 +290,6 @@
         });
         $('select.nice-select').niceSelect();
     </script>
-    {{-- <script>
-        $(".input-number").on("change", function() {
-            var current_qty = parseInt($(this).val());
-            console.log(current_qty);
-            var price_value = parseInt($(this).attr('data-price'))
-            console.log(price_value);
-            var sub_total = current_qty * price_value;
-            console.log(sub_total);
-            $('.cart_single_price').html('<span>' + sub_total + '</span>');
-
-            // var subtotal = this.getAttribute("data-subtotal");
-            // var coupon_value = this.getAttribute("data-coupon1_amount");
-            // var reward_money = $("#reward_money").val();
-            // var total = parseInt(subtotal) - parseInt(coupon_value) - parseInt(reward_money);
-            // $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
-            // $(".coupon2_price").html("贈送購物金<span>0</span>");
-            // $(".total").html("總計<span>$ " + total + "</span>")
-            // $('.total').attr('data-total', total);
-        });
-
-        $('.remove-item').on('click', function() {
-            // console.log(this.getAttribute("data-productid"));
-            var user_id = this.getAttribute("data-user_id");
-            var product_id = this.getAttribute("data-product_id");
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: '/zshop/remove-cart',
-                data: {
-                    user_id: user_id,
-                    product_id: product_id
-                },
-                success: function(response) {
-                    // document.location.reload(true);
-                    // console.log(response);
-                    alert(response);
-                    document.location.reload(true);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert(textStatus + " " + errorThrown);
-                    // console.error(textStatus + " " + errorThrown);
-                }
-            });
-        });
-
-        $(".coupon_type1").on("change", function() {
-            if ($(".coupon_type1").prop("checked")) {
-                var subtotal = this.getAttribute("data-subtotal");
-                var coupon_value = this.getAttribute("data-coupon1_amount");
-                var reward_money = $("#reward_money").val();
-                var total = parseInt(subtotal) - parseInt(coupon_value) - parseInt(reward_money);
-                $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
-                $(".coupon2_price").html("贈送購物金<span>0</span>");
-                $(".total").html("總計<span>$ " + total + "</span>")
-                $('.total').attr('data-total', total);
-            }
-        });
-
-        $(".coupon_type2").on("change", function() {
-            if ($(".coupon_type2").prop("checked")) {
-                var subtotal = this.getAttribute("data-subtotal");
-                var coupon_value = this.getAttribute("data-coupon2_amount");
-                var reward_money = $("#reward_money").val();
-                var total = parseInt(subtotal) - parseInt(reward_money);
-                $(".coupon1_price").html("折扣<span>0</span>");
-                $(".coupon2_price").html("贈送購物金<span>$" + coupon_value + "</span>");
-                $(".total").html("總計<span>$ " + total + "</span>");
-                $('.total').attr('data-total', total);
-            }
-        });
-
-        $("#reward_money").on("change", function() {
-            var reward_money = $("#reward_money").val();
-            $("#reward_money").attr('value', $("#reward_money").val());
-            $('.go-to-checkout').attr('data-reward_money_amount', $("#reward_money").val());
-            $('.reward_money').html("使用購物金<span>$ -" + $("#reward_money").val() + "</span>");
-            var subtotal = $(".subtotal").attr('data-subtotal');
-            var total = parseInt(subtotal) - parseInt(reward_money);
-            if ($(".coupon_type1").prop("checked")) {
-                var coupon1_value = $(".coupon_type1").attr('data-coupon1_amount');
-                var total = parseInt(subtotal) - parseInt(coupon1_value) - parseInt(reward_money);
-            }
-            $(".total").html("總計<span>$ " + total + "</span>");
-            $('.total').attr('data-total', total);
-        });
-    </script> --}}
     <script>
         $('.input-number').on('change', function() {
             // console.log("onchangeValue:",this.value);
@@ -399,6 +297,8 @@
             var new_qty = this.value;
             var product_id = this.getAttribute("data-product_id");
             var price_value = parseInt($(this).attr('data-price'));
+            var coupon1_id = $('.coupon_type1').attr('data-coupon1_id');
+            var coupon2_id = $('.coupon_type2').attr('data-coupon2_id');
 
             $.ajaxSetup({
                 headers: {
@@ -411,31 +311,60 @@
                 url: '/zshop/change-product-qty',
                 data: {
                     product_id: product_id,
-                    new_qty: new_qty
+                    new_qty: new_qty,
+                    coupon1_id: coupon1_id,
+                    coupon2_id: coupon2_id
                 },
                 success: function(res) {
-                    console.log(res);
                     var current_qty = res['qty'];
-                    console.log(current_qty);
-                    console.log(price_value);
-                    var sub_total = current_qty * price_value;
-                    console.log(sub_total);
                     var total_class = '.total-amount' + product_id;
-                    console.log(total_class);
-                    // $('.cart_single_price').html('<span>$ ' + sub_total + '</span>');
+
+                    if (res['coupon1']) {
+                        $('.coupon_type1').attr('data-coupon1_id', res['coupon1']['coupon_id']);
+                        $('.coupon_type1').attr('data-coupon1_amount', res['coupon1']['coupon_amount']);
+                        $('.coupon-label1').html(res['coupon1']['coupon_title']);
+                    }
+                    if (res['coupon2']) {
+                        $('.coupon_type2').attr('data-coupon2_id', res['coupon2']['coupon_id']);
+                        $('.coupon_type2').attr('data-coupon2_amount', res['coupon2']['coupon_amount']);
+                        $('.coupon-label2').html(res['coupon2']['coupon_title']);
+                    }
+
                     $('.cartTotalQuantity').text(res['total_qty']);
                     $('.subtotal').html('小計<span>$ ' + res['total'] + '</span>');
                     $('.subtotal').attr('data-subtotal', res['total']);
                     $('.total').html('總計<span>$ ' + res['total'] + '</span>');
+                    $('.total').attr('data-total', res['total']);
                     $(total_class).html('<span>$ ' + res['qty'] * price_value + '</span>');
-                    // alert(res['message']);
-                    // document.location.reload(true);
+
+                    var coupon_value = $(".coupon_type1").attr("data-coupon1_amount");
+                    var subtotal = $('.subtotal').attr("data-subtotal");
+                    var reward_money = $("#reward_money").val();
+                    var total = parseInt(subtotal) - parseInt(coupon_value) - parseInt(reward_money);
+                    if ($(".coupon_type1").prop("checked")) {
+                        $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
+                        $(".coupon2_price").html("贈送購物金<span>$ 0</span>");
+                        $(".total").html("總計<span>$ " + total.toString() + "</span>")
+                        $('.total').attr('data-total', total);
+                        $('#input_coupon_id').attr('value', $('.coupon_type1').attr('data-coupon1_id'));
+                    }
+                    if ($(".coupon_type2").prop("checked")) {
+                        $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
+                        $(".coupon2_price").html("贈送購物金<span>$ 0</span>");
+                        $(".total").html("總計<span>$ " + total + "</span>")
+                        $('.total').attr('data-total', total);
+                        $('#input_coupon_id').attr('value', $('.coupon_type2').attr('data-coupon2_id'));
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error(textStatus + " " + errorThrown);
                 }
             });
         });
+
+        // $('.total').on('change', funtion() {
+        //     $('.coupon1_price').html('<span>666</span>');
+        // })
 
         $('.remove_item').on('click', function() {
             // console.log(this.getAttribute("data-productid"));
@@ -466,19 +395,15 @@
         $(".coupon_type1").on("change", function() {
             if ($(".coupon_type1").prop("checked")) {
                 var subtotal = $('.subtotal').attr("data-subtotal");
-                console.log(subtotal);
                 var coupon_value = this.getAttribute("data-coupon1_amount");
-                console.log(coupon_value);
                 var reward_money = $("#reward_money").val();
-                console.log(reward_money);
                 var total = parseInt(subtotal) - parseInt(coupon_value) - parseInt(reward_money);
-                console.log(total);
                 var coupon_id = this.getAttribute("data-coupon1_id");
-                console.log(coupon_id);
                 $(".coupon1_price").html("折扣<span>$ -" + coupon_value + "</span>");
                 $(".coupon2_price").html("贈送購物金<span>$ 0</span>");
                 $(".total").html("總計<span>$ " + total + "</span>")
                 $('.total').attr('data-total', total);
+                $('#input_coupon_id').attr('value', $('.coupon_type1').attr('data-coupon1_id'));
 
                 $.ajaxSetup({
                     headers: {
@@ -514,6 +439,7 @@
                 $(".coupon2_price").html("贈送購物金<span>$ " + coupon_value + "</span>");
                 $(".total").html("總計<span>$ " + total + "</span>");
                 $('.total').attr('data-total', total);
+                $('#input_coupon_id').attr('value', $('.coupon_type2').attr('data-coupon2_id'));
 
                 $.ajaxSetup({
                     headers: {
@@ -539,6 +465,9 @@
 
         $("#reward_money").on("change", function() {
             var reward_money = $("#reward_money").val();
+            if (!reward_money) {
+                var reward_money = 0;
+            }
             var subtotal = $(".subtotal").attr('data-subtotal');
             var total = parseInt(subtotal) - parseInt(reward_money);
             if ($(".coupon_type1").prop("checked")) {
@@ -546,8 +475,12 @@
                 var total = parseInt(subtotal) - parseInt(coupon1_value) - parseInt(reward_money);
             }
             $('.reward_money').html("使用購物金<span>$ -" + $("#reward_money").val() + "</span>");
+            if ($("#reward_money").val() == 0) {
+                $('.reward_money').html("使用購物金<span>$ 0</span>");
+            }
             $(".total").html("總計<span>$ " + total + "</span>");
             $('.total').attr('data-total', total);
+            $('#input_reward_money').attr('value', reward_money);
 
             $.ajaxSetup({
                 headers: {
@@ -558,6 +491,28 @@
             $.ajax({
                 method: 'POST',
                 url: '/zshop/change-reward-money',
+                data: {
+                    reward_money: reward_money,
+                },
+                success: function(res) {
+                    // alert(res);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus + " " + errorThrown);
+                }
+            });
+        });
+
+        $(".button5").on("click", function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: '/zshop/checkout',
                 data: {
                     reward_money: reward_money,
                 },

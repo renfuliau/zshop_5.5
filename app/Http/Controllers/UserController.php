@@ -51,8 +51,8 @@ class UserController extends Controller
     {
         // return $request->all();
         $user = User::findOrFail($id);
-        // dd($user);
         $data = $request->all();
+        // dd($data);
         $status = $user->fill($data)->save();
         if ($status) {
             request()->session()->flash('success', '個人資料已更新');
@@ -115,6 +115,13 @@ class UserController extends Controller
             ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('orders', $orders);
+    }
+
+    public function orderDetail($order_number)
+    {
+        $order = Order::with('orderItems')->where('order_number', $order_number)->first();
+        dd($order->orderItems);
+        return view('user.order-detail', compact('order'));
     }
 
     public function returned()

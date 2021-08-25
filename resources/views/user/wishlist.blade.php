@@ -35,13 +35,6 @@
                         <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
                     </li>
                 </ul>
-
-
-
-                <ul class="breadcrumbs">
-                    <li><a href="" style="color:#999">會員中心</a></li>
-                    <li><a href="" class="active text-primary">收藏清單</a></li>
-                </ul>
             </div>
             <table class="table shopping-summery">
                 <thead>

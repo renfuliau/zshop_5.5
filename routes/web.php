@@ -44,20 +44,21 @@ Route::group(['prefix' => 'zshop'], function () {
     // Route::get('/cart', 'CartController@cart')->name('cart');
     // Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
     // Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
-    Route::get('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
-    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkoutStore');
     // Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
 
     //購物車
-    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
+    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware('user');
     Route::get('/cart', 'CartController@cart')->name('cart')->middleware('user'); 
-    Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty'); 
-    Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item');
-    Route::post('/change-reward-money', 'CartController@changeRewardMoney');
-    Route::post('/change-coupon', 'CartController@changeCoupon');
+    Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty')->middleware('user'); 
+    Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item')->middleware('user');
+    Route::post('/change-reward-money', 'CartController@changeRewardMoney')->middleware('user');
+    Route::post('/change-coupon', 'CartController@changeCoupon')->middleware('user');
+    Route::post('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
+    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkout-store')->middleware('user');
+    Route::get('/order-confirm', 'CartController@orderConfirm')->name('order-confirm')->middleware('user');
 });
 
-Route::group(['prefix' => 'zshop/user'], function () {
+Route::group(['prefix' => 'zshop/user', 'middleware' => ['user']], function () {
     // 個人中心 購物金 訂單查詢 退貨查詢 收藏清單 問答中心
     Route::get('/profile', 'UserController@profile')->name('user-profile');
     Route::post('/profile/{id}', 'UserController@profileUpdate')->name('user-profile-update');
@@ -67,13 +68,13 @@ Route::group(['prefix' => 'zshop/user'], function () {
     Route::get('/reward-money', 'UserController@rewardMoney')->name('user-reward-money');
 
     Route::get('/orders', 'UserController@orders')->name('user-orders');
+    Route::get('/order-detail/{order_number}', 'UserController@orderDetail')->name('user-order-detail');
 
     Route::get('/returned', 'UserController@returned')->name('user-returned');
 
     Route::get('/wishlist', 'UserController@wishlist')->name('user-wishlist');
     Route::post('/add-to-wishlist', 'UserController@addToWishlist')->name('add-to-wishlist');
     Route::post('/remove-wishlist', 'UserController@removeWishlist')->name('remove-wishlist');
-    Route::get('/wishlist-delete/{id}', 'UserController@wishlistDelete')->name('wishlist-delete');
 
     Route::get('/qa-center', 'UserController@qaCenter')->name('user-qa-center');
 });

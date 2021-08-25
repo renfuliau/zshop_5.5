@@ -166,7 +166,7 @@ CREATE TABLE `orders` (
   `shipping_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `coupon_id` int(10) UNSIGNED DEFAULT NULL,
   `reward_money` int(11) DEFAULT NULL,
-  `total_amount` int(11) NOT NULL,
+  `total` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

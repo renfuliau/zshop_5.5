@@ -27,13 +27,6 @@
                         <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
                     </li>
                 </ul>
-
-
-
-                <ul class="breadcrumbs">
-                    <li><a href="" style="color:#999">會員中心</a></li>
-                    <li><a href="" class="active text-primary">個人中心</a></li>
-                </ul>
             </div>
             <div class="card-body">
                 <div class="row d-flex justify-content-center">
@@ -50,34 +43,22 @@
                                             <label for="inputTitle" class="col-form-label">姓名</label>
                                             <input id="inputTitle" type="text" name="name" placeholder="輸入姓名"
                                                 value="{{ $profile->name }}" class="form-control">
-                                            {{-- @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror --}}
                                         </div>
 
                                         <div class="form-group col-lg-6 col-12">
                                             <label for="inputEmail" class="col-form-label">Email</label>
                                             <input id="inputEmail" type="email" name="email" placeholder="輸入 Email"
                                                 value="{{ $profile->email }}" class="form-control">
-                                            {{-- @error('email')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror --}}
                                         </div>
                                         <div class="form-group col-lg-6 col-12">
                                             <label for="inputPhone" class="col-form-label">手機</label>
                                             <input id="inputPhone" type="phone" name="phone" placeholder="輸入手機"
                                                 value="{{ $profile->phone }}" class="form-control">
-                                            {{-- @error('phone')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror --}}
                                         </div>
                                         <div class="form-group col-lg-6 col-12">
                                             <label for="inputAddress" class="col-form-label">地址</label>
                                             <input id="inputAddress" type="address" name="address" placeholder="輸入地址"
                                                 value="{{ $profile->address }}" class="form-control">
-                                            {{-- @error('address')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror --}}
                                         </div>
                                         <button type="submit" class="btn btn-success btn-sm">儲存變更</button>
                                     </div>
