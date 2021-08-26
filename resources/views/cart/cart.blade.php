@@ -202,16 +202,19 @@
                                                 data-total="{{ $total }}" data-reward_money_amount="0">前往結帳</a>
                                         </div>
                                     @endif --}}
-                                    <form class="border px-4 pt-2 pb-3" method="POST" action="{{ route('checkout') }}">
-                                        {{ csrf_field() }}
-                                        <div class="row d-flex justify-content-center">
-                                            <input id="input_coupon_id" type="hidden" name="coupon_id" value=""
-                                                class="form-control">
-                                            <input id="input_reward_money" type="hidden" name="reward_money" value="0"
-                                                class="form-control">
-                                            <button type="submit" class="btn btn-success btn-sm">前往結帳</button>
-                                        </div>
-                                    </form>
+                                    @if (!empty($carts))
+                                        <form class="border px-4 pt-2 pb-3" method="POST"
+                                            action="{{ route('checkout') }}">
+                                            {{ csrf_field() }}
+                                            <div class="row d-flex justify-content-center">
+                                                <input id="input_coupon_id" type="hidden" name="coupon_id" value=""
+                                                    class="form-control">
+                                                <input id="input_reward_money" type="hidden" name="reward_money" value="0"
+                                                    class="form-control">
+                                                <button type="submit" class="btn btn-success btn-sm">前往結帳</button>
+                                            </div>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -491,28 +494,6 @@
             $.ajax({
                 method: 'POST',
                 url: '/zshop/change-reward-money',
-                data: {
-                    reward_money: reward_money,
-                },
-                success: function(res) {
-                    // alert(res);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus + " " + errorThrown);
-                }
-            });
-        });
-
-        $(".button5").on("click", function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: '/zshop/checkout',
                 data: {
                     reward_money: reward_money,
                 },

@@ -37,4 +37,9 @@ class User extends Authenticatable
             'user_level_id' => 1
         ]);
     }
+
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Message','user_id');
+    }
 }

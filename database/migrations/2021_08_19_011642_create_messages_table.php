@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->string('name')->nullable();
             $table->text('subject')->nullable();
             $table->unsignedInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('orders')->onDelete('SET NULL');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
             $table->unsignedInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('SET NULL');
             $table->string('email')->nullable();

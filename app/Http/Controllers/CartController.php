@@ -28,7 +28,6 @@ class CartController extends Controller
             if (!empty($this->user)) {
                 $this->cart_total_qty = Cart::getTotalQty(Auth::user()->id);
             }
-            // dd($this->cart_total_qty);
             return $next($request);
         });
         $this->product = $product;
@@ -38,13 +37,8 @@ class CartController extends Controller
     public function cart()
     {
         $user = Auth()->user();
-        // dd($user);
         $carts = \Cart::session($user->id)->getContent()->sort();
-        // dd($carts);
         $total = \Cart::session($user->id)->getTotal();
-        // $carts = Cart::getCartByUser($user->id);
-        // $total = 0;
-        // $products = $cart->product;
         if ($total == 0) {
             $carts = null;
             return view('cart.cart', compact('carts', 'total'))
@@ -89,49 +83,6 @@ class CartController extends Controller
         $cartTotalQuantity = \Cart::session($user_id)->getTotalQuantity();
         return response(['status' => 0, 'message' => '成功加入購物車', 'qty' => $cartTotalQuantity]);
     }
-
-    // public function addToCart(Request $request)
-    // {
-    //     if (empty(Auth::user()->id)) {
-    //         return response('請先登入');
-    //     }
-
-    //     $cart_item = Cart::getCartItem($request->user_id, $request->product_id);
-    //     // return response(!empty($cart_item));
-
-
-    //     if (!empty($cart_item)) {
-    //         $product_stock = Product::getStock($request->product_id);
-    //         // return response(['status' => 1, 'message' => $product_stock['stock']]);
-    //         $new_qty = $cart_item->quantity + 1;
-    //         // return response(['status' => 1, 'message' => $new_qty]);
-    //         if ($new_qty > $product_stock['stock']) {
-    //             return response(['status' => 1, 'message' => '加入購物車失敗，超過商品現有庫存量']);
-    //         }
-    //         $cart_item->quantity = $new_qty;
-    //         $cart_item->save();
-    //         // return response('成功加入購物車');
-    //         return response(['status' => 0, 'message' => '成功加入購物車']);
-    //     }
-
-    //     $cart = new Cart;
-    //     $cart->user_id = $request->user_id;
-    //     $cart->product_id = $request->product_id;
-    //     $cart->quantity = 1;
-    //     $cart->save();
-    //     // return json_encode(['status'=>'success']);
-    //     // return response('成功加入購物車');
-    //     return response(['status' => 0, 'message' => '成功加入購物車']);
-    // }
-
-    // public function removeCart(Request $request)
-    // {
-    //     $cart_item = Cart::getCartItem($request->user_id, $request->product_id);
-    //     if ($cart_item->delete()) {
-    //         return response('已移出購物車');
-    //     }
-    //     return response('錯誤！');
-    // }
 
     public function removeItem(Request $request)
     {
@@ -279,6 +230,10 @@ class CartController extends Controller
             $order_item->quantity = $cart->quantity;
             $order_item->price = $cart->price;
             $order_item->save();
+
+            $product = Product::find($cart->id);
+            $product->stock -= $cart->quantity;
+            $product->save(); 
         }
 
         if ($reward_money > 0) {

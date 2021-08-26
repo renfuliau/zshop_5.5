@@ -11,7 +11,7 @@
                                 {{-- todo --}}
                                 <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
                                 </li>
-                                <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}" target="_blank">會員中心</a>
+                                <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}">會員中心</a>
                                 </li>
                                 {{-- <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                         <span class="cartTotalQuantity">{{ $cart_total_qty }}</span>

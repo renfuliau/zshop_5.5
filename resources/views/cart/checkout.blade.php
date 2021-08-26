@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Checkout page')
+@section('title', 'ZShop - 結帳')
 
 @section('main-content')
 

@@ -29,13 +29,5 @@ class MessageController extends Controller
             request()->session()->flash('error', '系統錯誤，請聯絡客服!');
             return back();
         }
-        // try {
-        //     $message->save();
-        //     request()->session()->flash('success', '成功登出');
-        //     return redirect()->route('index');
-        // } catch (\Throwable $th) {
-        //     request()->session()->flash('error', '系統錯誤，請聯絡客服!');
-        //     return back();
-        // }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use \Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,10 @@ Route::group(['prefix' => 'zshop/user', 'middleware' => ['user']], function () {
 
     Route::get('/orders', 'UserController@orders')->name('user-orders');
     Route::get('/order-detail/{order_number}', 'UserController@orderDetail')->name('user-order-detail');
+    Route::post('/order-message-store', 'UserController@orderMessageStore')->name('order-message-store');
+    Route::post('/order-received', 'UserController@orderReceived');
+    Route::post('/order-cancel', 'UserController@orderCancel');
+    Route::post('/order-return/{order_number}', 'UserController@orderReturn')->name('order-return');
 
     Route::get('/returned', 'UserController@returned')->name('user-returned');
 
