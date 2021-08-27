@@ -213,31 +213,4 @@
         });
         $('select.nice-select').niceSelect();
     </script>
-    <script>
-        function showMe(box) {
-            var checkbox = document.getElementById('shipping').style.display;
-            // alert(checkbox);
-            var vis = 'none';
-            if (checkbox == "none") {
-                vis = 'block';
-            }
-            if (checkbox == "block") {
-                vis = "none";
-            }
-            document.getElementById(box).style.display = vis;
-        }
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.shipping select[name=shipping]').change(function() {
-                let cost = parseFloat($(this).find('option:selected').data('price')) || 0;
-                let subtotal = parseFloat($('.order_subtotal').data('price'));
-                let coupon = parseFloat($('.coupon_price').data('price')) || 0;
-                // alert(coupon);
-                $('#order_total_price span').text('$' + (subtotal + cost - coupon).toFixed(2));
-            });
-
-        });
-    </script>
-
 @endpush

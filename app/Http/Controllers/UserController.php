@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Message;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Wishlist;
 use App\Models\UserLevel;
 use Illuminate\Http\Request;
@@ -131,10 +132,12 @@ class UserController extends Controller
     public function orderDetail($order_number)
     {
         $order = Order::with('orderItems')->with('coupon')->where('order_number', $order_number)->first();
-        // dd($order);
-        return view('user.order-detail', compact('order'))
-        ->with('categories', $this->categories)
-        ->with('order_status', $this->order_status_array);
+        // dd($order['id']);
+        $messages = Message::where('order_id', $order['id'])->orderBy('created_at', 'asc')->get();
+        // dd($messages);
+        return view('user.order-detail', compact('order', 'messages'))
+            ->with('categories', $this->categories)
+            ->with('order_status', $this->order_status_array);
     }
 
     public function orderMessageStore(Request $request)
@@ -148,14 +151,15 @@ class UserController extends Controller
         // dd($message);
         $message->save();
 
-        return response(['message' => '成功送出，客服人員將盡快回覆', 'content' => $message->message]);
+        return response(['message' => '成功送出，客服人員將盡快回覆']);
     }
 
     public function orderReceived(Request $request)
     {
         $user_id = Auth::user()->id;
         $order_id = $request->order_id;
-        $order = Order::where('user_id', $user_id)->find($order_id);
+        $order = Order::with('coupon')->where('user_id', $user_id)->find($order_id);
+        // dd($order);
         $order->status = 4;
         $order->save();
 
@@ -167,10 +171,23 @@ class UserController extends Controller
         if ($user_level->id != $user->user_level_id) {
             $user->user_level_id = $user_level->id;
             $user->save();
-            return response("商品收到後請立即檢查是否有瑕疵，若有問題請與客服聯絡\r恭喜您升級為" . $user_level->name);
+            $response['level_up'] = "恭喜您升級為" . $user_level->name;
         }
-        // dd($user);
-        return response('商品收到後請立即檢查是否有瑕疵，若有問題請與客服聯絡');
+
+        if ($order->coupon['coupon_type'] == 2) {
+            $user->reward_money += $order->coupon['coupon_amount'];
+            $user->save();
+            $reward_money_history = new RewardMoneyHistory();
+            $reward_money_history->user_id = $user_id;
+            $reward_money_history->reward_item = $order->order_number . '訂單優惠，贈送購物金';
+            $reward_money_history->amount = $order->coupon['coupon_amount'];
+            $reward_money_history->total = $user->reward_money;
+            $reward_money_history->save();
+            $response['reward_money'] = "您從此筆訂單獲得購物金： $" . $order->coupon['coupon_amount'];
+        }
+        $response['message'] = '商品收到後請立即檢查是否有瑕疵，若有問題請與客服聯絡';
+        // dd($response);
+        return response($response);
     }
 
     public function orderCancel(Request $request)
@@ -186,18 +203,19 @@ class UserController extends Controller
             $order_item->product->save();
             // dd($order_item->product);
         }
-        $user = User::find($user_id);
-        $user->reward_money += $order->reward_money;
-        $user->save();
-        // dd($user);
-        // $product = 
 
-        $reward_money_history = new RewardMoneyHistory();
-        $reward_money_history->user_id = $user_id;
-        $reward_money_history->reward_item = $order->order_number . '訂單取消，購物金退回';
-        $reward_money_history->amount = $order->reward_money;
-        $reward_money_history->total = $user->reward_money;
-        $reward_money_history->save();
+        if ($order->reward_money > 0) {
+            $user = User::find($user_id);
+            $user->reward_money += $order->reward_money;
+            $user->save();
+
+            $reward_money_history = new RewardMoneyHistory();
+            $reward_money_history->user_id = $user_id;
+            $reward_money_history->reward_item = $order->order_number . '訂單取消，購物金退回';
+            $reward_money_history->amount = $order->reward_money;
+            $reward_money_history->total = $user->reward_money;
+            $reward_money_history->save();
+        }
 
         return response('訂單已取消，退回購物金： ' . $order->reward_money . '，若有問題請與客服聯絡');
     }
@@ -209,7 +227,46 @@ class UserController extends Controller
         $order = Order::with('orderItems')->where('user_id', $user_id)->find($order_id);
 
         return view('user.order-return', compact('order'))
-        ->with('categories', $this->categories);
+            ->with('categories', $this->categories);
+    }
+
+    public function orderReturnStore(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        $return_items = $request->all();
+        foreach (array_keys($return_items) as $return_item_id) {
+            $order_item = OrderItem::find($return_item_id);
+            $order_id = $order_item->order_id;
+            $return_item = new OrderItem();
+            $return_item->order_id = $order_item->order_id;
+            $return_item->product_id = $order_item->product_id;
+            $return_item->quantity = $return_items[$return_item_id];
+            $return_item->price = $order_item->price;
+            $return_item->is_return = 1;
+            // dd($return_item);
+            $return_item->save();
+        }
+
+        $order = Order::with('coupon')->find($order_id);
+        // dd($order['status']);
+        $order['status'] = 5;
+        $order->save();
+        // $return_order_items = OrderItem::where('order_id', $order_id)->where('is_return', 1)->get();
+        // dd($return_order_items);
+        // $subtotal = 0;
+        // foreach ($return_order_items as $return_order_item) {
+        //     $item_subtotal = $return_order_item['price'] * $return_order_item['quantity'];
+        //     $subtotal += $item_subtotal;
+        // }
+        // dd($subtotal);
+        // if ($subtotal == $order['subtotal']) {
+        //     // dd('h1');
+        // }
+        // dd($order);
+
+        // dd($return_items);
+        // dd($request->all());
+        return response('退貨處理中，客服人員將近快與您聯繫');
     }
 
     public function returned()
@@ -217,9 +274,16 @@ class UserController extends Controller
         $profile = Auth()->user();
         // return $profile;
         $return_orders = Order::getReturnedOrdersByUser($profile->id);
+        dd($return_orders);
+        foreach ($return_orders as $return_order) {
+            foreach ($return_order->orderItems as $orderItem) {
+                
+            }   
+        }
+        
         return view('user.returned')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
+            ->with('order_status', $this->order_status_array)
             ->with('profile', $profile)
             ->with('return_orders', $return_orders);
     }
@@ -264,25 +328,30 @@ class UserController extends Controller
         return response('錯誤！');
     }
 
-    public function wishlistDelete(Request $request)
-    {
-        $wishlist = Wishlist::find($request->id);
-        if ($wishlist) {
-            $wishlist->delete();
-            request()->session()->flash('success', '商品已經移出收藏清單');
-            return back();
-        }
-        request()->session()->flash('error', '發生錯誤，請聯絡客服');
-        return back();
-    }
+    // public function wishlistDelete(Request $request)
+    // {
+    //     $wishlist = Wishlist::find($request->id);
+    //     if ($wishlist) {
+    //         $wishlist->delete();
+    //         request()->session()->flash('success', '商品已經移出收藏清單');
+    //         return back();
+    //     }
+    //     request()->session()->flash('error', '發生錯誤，請聯絡客服');
+    //     return back();
+    // }
 
     public function qaCenter()
     {
         $profile = Auth()->user();
+        // dd($profile);
+        $messages = Message::with('order')->orderBy('id', 'asc')->groupBy('order_id')->get();
+        // $messages = Message::orderBy('created_at', 'desc')
+        //     ->groupBy('order_id')
+        //     ->where('user_id', $profile->id)
+        //     ->get();
+        // dd($messages);
         // return $profile;
-        return view('user.qa-center')
-            ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
-            ->with('profile', $profile);
+        return view('user.qa-center', compact('profile', 'messages'))
+            ->with('categories', $this->categories);
     }
 }

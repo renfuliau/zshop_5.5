@@ -67,7 +67,7 @@
                     <!--/ End Search Form -->
                     <div class="mobile-nav"></div>
                 </div>
-                <div class="col-lg-7 col-md-6 col-12">
+                <div class="col-lg-10 col-md-10 col-12">
                     <div class="search-bar-top">
                         <div class="menu-area">
                             <!-- Main Menu -->
@@ -89,7 +89,7 @@
 
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-12">
+                {{-- <div class="col-lg-3 col-md-4 col-12">
                     <div class="right-bar col-12">
                         <!-- Search Form -->
                         <form class="form-inline col-12 my-2 my-lg-0">
@@ -98,7 +98,7 @@
                             <button class="col-4 btn btn-outline-success my-sm-0" type="submit">搜尋</button>
                         </form>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

@@ -74,6 +74,7 @@ Route::group(['prefix' => 'zshop/user', 'middleware' => ['user']], function () {
     Route::post('/order-received', 'UserController@orderReceived');
     Route::post('/order-cancel', 'UserController@orderCancel');
     Route::post('/order-return/{order_number}', 'UserController@orderReturn')->name('order-return');
+    Route::post('/order-return-store', 'UserController@orderReturnStore')->name('order-return-store');
 
     Route::get('/returned', 'UserController@returned')->name('user-returned');
 

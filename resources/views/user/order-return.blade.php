@@ -43,9 +43,9 @@
                                         <td>
                                             <p>
                                                 {{-- <input type="hidden" name="order_item_id" id="order_item_id" value="{{ $order_item->id }}"> --}}
-                                                <input type="checkbox" class="custom-check" id="order_item{{ $order_item->id }}"
-                                                    value="1" autocomplete="off"
-                                                    data-order_item_id="{{ $order_item->id }}" checked="true">
+                                                <input type="checkbox" class="custom-check"
+                                                    id="order_item{{ $order_item->id }}" value="0" autocomplete="off"
+                                                    data-order_item_id="{{ $order_item->id }}">
                                                 <label for="custom-check{{ $order_item->order_id }}"></label>
                                             </p>
                                         </td>
@@ -68,10 +68,11 @@
                                             <!-- Input Order -->
                                             <div class="input-group">
                                                 <div class="button minus">
-                                                    <button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant{{ $order_item->id }}"><i class="ti-minus"></i>
+                                                    <button type="button" class="btn btn-primary btn-number"
+                                                        disabled="disabled" data-type="minus" data-field="quant{{ $order_item->id }}"><i class="ti-minus"></i>
                                                     </button>
                                                 </div>
-                                                <input type="text" name="quant{{ $order_item->id }}" class="input-number"
+                                                <input type="text" name="quant{{ $order_item->id }}" class="input-number input-number{{ $order_item->id }}"
                                                     autocomplete="off" data-min="0"
                                                     data-max="{{ $order_item->quantity }}"
                                                     data-order_item_id="{{ $order_item->id }}"
@@ -80,7 +81,9 @@
                                                     value="{{ $order_item->quantity }}">
                                                 <input type="hidden" name="qty_id[]" order_item="{{ $order_item->id }}">
                                                 <div class="button plus">
-                                                    <button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant{{ $order_item->id }}">      <i class="ti-plus"></i>
+                                                    <button type="button" class="btn btn-primary btn-number"
+                                                        data-type="plus" data-field="quant{{ $order_item->id }}"> <i
+                                                            class="ti-plus"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -94,12 +97,11 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{-- @else
-                    <div class="text-center">
-                        購物車是空的 <a href="{{ route('index') }}" style="color:blue;">繼續選購</a>
-                    </div> --}}
                     @endif
                     <!--/ End Shopping Summery -->
+                    <div class="col-12 text-center mb-5">
+                        <button class="btn return mb-3">退貨</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -174,66 +176,69 @@
         $('select.nice-select').niceSelect();
     </script>
     <script>
+        var return_item_object = new Object();
         $('.input-number').on('change', function() {
-            // console.log("onchangeValue:",this.value);
-            // console.log("onchangeProductID:",this.getAttribute("data-productid"));
             var new_qty = this.value;
             var order_item_id = this.getAttribute("data-order_item_id");
             var price_value = parseInt($(this).attr('data-price'));
             var total_amount_class = '.total-amount' + order_item_id;
             var total = new_qty * price_value;
-            $(total_amount_class).html('<span class="money">$ ' + total + '</span>')
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                method: 'POST',
-                url: '/zshop/change-product-qty',
-                data: {
-                    product_id: product_id,
-                    new_qty: new_qty,
-                    coupon1_id: coupon1_id,
-                    coupon2_id: coupon2_id
-                },
-                success: function(res) {
-                    var current_qty = res['qty'];
-                    var total_class = '.total-amount' + product_id;
-
-                    $('.cartTotalQuantity').text(res['total_qty']);
-                    $('.subtotal').html('小計<span>$ ' + res['total'] + '</span>');
-                    $('.subtotal').attr('data-subtotal', res['total']);
-                    $('.total').html('總計<span>$ ' + res['total'] + '</span>');
-                    $('.total').attr('data-total', res['total']);
-                    $(total_class).html('<span>$ ' + res['qty'] * price_value + '</span>'); 
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus + " " + errorThrown);
-                }
-            });
+            $(total_amount_class).html('<span class="money">$ ' + total + '</span>');
+            if (return_item_object[order_item_id]) {
+                return_item_object[order_item_id] = new_qty;
+                console.log(return_item_object);
+            }
         });
-
         $('.custom-check').on('change', function() {
             var order_item_id = this.getAttribute('data-order_item_id');
-                console.log(order_item_id);
-            array.forEach(element => {
-                
-            });
-            if ($(".custom-check").prop("checked")) {
+            // var return_item_object = new Object();
+            //     console.log(order_item_id);
+            // array.forEach(element => {
+
+            // });
+            if ($(this).prop("checked")) {
                 console.log("checked");
                 $(this).attr('value', 1);
-                
+                return_item_object[order_item_id] = $('.input-number' + order_item_id).val();
+                console.log(return_item_object);
+
             } else {
                 console.log("unchecked");
                 $(this).attr('value', 0);
+                delete return_item_object[order_item_id];
+                console.log(return_item_object);
+
             }
             // if ($(".custom-check").prop("checked")) {
             //     var order_item_id = this.getAttribute('data-order-item-id');
             //     console.log('666', order_item_id);
             // }
+        })
+
+        $('.return').click(function() {
+            var r = confirm("你確定要退貨嗎?");
+            if (r == true) {
+                var order_id = $('#order-id').val();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    method: 'POST',
+                    url: '/zshop/user/order-return-store',
+                    data: return_item_object,
+                    success: function(res) {
+                        alert(res);
+                        window.location = '/zshop/user/returned';
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error(textStatus + " " + errorThrown);
+                    }
+                });
+            }
         })
     </script>
 

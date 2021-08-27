@@ -117,6 +117,23 @@
                         </div>
                         <div class="col-lg-6 col-12 border p-4">
                             <h5 class="text-center mb-4">訂單客服</h5>
+                            @if (!empty($messages))
+                                @foreach ($messages as $message)
+                                    @switch($message['subject'])
+                                        @case(1)
+                                            <div class="text-right border p-2 m-2">
+                                                <h6>{{ $message['message'] }} :<i class="ti-user"></i></h6>
+                                            </div>
+                                        @break
+
+                                        @case(2)
+                                            <div class="text-left border p-2 m-2">
+                                                <h6><i class="ti-headphone-alt"></i>: {{ $message['message'] }}</h6>
+                                            </div>
+                                        @break
+                                    @endswitch
+                                @endforeach
+                            @endif
                             <input class="w-100" type="text" name="question" id="question" placeholder="請輸入您的問題">
                             <div class="text-center mt-2">
                                 <button class="btn qa-button">發送</button>
@@ -128,10 +145,12 @@
                                 <button class="btn mx-5 cancel-button">取消訂單</button>
                             @elseif ($order->status == 4)
                                 {{-- <button class="btn return-button">我要退貨</button> --}}
-                                <form class="border px-4 pt-2 pb-3" method="POST" action="{{ route('order-return', $order->order_number) }}">
+                                <form class="border px-4 pt-2 pb-3" method="POST"
+                                    action="{{ route('order-return', $order->order_number) }}">
                                     {{ csrf_field() }}
                                     <div class="row d-flex justify-content-center">
-                                        <input id="input_order_id" type="hidden" name="order_id" value="{{ $order->id }}">
+                                        <input id="input_order_id" type="hidden" name="order_id"
+                                            value="{{ $order->id }}">
                                         {{-- <input id="input_order_number" type="hidden" name="order_number" value="{{ $order->order_number }}" class="form-control"> --}}
                                         <button type="submit" class="btn btn-success btn-sm">我要退貨</button>
                                     </div>
@@ -230,6 +249,7 @@
                 },
                 success: function(res) {
                     alert(res['message']);
+                    document.location.reload(true);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error(textStatus + " " + errorThrown);
@@ -253,7 +273,16 @@
                     order_id: order_id,
                 },
                 success: function(res) {
-                    alert(res);
+                    // alert(res);
+                    console.log(res);
+                    console.log(res['message']);
+                    alert(res['message']);
+                    if (res['level_up']) {
+                        alert(res['level_up']);
+                    }
+                    if (res['reward_money']) {
+                        alert(res['reward_money']);
+                    }
                     document.location.reload(true);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

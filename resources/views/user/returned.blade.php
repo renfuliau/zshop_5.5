@@ -52,8 +52,8 @@
                 <tr>
                     <td class="text-center date" data-title="date"><span>{{$value['created_at']}}</span></td>
                     <td class="text-center order_number" data-title="order_number"><span>{{$value['order_number']}}</span></td>
-                    <td class="text-center amount" data-title="amount"><span>${{$value['total']}}</span></td>
-                    <td class="text-center total" data-title="total"><span>{{$value['order_status']}}</span></td>
+                    <td class="text-center amount" data-title="amount"><span>$ {{$value['total']}}</span></td>
+                    <td class="text-center total" data-title="total"><span>{{$order_status[$value['status']]}}</span></td>
                     <td class="text-center text-center"><a href="{{route('index')}}"><i
                                 class="ti-layout-media-overlay-alt-2"></i></a></td>
                 </tr>

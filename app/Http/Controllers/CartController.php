@@ -220,7 +220,9 @@ class CartController extends Controller
         $order_data['total'] = $total;
         $order_data['quantity'] = \Cart::session($user_id)->getTotalQuantity();
         $order_data['status'] = 1;
+        // dd($order_data);
         $order->fill($order_data);
+        // dd($order);
         $order_is_build = $order->save();
 
         foreach ($carts as $cart) {

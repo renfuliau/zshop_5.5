@@ -8,7 +8,7 @@ class Order extends Model
 {
     protected $table = 'orders';
 
-    protected $fillable = ['order_number', 'user_id', 'subtotal', 'shipping_id', 'coupon_id', ' reward_money', 'total', 'quantity', 'status', 'name', 'email', 'phone', 'post_code', 'address'];
+    protected $fillable = ['order_number', 'user_id', 'subtotal', 'shipping_id', 'coupon_id', 'reward_money', 'total', 'quantity', 'status', 'name', 'email', 'phone', 'post_code', 'address'];
 
     public function orderItems()
     {
@@ -32,6 +32,10 @@ class Order extends Model
 
     public static function getReturnedOrdersByUser($user_id)
     {
-        return Order::where('status', '>', '4')->get();
+        return Order::with(['orderItems' => function($query){
+
+            $query->where('is_return', 1);
+        
+        }])->where('status', '>', '4')->where('user_id', $user_id)->get();
     }
 }
