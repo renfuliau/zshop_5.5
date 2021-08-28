@@ -33,19 +33,13 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/contact', 'FrontendController@contact')->name('contact');
     Route::post('/contact-store', 'MessageController@messageStore')->name('contact-store');
 
-    // 商品搜尋 商品分類 商品介紹p
+    // 商品搜尋 商品分類 商品介紹
     Route::get('/product', 'ProductController@productlistByCategory')->name('productlist');
     Route::get('/productlist-category/{slug}', 'ProductController@productlistByCategory')->name('productlist-category');
     Route::get('/productlist-category/{slug}/{sub_slug}', 'ProductController@productSubcategory')->name('productlist-subcategory');
     Route::get('/product-detail/{slug}', 'ProductController@productDetail')->name('product-detail');
-    Route::post('/product/search', 'ProductController@productSearch')->name('product.search');
+    Route::post('/product/search', 'ProductController@productSearch')->name('product-search');
     Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
-
-    // 購物車
-    // Route::get('/cart', 'CartController@cart')->name('cart');
-    // Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart');
-    // Route::post('/remove-cart', 'CartController@removeCart')->name('remove-cart');
-    // Route::post('cart-update', 'CartController@cartUpdate')->name('cart.update');
 
     //購物車
     Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware('user');

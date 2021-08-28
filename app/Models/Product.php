@@ -36,4 +36,9 @@ class Product extends Model
     {
         return Product::select('stock')->where('id', $product_id)->first();
     }
+
+    public static function getSearchProducts($keyword)
+    {
+        return Product::where('status', 'active')->where('title', 'like', "%{$keyword}%")->get();
+    }
 }

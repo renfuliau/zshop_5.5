@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 class FrontendController extends Controller
 {
     protected $user;
-    protected $cart_total_qty;
     protected $categories;
 
     public function __construct()
@@ -31,8 +30,7 @@ class FrontendController extends Controller
     public function index()
     {
         return view('index')
-            ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty);
+            ->with('categories', $this->categories);
     }
 
     public function loginRegister()

@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     protected $user;
-    protected $cart_total_qty;
     protected $categories;
     protected $order_status_array;
 
@@ -54,7 +53,6 @@ class UserController extends Controller
         // return $profile;
         return view('user.profile')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('user_level', $user_level);
     }
@@ -79,7 +77,6 @@ class UserController extends Controller
         $profile = Auth()->user();
         return view('user.change-password')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile);
         // return view('user.change-password');
     }
@@ -112,7 +109,6 @@ class UserController extends Controller
         // return $profile;
         return view('user.reward-money')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('reward_money_history', $reward_money_history);
     }
@@ -298,7 +294,6 @@ class UserController extends Controller
         // return $profile;
         return view('user.wishlist')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('profile', $profile)
             ->with('wishlist', $wishlist);
     }
@@ -343,14 +338,7 @@ class UserController extends Controller
     public function qaCenter()
     {
         $profile = Auth()->user();
-        // dd($profile);
-        $messages = Message::with('order')->orderBy('id', 'asc')->groupBy('order_id')->get();
-        // $messages = Message::orderBy('created_at', 'desc')
-        //     ->groupBy('order_id')
-        //     ->where('user_id', $profile->id)
-        //     ->get();
-        // dd($messages);
-        // return $profile;
+        $messages = Message::with('order')->orderBy('id', 'asc')->groupBy('order_id')->where('user_id', $profile['id'])->get();
         return view('user.qa-center', compact('profile', 'messages'))
             ->with('categories', $this->categories);
     }

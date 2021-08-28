@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
     protected $user;
-    protected $cart_total_qty;
     protected $categories;
 
     public function __construct()
@@ -63,7 +62,6 @@ class ProductController extends Controller
         }
         return view('products.productlist')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products)
             ->with('recent_products', $recent_products);
     }
@@ -77,7 +75,6 @@ class ProductController extends Controller
         $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
         return view('products.productlist')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products->products)
             ->with('recent_products', $recent_products)
             ->with('title', $title);
@@ -98,7 +95,6 @@ class ProductController extends Controller
         // } else {
         return view('products.productlist')
             ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty)
             ->with('products', $products->subcategoryProducts)
             ->with('recent_products', $recent_products)
             ->with('title', $title)
@@ -112,7 +108,18 @@ class ProductController extends Controller
         $product_detail = Product::getProductBySlug($slug);
         // dd($product_detail->title);
         return view('products.product-detail', compact('product_detail'))
-            ->with('categories', $this->categories)
-            ->with('cart_total_qty', $this->cart_total_qty);
+            ->with('categories', $this->categories);
+    }
+
+    public function productSearch(Request $request)
+    {
+        $keyword = $request->keyword;
+        // dd($keyword);
+        $products = Product::getSearchProducts($keyword);
+        // dd($products);
+        $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
+
+        return view('products.productlist-keyword', compact('keyword', 'products', 'recent_products'))
+        ->with('categories', $this->categories);
     }
 }

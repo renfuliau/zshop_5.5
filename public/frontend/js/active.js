@@ -67,10 +67,36 @@ window.onload = () => {
 		
 		/*=======================
 		  Search JS JS
-		=========================*/ 
-		$('.top-search a').on( "click", function(){
-			$('.search-top').toggleClass('active');
-		});
+		=========================*/
+		// $('#search-input').on("change", function () {
+		// 	var input_content = $(this).val();
+		// 	console.log(input_content);
+		// });
+		// $('#search-btn').on("click", function () {
+		// 	var input_content = $('#search-input').val();
+
+		// 	$.ajaxSetup({
+		// 		headers: {
+		// 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		// 		}
+		// 	});
+
+		// 	$.ajax({
+		// 		method: 'POST',
+		// 		url: '/zshop/add-to-cart',
+		// 		data: {
+		// 			input_content: input_content
+		// 		},
+		// 		success: function (res) {
+		// 			console.log(res);
+		// 			$('.cartTotalQuantity').text(res['qty']);
+		// 			alert(res['message']);
+		// 		},
+		// 		error: function (jqXHR, textStatus, errorThrown) {
+		// 			console.error(textStatus + " " + errorThrown);
+		// 		}
+		// 	});
+		// });
 		
 		/*=======================
 		  Slider Range JS
