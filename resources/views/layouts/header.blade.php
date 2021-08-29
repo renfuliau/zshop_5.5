@@ -9,24 +9,30 @@
                         <ul class="list-main">
                             @auth
                             {{-- todo --}}
-                            <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
+                            <li><i class="ti-location-pin"></i><a
+                                    href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
                             </li>
-                            <li><i class="ti-user"></i> <a href="{{ route('user-profile') }}">會員中心</a>
+                            <li><i class="ti-user"></i> <a
+                                    href="{{ route('user-profile') }}">{{ __('auth.header-user-center') }}</a>
                             </li>
                             <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
                                     <span
                                         class="cartTotalQuantity">{{ \Cart::session(Auth::user()->id)->getTotalQuantity() }}</span>
                                 </a></li>
-                            <li><i class="ti-email"></i><a href="{{ route('contact') }}">聯絡客服</a>
+                            <li><i class="ti-email"></i><a
+                                    href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
                             </li>
-                            <li><i class="ti-shift-right-alt"></i><a href="{{ route('z-logout') }}">登出</a></li>
+                            <li><i class="ti-shift-right-alt"></i><a
+                                    href="{{ route('z-logout') }}">{{ __('auth.header-logout') }}</a></li>
 
                             @else
-                            <li><i class="ti-location-pin"></i><a href="{{ route('index') }}">English</a>
+                            <li><i class="ti-location-pin"></i><a
+                                    href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
                             </li>
-                            <li><i class="ti-power-off"></i><a href="{{ route('z-login') }}">登入 /
-                                    註冊</a></li>
-                            <li><i class="ti-email"></i><a href="{{ route('contact') }}">聯絡客服</a>
+                            <li><i class="ti-power-off"></i><a
+                                    href="{{ route('z-login') }}">{{ __('auth.header-login-register') }}</a></li>
+                            <li><i class="ti-email"></i><a
+                                    href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
                             </li>
                             @endauth
                         </ul>
@@ -51,19 +57,6 @@
                                 src="@foreach ($settings as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
                     </div>
                     <!--/ End Logo -->
-                    <!-- Search Form -->
-                    <div class="search-top">
-                        <div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
-                        <!-- Search Form -->
-                        <div class="search-top">
-                            <form class="search-form">
-                                <input type="text" placeholder="Search here..." name="search">
-                                <button value="search" type="submit"><i class="ti-search"></i></button>
-                            </form>
-                        </div>
-                        <!--/ End Search Form -->
-                    </div>
-                    <!--/ End Search Form -->
                     <div class="mobile-nav"></div>
                 </div>
                 <div class="col-lg-7 col-md-6 col-12">
@@ -75,9 +68,15 @@
                                     <div class="nav-inner col-12">
                                         <ul class="nav main-menu menu navbar-nav d-flex justify-content-between">
                                             @foreach ($categories as $category)
+                                            @if (App::getLocale() == 'zh-tw')
                                             <li><a
                                                     href="{{ route('productlist', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
                                             </li>
+                                            @else
+                                            <li><a
+                                                    href="{{ route('productlist', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->slug }}</a>
+                                            </li>
+                                            @endif
                                             @endforeach
                                         </ul>
                                     </div>
@@ -100,10 +99,10 @@
                                 value="{{ $keyword }}" aria-label="Search">
                             @else
                             <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="search"
-                                placeholder="請輸入關鍵字" aria-label="Search">
+                                placeholder="{{ __('auth.header-search-placeholder') }}" aria-label="Search">
                             @endif
                             <button id="search-btn" class="col-4 btn btn-outline-success my-sm-0"
-                                type="submit">搜尋</button>
+                                type="submit">{{ __('auth.header-search-btn') }}</button>
                         </form>
                     </div>
                 </div>

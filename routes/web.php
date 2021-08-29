@@ -18,12 +18,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test', function () {
+    // App::setLocale('en');
+    return __('auth.failed');
+});
+
 // ZShop
 
-Route::group(['prefix' => 'zshop'], function () {
+Route::group(['prefix' => 'zshop', 'middleware' => ['language']], function () {
     Route::get('/', 'FrontendController@index')->name('index');
+    Route::get('/locale-change', 'FrontendController@locale')->name('locale-change');
     // 會員註冊 登入 忘記密碼 聯絡客服
-    // Route::get('/login-register', 'FrontendController@loginRegister')->name('login-register');
     Route::get('/login', 'FrontendController@login')->name('z-login');
     Route::post('/login', 'FrontendController@loginSubmit')->name('login-submit');
     Route::get('/register', 'FrontendController@register')->name('z-register');
@@ -53,7 +58,7 @@ Route::group(['prefix' => 'zshop'], function () {
     Route::get('/order-confirm', 'CartController@orderConfirm')->name('order-confirm')->middleware('user');
 });
 
-Route::group(['prefix' => 'zshop/user', 'middleware' => ['user']], function () {
+Route::group(['prefix' => 'zshop/user', 'middleware' => ['user', 'language']], function () {
     // 個人中心 購物金 訂單查詢 退貨查詢 收藏清單 問答中心
     Route::get('/profile', 'UserController@profile')->name('user-profile');
     Route::post('/profile/{id}', 'UserController@profileUpdate')->name('user-profile-update');

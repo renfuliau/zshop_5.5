@@ -10,7 +10,8 @@
             <div class="col-12">
                 <div class="bread-inner">
                     <ul class="bread-list">
-                        <li><a href="{{ route('index') }}">首頁<i class="ti-arrow-right"></i></a></li>
+                        <li><a href="{{ route('index') }}">{{ __('frontend.index') }}<i class="ti-arrow-right"></i></a>
+                        </li>
                         <li class="active"><a href="javascript:void(0);">聯絡客服</a></li>
                     </ul>
                 </div>
@@ -35,8 +36,7 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Email<span>*</span></label>
-                                                <input name="email" type="email" id="email"
-                                                    placeholder="輸入您的 Email">
+                                                <input name="email" type="email" id="email" placeholder="輸入您的 Email">
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -78,20 +78,22 @@
 @endsection
 @push('styles')
 <style>
-	.modal-dialog .modal-content .modal-header{
-		position:initial;
-		padding: 10px 20px;
-		border-bottom: 1px solid #e9ecef;
-	}
-	.modal-dialog .modal-content .modal-body{
-		height:100px;
-		padding:10px 20px;
-	}
-	.modal-dialog .modal-content {
-		width: 50%;
-		border-radius: 0;
-		margin: auto;
-	}
+    .modal-dialog .modal-content .modal-header {
+        position: initial;
+        padding: 10px 20px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .modal-dialog .modal-content .modal-body {
+        height: 100px;
+        padding: 10px 20px;
+    }
+
+    .modal-dialog .modal-content {
+        width: 50%;
+        border-radius: 0;
+        margin: auto;
+    }
 </style>
 @endpush
 @push('scripts')

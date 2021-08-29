@@ -1,6 +1,9 @@
 @extends('layouts.main')
 
-@section('title', 'ZShop - 退貨查詢')
+@php
+$title = __('frontend.user-tab-return');
+@endphp
+@section('title', 'ZShop -' . $title)
 
 @section('main-content')
 <div class="container">
@@ -17,33 +20,34 @@
 
             <ul class="nav nav-tabs nav-fill">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user-profile') }}">個人中心</a>
+                    <a class="nav-link" href="{{ route('user-profile') }}">{{ __('frontend.user-tab-profile') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user-reward-money') }}">購物金</a>
+                    <a class="nav-link"
+                        href="{{ route('user-reward-money') }}">{{ __('frontend.user-tab-reward-money') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user-orders') }}">訂單查詢</a>
+                    <a class="nav-link" href="{{ route('user-orders') }}">{{ __('frontend.user-tab-orders') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">退貨查詢</a>
+                    <a class="nav-link active" href="#">{{ __('frontend.user-tab-return') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user-wishlist') }}">收藏清單</a>
+                    <a class="nav-link" href="{{ route('user-wishlist') }}">{{ __('frontend.user-tab-wishlist') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user-qa-center') }}">問答中心</a>
+                    <a class="nav-link" href="{{ route('user-qa-center') }}">{{ __('frontend.user-tab-qacenter') }}</a>
                 </li>
             </ul>
         </div>
         <table class="table shopping-summery">
             <thead>
                 <tr class="main-hading">
-                    <th>訂單日期</th>
-                    <th>訂單編號</th>
-                    <th class="text-center">合計</th>
-                    <th class="text-center">訂單狀態</th>
-                    <th class="text-center">明細</th>
+                    <th>{{ __('frontend.user-order-number') }}</th>
+                    <th>{{ __('frontend.user-order-date') }}</th>
+                    <th class="text-center">{{ __('frontend.user-order-total') }}</th>
+                    <th class="text-center">{{ __('frontend.user-order-status') }}</th>
+                    <th class="text-center">{{ __('frontend.user-order-detail') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,9 +55,16 @@
                 @foreach($return_orders as $key => $value)
                 <tr>
                     <td class="text-center date" data-title="date"><span>{{$value['created_at']}}</span></td>
-                    <td class="text-center order_number" data-title="order_number"><span>{{$value['order_number']}}</span></td>
+                    <td class="text-center order_number" data-title="order_number">
+                        <span>{{$value['order_number']}}</span></td>
                     <td class="text-center amount" data-title="amount"><span>$ {{$value['total']}}</span></td>
-                    <td class="text-center total" data-title="total"><span>{{$order_status[$value['status']]}}</span></td>
+                    @if (App::getLocale() == 'zh-tw')
+                    <td class="text-center total" data-title="total"><span>{{$order_status[$value['status']]}}</span>
+                    </td>
+                    @else
+                    <td class="text-center total" data-title="total"><span>{{$order_status_en[$value['status']]}}</span>
+                    </td>
+                    @endif
                     <td class="text-center text-center"><a href="{{route('index')}}"><i
                                 class="ti-layout-media-overlay-alt-2"></i></a></td>
                 </tr>

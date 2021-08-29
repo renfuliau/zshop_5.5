@@ -23,10 +23,10 @@ class MessageController extends Controller
         $message->message = $request->message;
         $check = $message->save();
         if ($check) {
-            request()->session()->flash('success', '訊息成功送出');
+            request()->session()->flash('success', __('frontend.response-success'));
             return redirect()->route('index');
         } else {
-            request()->session()->flash('error', '系統錯誤，請聯絡客服!');
+            request()->session()->flash('error', __('frontend.response-error'));
             return back();
         }
     }

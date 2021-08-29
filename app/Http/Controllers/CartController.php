@@ -68,27 +68,27 @@ class CartController extends Controller
     public function addToCart(Request $request)
     {
         if (empty(Auth::user()->id)) {
-            return response('請先登入');
+            return response(__('response-no-login'));
         }
         $user_id = Auth::user()->id;
         $product_id = $request->product_id;
         $product = Product::find($product_id);
         $cart_item = \Cart::session($user_id)->get($product_id);
         if (!empty($cart_item && $cart_item->quantity >= $product->stock)) {
-            return response(['status' => 0, 'message' => '超出該商品庫存', 'qty' => $cart_item->quantity]);
+            return response(['status' => 0, 'message' => __('frontend.response-cart-out-of-stock'), 'qty' => $cart_item->quantity]);
         }
         \Cart::session($user_id)->add($product_id, $product->title, $product->special_price, 1, array(
             'photos' => $product->photo
         ));
         $cartTotalQuantity = \Cart::session($user_id)->getTotalQuantity();
-        return response(['status' => 0, 'message' => '成功加入購物車', 'qty' => $cartTotalQuantity]);
+        return response(['status' => 0, 'message' => __('frontend.response-cart-success'), 'qty' => $cartTotalQuantity]);
     }
 
     public function removeItem(Request $request)
     {
         $product_id = $request->product_id;
         \Cart::session(Auth::user()->id)->remove($product_id);
-        return "該商品已移出購物車";
+        return __('frontend.response-cart-remove');
     }
 
     public function changeProductQty(Request $request)

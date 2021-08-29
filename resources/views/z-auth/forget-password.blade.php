@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card my-5">
-                    <div class="card-header">忘記密碼</div>
+                    <div class="card-header">{{ __('auth.body-forget-password') }}</div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -32,7 +32,7 @@
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-5">
                                     <button type="submit" class="btn btn-primary">
-                                        送出
+                                        {{ __('auth.body-submit') }}
                                     </button>
                                 </div>
                             </div>

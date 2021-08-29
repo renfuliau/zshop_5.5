@@ -14,12 +14,13 @@
                     <div class="shop-sidebar">
                         <!-- Single Widget -->
                         <div class="single-widget category">
-                            <h3 class="title">商品分類</h3>
+                            <h3 class="title">{{ __('frontend.product-category') }}</h3>
                             <ul class="categor-list">
+                                @foreach ($categories as $category)
+                                @if ($category->subcategory->count() > 0)
+                                @if (App::getLocale() == 'zh-tw')
                                 <li>
-                                    @foreach ($categories as $category)
-                                    @if ($category->subcategory->count() > 0)
-                                <li><a
+                                    <a
                                         href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
                                     <ul>
                                         @foreach ($category->subcategory as $subcategory)
@@ -30,9 +31,28 @@
                                     </ul>
                                 </li>
                                 @else
+                                <li>
+                                    <a
+                                        href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->slug }}</a>
+                                    <ul>
+                                        @foreach ($category->subcategory as $subcategory)
+                                        <li><a
+                                                href="{{ route('productlist-subcategory', ['slug' => $category->slug, 'sub_slug' => $subcategory->slug, 'title' => $category->title, 'subtitle' => $subcategory->title]) }}">{{ $subcategory->slug }}</a>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                                @endif
+                                @else
+                                @if (App::getLocale() == 'zh-tw')
                                 <li><a
                                         href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
                                 </li>
+                                @else
+                                <li><a
+                                        href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->slug }}</a>
+                                </li>
+                                @endif
                                 @endif
                                 @endforeach
                             </ul>
@@ -47,7 +67,7 @@
                             <!-- Shop Top -->
                             <div class="shop-top">
                                 <div class="shop-shorter">
-                                    <div class="single-shorter">
+                                    {{-- <div class="single-shorter">
                                         <label>Show :</label>
                                         <select class="show" name="show" onchange="this.form.submit();">
                                             <option value="">Default</option>
@@ -74,7 +94,7 @@
                                             <option value="brand" @if (!empty($_GET['sortBy']) &&
                                                 $_GET['sortBy']=='brand' ) selected @endif>Brand</option>
                                         </select>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <!--/ End Shop Top -->
@@ -108,18 +128,18 @@
                                             <p class="des pt-2">{!! html_entity_decode($product->summary) !!}</p>
                                         </div>
                                         <div class="product-price col-4 d-flex d-flex align-items-end flex-column">
-                                            <del>原價 ${{ $product->price }}</del>
-                                            <h5 class="text-danger">特價
+                                            <del>{{ __('frontend.product-price') }} ${{ $product->price }}</del>
+                                            <h5 class="text-danger">{{ __('frontend.product-special-price') }}
                                                 ${{ $product->special_price }}</h5>
                                             <a class="btn cart add-to-cart" @if (!empty(Auth::user()->id))
                                                 data-user_id="{{ Auth::user()->id }}"
                                                 @endif
-                                                data-product_id="{{ $product->id }}">加入購物車</a>
+                                                data-product_id="{{ $product->id }}">{{ __('frontend.add-to-cart') }}</a>
                                             <a class="btn cart add-to-wishlist" @if (!empty(Auth::user()->id))
                                                 data-user_id="{{ Auth::user()->id }}"
                                                 @endif
                                                 data-product_id="{{ $product->id }}"><i class=" ti-heart ">
-                                                    加入收藏</i></a>
+                                                    </i>{{ __('frontend.add-to-wishlist') }}</a>
                                         </div>
                                     </div>
                                 </div>

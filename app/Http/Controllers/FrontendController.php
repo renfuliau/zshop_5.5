@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Setting;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -31,6 +32,31 @@ class FrontendController extends Controller
     {
         return view('index')
             ->with('categories', $this->categories);
+    }
+
+    public function locale(Request $request)
+    {
+        // $language = config('app.locale');
+        $language = App::getLocale();
+        // $language = config('app.fallback_locale');
+        // dd($language);
+        // $user = $request->session();
+        // dd($user);
+        switch ($language) {
+            case 'zh-tw':
+                App::setLocale('en');
+                Session::put('locale', 'en');
+                // dd(App::getLocale());
+
+                break;
+            case 'en':
+                App::setLocale('zh-tw');
+                Session::put('locale', 'zh-tw');
+                break;
+        }
+        return redirect()->back();
+;
+
     }
 
     public function loginRegister()
@@ -70,7 +96,7 @@ class FrontendController extends Controller
             ],
             [
                 'unique' => ':attribute 已存在，請更換 :attribute 註冊',
-                'min' => '密碼最少 6 個字元',
+                'min' => __('passwords.password'),
                 'confirmed' => '確認密碼錯誤，請重新輸入!',
             ]
         );

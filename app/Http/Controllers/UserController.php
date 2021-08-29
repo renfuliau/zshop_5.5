@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Models\Cart;
-use App\Models\Order;
-use App\Models\Message;
 use App\Models\Category;
+use App\Models\Message;
+use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Wishlist;
-use App\Models\UserLevel;
-use Illuminate\Http\Request;
-use App\Rules\MatchOldPassword;
 use App\Models\RewardMoneyHistory;
+use App\Models\UserLevel;
+use App\Models\Wishlist;
+use App\Rules\MatchOldPassword;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,6 +21,8 @@ class UserController extends Controller
     protected $user;
     protected $categories;
     protected $order_status_array;
+    protected $order_status_array_en;
+    protected $title;
 
     public function __construct()
     {
@@ -41,6 +43,17 @@ class UserController extends Controller
             5 => '退貨處理中',
             6 => '退貨完成',
         ];
+
+        $this->order_status_array_en = [
+            0 => 'Canceled',
+            1 => 'Processing',
+            2 => 'Confirmation',
+            3 => 'Shipped',
+            4 => 'Complete',
+            5 => 'Return Processing',
+            6 => 'Returned',
+        ];
+
     }
 
     public function profile()
@@ -89,13 +102,13 @@ class UserController extends Controller
                 'new_confirm_password' => ['same:new_password'],
             ],
             [
-                'same' => '確認密碼錯誤，請重新輸入!',
+                'same' => __('frontend.user-profile-reset-fail'),
             ]
         );
 
         User::find(auth()->user()->id)->update(['password' => Hash::make($request->new_password)]);
 
-        return redirect()->route('user-profile')->with('success', '變更密碼成功');
+        return redirect()->route('user-profile')->with('success', __('frontend.user-profile-reset-success'));
     }
 
     public function rewardMoney()
@@ -121,6 +134,7 @@ class UserController extends Controller
         return view('user.orders')
             ->with('categories', $this->categories)
             ->with('order_status', $this->order_status_array)
+            ->with('order_status_en', $this->order_status_array_en)
             ->with('profile', $profile)
             ->with('orders', $orders);
     }
@@ -147,7 +161,7 @@ class UserController extends Controller
         // dd($message);
         $message->save();
 
-        return response(['message' => '成功送出，客服人員將盡快回覆']);
+        return response(['message' => __('frontend.user-order-qa-confirm')]);
     }
 
     public function orderReceived(Request $request)
@@ -167,7 +181,7 @@ class UserController extends Controller
         if ($user_level->id != $user->user_level_id) {
             $user->user_level_id = $user_level->id;
             $user->save();
-            $response['level_up'] = "恭喜您升級為" . $user_level->name;
+            $response['level_up'] = __('frontend.user-order-level-up') . $user_level->name;
         }
 
         if ($order->coupon['coupon_type'] == 2) {
@@ -179,9 +193,9 @@ class UserController extends Controller
             $reward_money_history->amount = $order->coupon['coupon_amount'];
             $reward_money_history->total = $user->reward_money;
             $reward_money_history->save();
-            $response['reward_money'] = "您從此筆訂單獲得購物金： $" . $order->coupon['coupon_amount'];
+            $response['reward_money'] = __('frontend.response-coupon-reward') . "： $" . $order->coupon['coupon_amount'];
         }
-        $response['message'] = '商品收到後請立即檢查是否有瑕疵，若有問題請與客服聯絡';
+        $response['message'] = '';
         // dd($response);
         return response($response);
     }
@@ -213,7 +227,7 @@ class UserController extends Controller
             $reward_money_history->save();
         }
 
-        return response('訂單已取消，退回購物金： ' . $order->reward_money . '，若有問題請與客服聯絡');
+        return response(__('frontend.response-canceled') . $order->reward_money);
     }
 
     public function orderReturn(Request $request)
@@ -262,7 +276,7 @@ class UserController extends Controller
 
         // dd($return_items);
         // dd($request->all());
-        return response('退貨處理中，客服人員將近快與您聯繫');
+        return response(__('frontend.response-return'));
     }
 
     public function returned()
@@ -270,13 +284,13 @@ class UserController extends Controller
         $profile = Auth()->user();
         // return $profile;
         $return_orders = Order::getReturnedOrdersByUser($profile->id);
-        dd($return_orders);
+        // dd($return_orders);
         foreach ($return_orders as $return_order) {
             foreach ($return_order->orderItems as $orderItem) {
-                
-            }   
+
+            }
         }
-        
+
         return view('user.returned')
             ->with('categories', $this->categories)
             ->with('order_status', $this->order_status_array)
@@ -301,26 +315,26 @@ class UserController extends Controller
     public function addToWishlist(Request $request)
     {
         if (empty(Auth::user()->id)) {
-            return response('請先登入');
+            return response(__('frontend.response-no-login')));
         }
         if (Wishlist::checkItem($request->user_id, $request->product_id)) {
-            return response('該商品已收藏');
+            return response(__('frontend.response-wishlist-added'));
         }
         $wishlist = new Wishlist;
         $wishlist->user_id = $request->user_id;
         $wishlist->product_id = $request->product_id;
         // return($wishlist);
         $wishlist->save();
-        return response('成功加入收藏');
+        return response(__('frontend.response-wishlist-success'));
     }
 
     public function removeWishlist(Request $request)
     {
         $wishlist = Wishlist::getFirstWishlist($request->user_id, $request->product_id);
         if ($wishlist->delete()) {
-            return response('已移出收藏');
+            return response(__('frontend.response-wishlist-remove'));
         }
-        return response('錯誤！');
+        return response(__('frontend.response-error'));
     }
 
     // public function wishlistDelete(Request $request)
