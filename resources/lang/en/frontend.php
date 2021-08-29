@@ -8,6 +8,7 @@ return [
     'total' => 'Total',
     'submit' => 'Submit',
     'quantity' => 'Quantity',
+    'return' => 'return',
 
     // tab
     'user-tab-profile' => 'Profile',
@@ -59,7 +60,7 @@ return [
     'user-order-return-btn' => 'Return',
     'user-order-qa-confirm' => 'Success!',
     'user-order-level-up' => 'Congratulation! You have been upgraded ',
-
+    'user-order-return-select' => 'Select',
 
     // wishlist
     'user-wishlist-img' => 'Product image',

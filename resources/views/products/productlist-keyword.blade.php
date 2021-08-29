@@ -148,7 +148,7 @@
                         <!-- End Single List -->
                         @endforeach
                         @else
-                        <h4 class="text-warning" style="margin:100px auto;">目前沒有符合的商品</h4>
+                        <h4 class="text-warning" style="margin:100px auto;">{{ __('frontend.product-no-products') }}</h4>
                         @endif
                     </div>
                 </div>

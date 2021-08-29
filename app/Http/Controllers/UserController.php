@@ -195,7 +195,7 @@ class UserController extends Controller
             $reward_money_history->save();
             $response['reward_money'] = __('frontend.response-coupon-reward') . "： $" . $order->coupon['coupon_amount'];
         }
-        $response['message'] = '';
+        $response['message'] = __('frontend.response-received');
         // dd($response);
         return response($response);
     }
@@ -230,10 +230,9 @@ class UserController extends Controller
         return response(__('frontend.response-canceled') . $order->reward_money);
     }
 
-    public function orderReturn(Request $request)
+    public function orderReturn($order_id, $order_number)
     {
         $user_id = Auth::user()->id;
-        $order_id = $request->order_id;
         $order = Order::with('orderItems')->where('user_id', $user_id)->find($order_id);
 
         return view('user.order-return', compact('order'))
@@ -261,6 +260,7 @@ class UserController extends Controller
         // dd($order['status']);
         $order['status'] = 5;
         $order->save();
+        
         // $return_order_items = OrderItem::where('order_id', $order_id)->where('is_return', 1)->get();
         // dd($return_order_items);
         // $subtotal = 0;
@@ -315,7 +315,7 @@ class UserController extends Controller
     public function addToWishlist(Request $request)
     {
         if (empty(Auth::user()->id)) {
-            return response(__('frontend.response-no-login')));
+            return response(__('frontend.response-no-login'));
         }
         if (Wishlist::checkItem($request->user_id, $request->product_id)) {
             return response(__('frontend.response-wishlist-added'));

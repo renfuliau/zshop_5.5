@@ -1,5 +1,10 @@
 @extends('layouts.main')
-@section('title', 'Zshop - 我要退貨')
+
+@php
+$title = __('frontend.return');
+@endphp
+@section('title', 'ZShop -' . $title)
+
 @section('main-content')
 <!-- Breadcrumbs -->
 <div class="breadcrumbs">
@@ -10,7 +15,7 @@
                     <ul class="bread-list">
                         <li><a href="{{ route('user-orders') }}">{{ __('frontend.user-tab-orders') }}<i
                                     class="ti-arrow-right"></i></a></li>
-                        <li class="active"><a href="javascript:void(0);">{{ $order->order_number }} 退貨</a></li>
+                        <li class="active"><a href="javascript:void(0);">{{ $order->order_number }} {{ __('frontend.return') }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -29,12 +34,12 @@
                 <table class="table shopping-summery">
                     <thead>
                         <tr class="main-hading">
-                            <th>選取</th>
-                            <th>商品圖片</th>
-                            <th class="col-4">商品名稱</th>
-                            <th class="text-center">單價</th>
-                            <th class="text-center">數量</th>
-                            <th class="text-center">小計</th>
+                            <th>{{ __('frontend.user-order-return-select') }}</th>
+                            <th>{{ __('frontend.user-wishlist-img') }}</th>
+                            <th class="col-4">{{ __('frontend.user-wishlist-title') }}</th>
+                            <th class="text-center">{{ __('frontend.user-wishlist-price') }}</th>
+                            <th class="text-center">{{ __('frontend.quantity') }}</th>
+                            <th class="text-center">{{ __('frontend.subtotal') }}</th>
                         </tr>
                     </thead>
                     <tbody id="cart_item_list">
@@ -68,9 +73,8 @@
                                 <!-- Input Order -->
                                 <div class="input-group">
                                     <div class="button minus">
-                                        <button type="button" class="btn btn-primary btn-number" disabled="disabled"
-                                            data-type="minus" data-field="quant{{ $order_item->id }}"><i
-                                                class="ti-minus"></i>
+                                        <button type="button" class="btn btn-primary btn-number"
+                                            data-type="minus" data-field="quant{{ $order_item->id }}"><i class="ti-minus"></i>
                                         </button>
                                     </div>
                                     <input type="text" name="quant{{ $order_item->id }}"
@@ -96,8 +100,8 @@
                 </table>
                 @endif
                 <!--/ End Shopping Summery -->
-                <div class="col-12 text-center mb-5">
-                    <button class="btn return mb-3">退貨</button>
+                <div class="col-12 text-center py-5 mb-5">
+                    <button class="btn return mb-3">{{ __('frontend.return') }}</button>
                 </div>
             </div>
         </div>

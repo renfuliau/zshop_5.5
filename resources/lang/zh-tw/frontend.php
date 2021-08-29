@@ -8,6 +8,7 @@ return [
     'total' => '總計',
     'submit' => '送出',
     'quantity' => '數量',
+    'return' => '退貨',
 
     // tabs
     'user-tab-profile' => '個人中心',
@@ -59,6 +60,7 @@ return [
     'user-order-return-btn' => '我要退貨',
     'user-order-qa-confirm' => '問題成功送出!',
     'user-order-level-up' => '恭喜你升級成',
+    'user-order-return-select' => '選取',
 
     // wishlist
     'user-wishlist-img' => '商品圖片',
@@ -74,7 +76,8 @@ return [
 
     // product
     'product-category' => '商品分類',
-    'product-price' => '問答日期',
+    'product-price' => '原價',
+    'product-special-price' => '特價',
     'product-no-products' => '此分類目前沒有符合的商品',
     'product-stock' => '庫存量',
     'product-detail' => '商品詳細資訊',

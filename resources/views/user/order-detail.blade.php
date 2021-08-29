@@ -31,7 +31,7 @@
 
             <div class="col-12">
                 <!-- Shopping Summery -->
-                <h5 class="text-center my-3">{{ __('frontend.order-detail') }}</h5 class="text-center my-3">
+                <h5 class="text-center my-3">{{ __('frontend.user-order-detail') }}</h5 class="text-center my-3">
                 @if (!empty($order))
                 <table class="table shopping-summery" style="height: auto;">
                     <thead>
@@ -83,7 +83,8 @@
                                 @endif
                             </li>
                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 1)
-                            <li class="coupon">{{ __('frontend.user-order-coupon') }}： {{ $order->coupon['name'] }}<span>$
+                            <li class="coupon">{{ __('frontend.user-order-coupon') }}：
+                                {{ $order->coupon['name'] }}<span>$
                                     -{{ $order->coupon['coupon_amount'] }}</span></li>
                             {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
                             <li class="total last" id="order_total_price">
@@ -94,7 +95,8 @@
                             <li class="total last" id="order_total_price">
                                 {{ __('frontend.total') }}<span>$ {{ $order->total }}</span></li>
                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
-                            <li class="coupon">{{ __('frontend.coupon') }}： {{ $order->coupon['name'] }}<span>$
+                            <li class="coupon">{{ __('frontend.user-order-coupon') }}：
+                                {{ $order->coupon['name'] }}<span>$
                                     {{ $order->coupon['coupon_amount'] }}</span></li>
                             @endif
                             @endif
@@ -133,7 +135,8 @@
                         @endswitch
                         @endforeach
                         @endif
-                        <input class="w-100" type="text" name="question" id="question" placeholder="{{ __('frontend.user-order-qa-placeholder') }}">
+                        <input class="w-100" type="text" name="question" id="question"
+                            placeholder="{{ __('frontend.user-order-qa-placeholder') }}">
                         <div class="text-center mt-2">
                             <button class="btn qa-button">{{ __('frontend.submit') }}</button>
                         </div>
@@ -144,16 +147,17 @@
                             <button class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
                             @elseif ($order->status == 4)
                             {{-- <button class="btn return-button">我要退貨</button> --}}
-                            <form class="border px-4 pt-2 pb-3" method="POST"
-                                action="{{ route('order-return', $order->order_number) }}">
+                            <a class="btn text-white"
+                                href="{{route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id])}}">{{ __('frontend.user-order-return-btn') }}</a>
+                            {{-- <form class="border px-4 pt-2 pb-3" method="POST"
+                                action="{{ route('order-return', [$order->order_number, $order->id]) }}">
                                 {{ csrf_field() }}
                                 <div class="row d-flex justify-content-center">
                                     <input id="input_order_id" type="hidden" name="order_id" value="{{ $order->id }}">
-                                    {{-- <input id="input_order_number" type="hidden" name="order_number" value="{{ $order->order_number }}"
-                                    class="form-control"> --}}
-                                    <button type="submit" class="btn btn-success btn-sm">{{ __('frontend.user-order-return-btn') }}</button>
+                                    <button type="submit"
+                                        class="btn btn-success btn-sm">{{ __('frontend.user-order-return-btn') }}</button>
                                 </div>
-                            </form>
+                            </form> --}}
                             @else
                             <h5 class="text-danger">{{ $order_status[$order->status] }}</h5>
                             @endif
@@ -315,32 +319,6 @@
                 });
             }
         })
-
-        // $('.return-button').click(function() {
-        //     var order_id = $('#order-id').val();
-        //     var order_number = $('#order-number').val();
-
-        //     $.ajaxSetup({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-
-        //     $.ajax({
-        //         method: 'POST',
-        //         url: '/zshop/user/order-return/' + order_number,
-        //         data: {
-        //             order_id: order_id,
-        //             order_number: order_number,
-        //         },
-        //         success: function(res) {
-        //             window.location = res.url;
-        //         },
-        //         error: function(jqXHR, textStatus, errorThrown) {
-        //             console.error(textStatus + " " + errorThrown);
-        //         }
-        //     });
-        // })
 </script>
 
 @endpush

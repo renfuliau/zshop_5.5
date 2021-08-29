@@ -125,7 +125,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        @if (!empty($products))
+                        @if (! $products->isEmpty())
                         @foreach ($products as $product)
                         <!-- Start Single List -->
                         <div class="col-12">
