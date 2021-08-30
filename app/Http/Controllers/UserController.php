@@ -145,16 +145,27 @@ class UserController extends Controller
         // dd($order['id']);
         $messages = Message::where('order_id', $order['id'])->orderBy('created_at', 'asc')->get();
         // dd($messages);
-        return view('user.order-detail', compact('order', 'messages'))
+        $return_total = 0;
+        if ($order['status'] > 4) {
+            foreach ($order->orderItems as $orderItem) {
+                if ($orderItem['is_return'] == 1) {
+                    $return_total += ($orderItem['price'] * $orderItem['quantity']);
+                }
+            }
+        }
+        // dd($return_total);
+        return view('user.order-detail', compact('order', 'messages', 'return_total'))
             ->with('categories', $this->categories)
-            ->with('order_status', $this->order_status_array);
+            ->with('order_status', $this->order_status_array)
+            ->with('order_status_en', $this->order_status_array_en);
+
     }
 
     public function orderMessageStore(Request $request)
     {
         $user_id = Auth::user()->id;
         $message = new Message();
-        $message_data = $request->all();
+        $message_data = $request->all();    
         $message_data['user_id'] = $user_id;
         $message_data['subject'] = 1;
         $message->fill($message_data);
@@ -282,21 +293,27 @@ class UserController extends Controller
     public function returned()
     {
         $profile = Auth()->user();
-        // return $profile;
         $return_orders = Order::getReturnedOrdersByUser($profile->id);
-        // dd($return_orders);
         foreach ($return_orders as $return_order) {
+            $total = 0;
             foreach ($return_order->orderItems as $orderItem) {
-
+                $total += $orderItem['price'] * $orderItem['quantity'];
             }
+            $return_order['total'] = $total;
         }
 
         return view('user.returned')
             ->with('categories', $this->categories)
             ->with('order_status', $this->order_status_array)
+            ->with('order_status_en', $this->order_status_array_en)
             ->with('profile', $profile)
             ->with('return_orders', $return_orders);
     }
+
+    // public function returnDetail($order_number)
+    // {
+        
+    // }
 
     public function wishlist()
     {

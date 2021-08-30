@@ -35,11 +35,11 @@ return [
     'user-profile-reset-success' => '變更密碼成功',
 
     // reward money
-    'user-reword-money-recent' => '現有購物金: ',
-    'user-reword-money-date' => '日期',
-    'user-reword-money-item' => '購物金項目',
-    'user-reword-money-amount' => '購物金款項',
-    'user-reword-money-total' => '購物金餘額',
+    'user-reward-money-recent' => '現有購物金: ',
+    'user-reward-money-date' => '日期',
+    'user-reward-money-item' => '購物金項目',
+    'user-reward-money-amount' => '購物金款項',
+    'user-reward-money-total' => '購物金餘額',
 
     // orders
     'user-order-number' => '訂單編號',
@@ -61,6 +61,10 @@ return [
     'user-order-qa-confirm' => '問題成功送出!',
     'user-order-level-up' => '恭喜你升級成',
     'user-order-return-select' => '選取',
+    'user-order-coupon1-cancel' => '取消折價優惠',
+    'user-order-coupon2-cancel' => '取消購物金優惠',
+    'user-order-return-reward-money' => '退回購物金',
+    'user-order-return-total' => '預計退款',
 
     // wishlist
     'user-wishlist-img' => '商品圖片',

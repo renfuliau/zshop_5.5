@@ -65,7 +65,7 @@ $title = __('frontend.user-tab-return');
                     <td class="text-center total" data-title="total"><span>{{$order_status_en[$value['status']]}}</span>
                     </td>
                     @endif
-                    <td class="text-center text-center"><a href="{{route('index')}}"><i
+                    <td class="text-center text-center"><a href="{{route('user-order-detail', $value['order_number'])}}"><i
                                 class="ti-layout-media-overlay-alt-2"></i></a></td>
                 </tr>
                 @endforeach

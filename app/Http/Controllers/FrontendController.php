@@ -36,12 +36,7 @@ class FrontendController extends Controller
 
     public function locale(Request $request)
     {
-        // $language = config('app.locale');
         $language = App::getLocale();
-        // $language = config('app.fallback_locale');
-        // dd($language);
-        // $user = $request->session();
-        // dd($user);
         switch ($language) {
             case 'zh-tw':
                 App::setLocale('en');
@@ -55,8 +50,6 @@ class FrontendController extends Controller
                 break;
         }
         return redirect()->back();
-;
-
     }
 
     public function loginRegister()

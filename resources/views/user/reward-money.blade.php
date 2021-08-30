@@ -43,7 +43,7 @@ $title = __('frontend.user-tab-reward-money');
             <div class="row d-flex justify-content-center">
                 <div class="col-10">
                     <h5 class="card-title text-left my-4"><small><i class="ti-wallet"></i>
-                            {{ __('frontend.user-reword-money-recent') }} ${{ $profile->reward_money }}</small>
+                            {{ __('frontend.user-reward-money-recent') }} ${{ $profile->reward_money }}</small>
                     </h5>
                     {{-- <h5 class="card-title text-left my-4"><small><i class="ti-view-list-alt"></i>
                         購物金紀錄：</small> --}}
@@ -54,10 +54,10 @@ $title = __('frontend.user-tab-reward-money');
         <table class="table shopping-summery">
             <thead>
                 <tr class="main-hading">
-                    <th>{{ __('frontend.user-reword-money-date') }}</th>
-                    <th>{{ __('frontend.user-reword-money-item') }}</th>
-                    <th class="text-center">{{ __('frontend.user-reword-money-amount') }}</th>
-                    <th class="text-center">{{ __('frontend.user-reword-money-total') }}</th>
+                    <th>{{ __('frontend.user-reward-money-date') }}</th>
+                    <th>{{ __('frontend.user-reward-money-item') }}</th>
+                    <th class="text-center">{{ __('frontend.user-reward-money-amount') }}</th>
+                    <th class="text-center">{{ __('frontend.user-reward-money-total') }}</th>
                 </tr>
             </thead>
             <tbody>

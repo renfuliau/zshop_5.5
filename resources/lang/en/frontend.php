@@ -35,11 +35,11 @@ return [
     'user-profile-reset-success' => 'Success!',
 
     // reward money
-    'user-reword-money-recent' => 'You have:',
-    'user-reword-money-date' => 'Date',
-    'user-reword-money-item' => 'Item',
-    'user-reword-money-amount' => 'Amount',
-    'user-reword-money-total' => 'Total',
+    'user-reward-money-recent' => 'You have:',
+    'user-reward-money-date' => 'Date',
+    'user-reward-money-item' => 'Item',
+    'user-reward-money-amount' => 'Amount',
+    'user-reward-money-total' => 'Total',
 
     // orders & return
     'user-order-number' => 'Order number',
@@ -61,6 +61,10 @@ return [
     'user-order-qa-confirm' => 'Success!',
     'user-order-level-up' => 'Congratulation! You have been upgraded ',
     'user-order-return-select' => 'Select',
+    'user-order-coupon1-cancel' => 'Coupon canceled',
+    'user-order-coupon2-cancel' => 'Coupon canceled',
+    'user-order-return-reward-money' => 'Refund reward money',
+    'user-order-return-total' => 'Expected refund',
 
     // wishlist
     'user-wishlist-img' => 'Product image',

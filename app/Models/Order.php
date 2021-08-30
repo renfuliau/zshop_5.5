@@ -36,6 +36,6 @@ class Order extends Model
 
             $query->where('is_return', 1);
         
-        }])->where('status', '>', '4')->where('user_id', $user_id)->get();
+        }])->where('status', '>', '4')->where('user_id', $user_id)->orderBy('id', 'DESC')->get();
     }
 }
