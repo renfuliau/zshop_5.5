@@ -4,6 +4,6 @@
 
 @section('main-content')
 
-    {{-- @include('welcome') --}}
+<img class="card-img-top" src=" /storage/photos/banner/banner.png " alt="banner">
 
 @endsection
