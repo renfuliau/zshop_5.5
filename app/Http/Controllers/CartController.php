@@ -74,7 +74,7 @@ class CartController extends Controller
         $product_id = $request->product_id;
         $product = Product::find($product_id);
         $cart_item = \Cart::session($user_id)->get($product_id);
-        if (!empty($cart_item && $cart_item->quantity >= $product->stock)) {
+        if (!empty($cart_item && $cart_item->quantity > $product->stock)) {
             return response(['status' => 0, 'message' => __('frontend.response-cart-out-of-stock'), 'qty' => $cart_item->quantity]);
         }
         \Cart::session($user_id)->add($product_id, $product->title, $product->special_price, 1, array(
@@ -201,6 +201,13 @@ class CartController extends Controller
 
         $user_id = Auth::user()->id;
         $carts = \Cart::session($user_id)->getContent()->sort();
+        foreach ($carts as $cart) {
+            $product = Product::find($cart->id);
+            if ($cart->quantity > $product['stock']) {
+                request()->session()->flash('error', $product['title'] . __('frontend.response-cart-out-of-stock'));
+                return redirect()->route('cart');
+            }
+        }
         $subtotal = intval(\Cart::session($user_id)->getTotal());
         $reward_money = $request->reward_money;
         $total = $subtotal - $reward_money;
