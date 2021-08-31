@@ -28,7 +28,6 @@
     <section class="shop checkout section">
         <div class="container">
             <div class="row">
-
                 <div class="col-12">
                     <!-- Shopping Summery -->
                     <h5 class="text-center my-3">{{ __('frontend.user-order-detail') }}</h5 class="text-center my-3">
@@ -257,8 +256,7 @@
                                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
                                                 <li class="coupon">
                                                     {{ __('frontend.user-order-coupon2-cancel') }}：
-                                                    {{ $order->coupon['name'] }}<span>$
-                                                        {{ $order->coupon['coupon_amount'] }}</span></li>
+                                                    {{ $order->coupon['name'] }}<span>$ -{{ $order->coupon['coupon_amount'] }}</span></li>
                                             @endif
                                     @endif
                                 </ul>
