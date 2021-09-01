@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class User
+class UserStatus
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,13 @@ class User
      */
     public function handle($request, Closure $next)
     {
-
-        if (empty(session('user'))) {
-            return redirect()->route('z-login');
+        if (Session::has('user')) {
+            // dd(Auth::user()->status);
+            $user_status = Auth::user()->status;
+            if ($user_status == 'inactive') {
+                request()->session()->flash('error', __('frontend.cart-user-inactive'));
+                return redirect()->route('index');
+            }
         }
         
         return $next($request);

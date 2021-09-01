@@ -65,6 +65,7 @@ return [
     'user-order-coupon2-cancel' => 'Coupon canceled',
     'user-order-return-reward-money' => 'Refund reward money',
     'user-order-return-total' => 'Expected refund',
+    'user-order-inactive' => 'User inactive!',
 
     // wishlist
     'user-wishlist-img' => 'Product image',
@@ -101,4 +102,6 @@ return [
     'response-cart-success' => 'Success!',
     'response-cart-remove' => 'Success!',
 
+    // cart
+    'cart-user-inactive' => 'User inactive! Not allow using cart!',
 ];

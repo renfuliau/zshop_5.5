@@ -10,6 +10,11 @@ class Order extends Model
 
     protected $fillable = ['order_number', 'user_id', 'subtotal', 'shipping_id', 'coupon_id', 'reward_money', 'total', 'quantity', 'status', 'name', 'email', 'phone', 'post_code', 'address'];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     public function orderItems()
     {
         return $this->hasMany('App\Models\OrderItem','order_id')->with('product');

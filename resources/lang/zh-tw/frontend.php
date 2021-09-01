@@ -65,6 +65,7 @@ return [
     'user-order-coupon2-cancel' => '取消購物金優惠',
     'user-order-return-reward-money' => '退回購物金',
     'user-order-return-total' => '預計退款',
+    'user-order-inactive' => '用戶停權中!',
 
     // wishlist
     'user-wishlist-img' => '商品圖片',
@@ -100,4 +101,7 @@ return [
     'response-cart-out-of-stock' => '超出該商品庫存',
     'response-cart-success' => '成功加入購物車',
     'response-cart-remove' => '該商品已移出購物車',
+
+    // cart
+    'cart-user-inactive' => '無法使用購物車，會員停權中',
 ];

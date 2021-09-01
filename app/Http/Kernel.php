@@ -60,5 +60,6 @@ class Kernel extends HttpKernel
         'register' => \App\Http\Middleware\Register::class,
         'user' => \App\Http\Middleware\User::class,
         'language' => \App\Http\Middleware\Language::class,
+        'user_status' => \App\Http\Middleware\UserStatus::class,
     ];
 }

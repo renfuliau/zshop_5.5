@@ -141,8 +141,8 @@ class UserController extends Controller
 
     public function orderDetail($order_number)
     {
-        $order = Order::with('orderItems')->with('coupon')->where('order_number', $order_number)->first();
-        // dd($order['id']);
+        $order = Order::with('orderItems')->with('coupon')->with('user')->where('order_number', $order_number)->first();
+        // dd($order);
         $messages = Message::where('order_id', $order['id'])->orderBy('created_at', 'asc')->get();
         // dd($messages);
         $return_total = 0;

@@ -14,7 +14,7 @@ use \Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'FrontendController@index');
+Route::get('/', 'FrontendController@index')->middleware('language');
 
 Route::get('/test', function () {
     // App::setLocale('en');
@@ -45,8 +45,8 @@ Route::group(['prefix' => 'zshop', 'middleware' => ['language']], function () {
     Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
 
     //購物車
-    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware('user');
-    Route::get('/cart', 'CartController@cart')->name('cart')->middleware('user'); 
+    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware(['user', 'user_status']);
+    Route::get('/cart', 'CartController@cart')->name('cart')->middleware(['user', 'user_status']); 
     Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty')->middleware('user'); 
     Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item')->middleware('user');
     Route::post('/change-reward-money', 'CartController@changeRewardMoney')->middleware('user');

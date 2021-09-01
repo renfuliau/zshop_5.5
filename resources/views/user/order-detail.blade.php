@@ -144,20 +144,24 @@
                             </div>
                         </div>
                         <div class="col-12 text-center mt-5">
-                            @if ($order->status && $order->status < 4) <button
-                                    class="btn mx-5 received-button">
-                                    {{ __('frontend.user-order-received-btn') }}</button>
-                                <button
-                                    class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
-                            @elseif ($order->status == 4)
-                                <a class="btn text-white"
-                                    href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
-                            @else
-                                @if (App::getLocale() == 'zh-tw')
-                                    <h5 class="text-danger">{{ $order_status[$order->status] }}</h5>
+                            @if ($order->user['status'] == 'active')
+                                @if ($order->status && $order->status < 4) <button
+                                        class="btn mx-5 received-button">
+                                        {{ __('frontend.user-order-received-btn') }}</button>
+                                    <button
+                                        class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
+                                @elseif ($order->status == 4)
+                                    <a class="btn text-white"
+                                        href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
                                 @else
-                                    <h5 class="text-danger">{{ $order_status_en[$order->status] }}</h5>
+                                    @if (App::getLocale() == 'zh-tw')
+                                        <h5 class="text-danger">{{ $order_status[$order->status] }}</h5>
+                                    @else
+                                        <h5 class="text-danger">{{ $order_status_en[$order->status] }}</h5>
+                                    @endif
                                 @endif
+                            @else
+                                <h5 class="text-center">{{ __('frontend.user-order-inactive') }}</h5>
                             @endif
                         </div>
                     </div>
@@ -230,11 +234,12 @@
                                                         -{{ $order->coupon['coupon_amount'] }}</span></li>
                                                 <li class="total last" id="order_total_price">
                                                     {{ __('frontend.user-order-return-total') }}<span>$
-                                                        {{ $order->subtotal - $order->coupon['coupon_amount'] }}</span></li>
+                                                        {{ $order->subtotal - $order->coupon['coupon_amount'] }}</span>
+                                                </li>
                                             @else
                                                 <li class="total last" id="order_total_price">
-                                                {{ __('frontend.user-order-return-total') }}<span>$
-                                                    {{ $order->subtotal }}</span></li>
+                                                    {{ __('frontend.user-order-return-total') }}<span>$
+                                                        {{ $order->subtotal }}</span></li>
                                             @endif
 
                                         @endif
@@ -256,7 +261,8 @@
                                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
                                                 <li class="coupon">
                                                     {{ __('frontend.user-order-coupon2-cancel') }}：
-                                                    {{ $order->coupon['name'] }}<span>$ -{{ $order->coupon['coupon_amount'] }}</span></li>
+                                                    {{ $order->coupon['name'] }}<span>$
+                                                        -{{ $order->coupon['coupon_amount'] }}</span></li>
                                             @endif
                                     @endif
                                 </ul>
