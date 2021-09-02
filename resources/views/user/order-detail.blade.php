@@ -47,11 +47,8 @@
                                 @foreach ($order->orderItems as $orderItem)
                                     <tr>
                                         @if ($orderItem['is_return'] == 0)
-                                            @php
-                                                $photo = explode(',', $orderItem->product['photo']);
-                                            @endphp
-                                            <td class="image text-center"><img src="{{ $photo[0] }}"
-                                                    alt="{{ $photo[0] }}"></td>
+                                            <td class="image text-center"><img src="{{ $orderItem->product->productImg[0]->filepath }}"
+                                                    alt="{{ $orderItem->product->productImg[0]->filepath }}"></td>
                                             <td class="product-des text-center" data-title="Description">
                                                 <p class="product-name"><a
                                                         href="{{ route('product-detail', $orderItem->product['slug']) }}"
@@ -257,7 +254,7 @@
                                         @else
                                             {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
                                             <li class="total last" id="order_total_price">
-                                                {{ __('frontend.total') }}<span>$ {{ $order->total }}</span></li>
+                                                {{ __('frontend.total') }}<span>$ {{ $return_total }}</span></li>
                                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
                                                 <li class="coupon">
                                                     {{ __('frontend.user-order-coupon2-cancel') }}：

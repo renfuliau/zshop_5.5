@@ -245,6 +245,7 @@ class UserController extends Controller
     {
         $user_id = Auth::user()->id;
         $order = Order::with('orderItems')->where('user_id', $user_id)->find($order_id);
+        // dd($order);
 
         return view('user.order-return', compact('order'))
             ->with('categories', $this->categories);
@@ -267,8 +268,29 @@ class UserController extends Controller
             $return_item->save();
         }
 
-        $order = Order::with('coupon')->find($order_id);
+        $order = Order::getOrderWithReturnedItems($order_id);
         // dd($order['status']);
+        $return_total = Order::getReturnOrderTotal($request->order_id);
+        $user = User::find($order->user_id);
+        // $refund = $return_total;
+        if ($order->coupon) {
+            if ($order->coupon['coupon_type'] == 2) {
+                if ($order['subtotal'] - $return_total < $order->coupon['coupon_line']) {
+                    $undo_reward_money = $order->coupon['coupon_amount'] * -1;
+
+                    $user['reward_money'] += $undo_reward_money;
+                    $user->save();
+            
+                    $reward_history = new RewardMoneyHistory();
+                    $reward_history['user_id'] = $user['id'];
+                    $reward_history['reward_item'] = $order['order_number'] . '，訂單退款';
+                    $reward_history['amount'] = $undo_reward_money;
+                    $reward_history['total'] = $user['reward_money'];
+                    $reward_history->save();
+                }
+            }
+        }
+
         $order['status'] = 5;
         $order->save();
         

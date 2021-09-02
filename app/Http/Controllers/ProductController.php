@@ -71,12 +71,12 @@ class ProductController extends Controller
         // dd($request);
         $title = $request->title;
         $products = Category::getProductByCategory($request->slug);
-        // dd($products);
-        $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
+        // dd($products->products);
+        // $recent_products = Product::where('status', 'active')->orderBy('id', 'DESC')->limit(3)->get();
         return view('products.productlist')
             ->with('categories', $this->categories)
             ->with('products', $products->products)
-            ->with('recent_products', $recent_products)
+            // ->with('recent_products', $recent_products)
             ->with('title', $title);
     }
 
@@ -106,7 +106,7 @@ class ProductController extends Controller
     {
         // dd($slug);
         $product_detail = Product::getProductBySlug($slug);
-        // dd($product_detail->title);
+        // dd($product_detail);
         return view('products.product-detail', compact('product_detail'))
             ->with('categories', $this->categories);
     }

@@ -135,10 +135,10 @@
                                         <div class="product-img">
                                             <a href="{{ route('product-detail', $product->slug) }}">
                                                 @php
-                                                $photo = explode(',', $product->photo);
+                                                $photo = $product->productImg[0]->filepath;
                                                 @endphp
-                                                <img class="default-img" src="{{ $photo[0] }}" alt="{{ $photo[0] }}">
-                                                <img class="hover-img" src="{{ $photo[0] }}" alt="{{ $photo[0] }}">
+                                                <img class="default-img" src="{{ $photo }}" alt="{{ $photo }}">
+                                                <img class="hover-img" src="{{ $photo }}" alt="{{ $photo }}">
                                             </a>
                                         </div>
                                     </div>

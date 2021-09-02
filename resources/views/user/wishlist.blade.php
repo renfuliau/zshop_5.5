@@ -57,7 +57,7 @@ $title = __('frontend.user-tab-wishlist');
                     @php
                     $photo = explode(',', $wishlist->product['photo']);
                     @endphp
-                    <td class="image" data-title="No"><img src="{{ $photo[0] }}" alt="{{ $photo[0] }}">
+                    <td class="image" data-title="No"><img src="{{ $wishlist->product->productImg[0]->filepath }}" alt="{{ $wishlist->product->productImg[0]->filepath }}">
                     </td>
                     <td class="product-des text-center" data-title="Description">
                         <p class="product-name"><a

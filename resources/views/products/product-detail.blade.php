@@ -37,13 +37,9 @@
                             <!-- Images slider -->
                             <div class="flexslider-thumbnails">
                                 <ul class="slides">
-                                    @php
-                                    $photo = explode(',', $product_detail->photo);
-                                    // dd($photo);
-                                    @endphp
-                                    @foreach ($photo as $data)
-                                    <li data-thumb="{{ $data }}" rel="adjustX:10, adjustY:">
-                                        <img src="{{ $data }}" alt="{{ $data }}">
+                                    @foreach ($product_detail->productImg as $photo)
+                                    <li data-thumb="{{ $photo->filepath }}" rel="adjustX:10, adjustY:">
+                                        <img src="{{ $photo->filepath }}" alt="{{ $photo->filepath }}">
                                     </li>
                                     @endforeach
                                 </ul>

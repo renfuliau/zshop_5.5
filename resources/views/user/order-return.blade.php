@@ -58,7 +58,7 @@ $title = __('frontend.return');
                             @php
                             $photo = explode(',', $order_item->Product['photo']);
                             @endphp
-                            <td class="image" data-title="No"><img src="{{ $photo[0] }}" alt="{{ $photo[0] }}"></td>
+                            <td class="image" data-title="No"><img src="{{ $order_item->product->productImg[0]->filepath }}" alt="{{ $order_item->product->productImg[0]->filepath }}"></td>
                             <td class="product-des" data-title="Description">
                                 <p class="product-name"><a
                                         href="{{ route('product-detail', $order_item->Product['slug']) }}"

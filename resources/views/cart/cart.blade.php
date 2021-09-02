@@ -41,10 +41,7 @@
                         {{ csrf_field() }}
                         @foreach ($carts as $key => $value)
                         <tr>
-                            @php
-                            $photo = explode(',', $value->attributes['photos']);
-                            @endphp
-                            <td class="image" data-title="No"><img src="{{ $photo[0] }}" alt="{{ $photo[0] }}"></td>
+                            <td class="image" data-title="No"><img src="{{ $value->attributes['photo'] }}" alt="{{ $value->attributes['photo'] }}"></td>
                             <td class="product-des" data-title="Description">
                                 <p class="product-name"><a href="{{ route('product-detail', $value->product['slug']) }}"
                                         target="_blank">{{ $value->name }}</a></p>

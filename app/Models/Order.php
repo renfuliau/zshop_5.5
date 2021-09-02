@@ -43,4 +43,30 @@ class Order extends Model
         
         }])->where('status', '>', '4')->where('user_id', $user_id)->orderBy('id', 'DESC')->get();
     }
+
+    public static function getOrderWithReturnedItems($id)
+    {
+        return Order::with(['orderItems' => function($query){
+
+            $query->where('is_return', 1);
+        
+        }])->find($id);
+    }
+
+    public static function getReturnOrderTotal($id)
+    {
+        $order = Order::with(['orderItems' => function($query){
+
+            $query->where('is_return', 1);
+        
+        }])->find($id);
+
+        $return_total = 0;
+        foreach ($order->orderItems as $return_order_item) {
+            $item_subtotal = $return_order_item['price'] * $return_order_item['quantity'];
+            $return_total += $item_subtotal;
+        }
+
+        return $return_total;
+    }
 }

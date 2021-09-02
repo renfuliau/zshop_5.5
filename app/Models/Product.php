@@ -20,6 +20,11 @@ class Product extends Model
         return $this->hasOne('App\Models\Category', 'id', 'subcategory_id');
     }
 
+    public function productImg()
+    {
+        return $this->hasMany('App\Models\ProductImg','product_id')->orderBy('sort', 'desc');
+    }
+
     // public function relProds(){
     //     return $this->hasMany('App\Models\Product','cat_id','cat_id')->where('status','active')->orderBy('id','DESC')->limit(8);
     // }
@@ -29,7 +34,7 @@ class Product extends Model
 
     public static function getProductBySlug($slug)
     {
-        return Product::with('category')->where('slug', $slug)->first();
+        return Product::with('category')->with('productImg')->where('slug', $slug)->first();
     }
 
     public static function getStock($product_id)
@@ -39,6 +44,6 @@ class Product extends Model
 
     public static function getSearchProducts($keyword)
     {
-        return Product::where('status', 'active')->where('title', 'like', "%{$keyword}%")->get();
+        return Product::where('status', 'active')->where('title', 'like', "%{$keyword}%")->with('productImg')->get();
     }
 }

@@ -38,6 +38,7 @@ class CartController extends Controller
     {
         $user = Auth()->user();
         $carts = \Cart::session($user->id)->getContent()->sort();
+        // dd($carts);
         $total = \Cart::session($user->id)->getTotal();
         if ($total == 0) {
             $carts = null;
@@ -72,13 +73,13 @@ class CartController extends Controller
         }
         $user_id = Auth::user()->id;
         $product_id = $request->product_id;
-        $product = Product::find($product_id);
+        $product = Product::with('productImg')->find($product_id);
         $cart_item = \Cart::session($user_id)->get($product_id);
         if (!empty($cart_item && $cart_item->quantity > $product->stock)) {
             return response(['status' => 0, 'message' => __('frontend.response-cart-out-of-stock'), 'qty' => $cart_item->quantity]);
         }
         \Cart::session($user_id)->add($product_id, $product->title, $product->special_price, 1, array(
-            'photos' => $product->photo
+            'photo' => $product->productImg[0]->filepath
         ));
         $cartTotalQuantity = \Cart::session($user_id)->getTotalQuantity();
         return response(['status' => 0, 'message' => __('frontend.response-cart-success'), 'qty' => $cartTotalQuantity]);
