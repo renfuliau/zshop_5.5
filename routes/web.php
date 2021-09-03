@@ -51,9 +51,8 @@ Route::group(['prefix' => 'zshop', 'middleware' => ['language']], function () {
     Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item')->middleware('user');
     Route::post('/change-reward-money', 'CartController@changeRewardMoney')->middleware('user');
     Route::post('/change-coupon', 'CartController@changeCoupon')->middleware('user');
-    Route::post('/checkout', 'CartController@checkout')->name('checkout')->middleware('user');
-    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkout-store')->middleware('user');
-    Route::get('/order-confirm', 'CartController@orderConfirm')->name('order-confirm')->middleware('user');
+    Route::post('/checkout', 'CartController@checkout')->name('checkout')->middleware(['user', 'user_status']);
+    Route::post('/checkout/store', 'CartController@checkoutStore')->name('checkout-store')->middleware(['user', 'user_status']);
 });
 
 Route::group(['prefix' => 'zshop/user', 'middleware' => ['user', 'language']], function () {
@@ -68,10 +67,10 @@ Route::group(['prefix' => 'zshop/user', 'middleware' => ['user', 'language']], f
     Route::get('/orders', 'UserController@orders')->name('user-orders');
     Route::get('/order-detail/{order_number}', 'UserController@orderDetail')->name('user-order-detail');
     Route::post('/order-message-store', 'UserController@orderMessageStore')->name('order-message-store');
-    Route::post('/order-received', 'UserController@orderReceived');
-    Route::post('/order-cancel', 'UserController@orderCancel');
-    Route::get('/order-return/{order_id}/{order_number}', 'UserController@orderReturn')->name('order-return');
-    Route::post('/order-return-store', 'UserController@orderReturnStore')->name('order-return-store');
+    Route::post('/order-received', 'UserController@orderReceived')->middleware('user_status');
+    Route::post('/order-cancel', 'UserController@orderCancel')->middleware('user_status');
+    Route::get('/order-return/{order_id}/{order_number}', 'UserController@orderReturn')->name('order-return')->middleware('user_status');
+    Route::post('/order-return-store', 'UserController@orderReturnStore')->name('order-return-store')->middleware('user_status');
 
     Route::get('/returned', 'UserController@returned')->name('user-returned');
 

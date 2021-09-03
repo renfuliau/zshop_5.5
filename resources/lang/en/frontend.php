@@ -19,6 +19,8 @@ return [
     'user-tab-qacenter' => 'Q&A',
 
     // user
+    'user-profile-total-shopping-amount' => 'Total Shopping Amount',
+    'user-profile-to-next-level' => 'upgrade to',
     'user-profile-name' => 'Name',
     'user-profile-phone' => 'Phone',
     'user-profile-address' => 'Address',
@@ -94,6 +96,8 @@ return [
     'response-received' => 'Thank you!',
     'response-canceled' => 'Order canceled. Refund reward money : ',
     'response-return' => 'Return processing. Please wait!',
+    'response-return-undo-reward' => 'Undo coupon reward: ',
+    'response-return-level-down' => 'level down: ',
     'response-no-login' => 'Please login!',
     'response-wishlist-added' => 'This product has been added!',
     'response-wishlist-success' => 'Success!',

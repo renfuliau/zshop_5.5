@@ -68,7 +68,7 @@ class FrontendController extends Controller
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password'], 'status' => 'active'])) {
             Session::put('user', $data['email']);
             request()->session()->flash('success', '登入成功');
-            return redirect()->route('user-profile');
+            return redirect()->route('index');
         } else {
             request()->session()->flash('error', '無效 Email 或密碼');
             return redirect()->back();

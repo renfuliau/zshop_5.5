@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Message','user_id');
     }
+
+    public function userLevel()
+    {
+        return $this->belongsTo('App\Models\UserLevel');
+    }
 }

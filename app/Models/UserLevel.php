@@ -14,7 +14,7 @@ class UserLevel extends Model
         return $this->hasMany('App\User','id','user_level_id')->where('status','active');
     }
 
-    public static function getUserLevelName($user_level_id)
+    public static function getUserLevel($user_level_id)
     {
         return UserLevel::where('id',$user_level_id)->first();
     }

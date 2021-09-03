@@ -61,13 +61,16 @@ class UserController extends Controller
         // dd(Auth()->user());
         $profile = Auth()->user();
         // dd($profile->user_level_id);
-        $user_level = UserLevel::getUserLevelName($profile->user_level_id);
-        // dd($user_level);
+        $user_level = UserLevel::getUserLevel($profile->user_level_id);
+        $next_user_level = UserLevel::orderBy('level_up_line', 'asc')->where('level_up_line', '>', $profile->total_shopping_amount)->first();
+        if (! empty($next_user_level)) {
+            # code...
+            $amount_to_level_up = $next_user_level['level_up_line'] - $profile->total_shopping_amount;
+        }
+        // dd($next_user_level);
         // return $profile;
-        return view('user.profile')
-            ->with('categories', $this->categories)
-            ->with('profile', $profile)
-            ->with('user_level', $user_level);
+        return view('user.profile', compact('profile', 'user_level', 'next_user_level', 'amount_to_level_up'))
+            ->with('categories', $this->categories);
     }
 
     public function profileUpdate(Request $request, $id)
@@ -180,21 +183,25 @@ class UserController extends Controller
         $user_id = Auth::user()->id;
         $order_id = $request->order_id;
         $order = Order::with('coupon')->where('user_id', $user_id)->find($order_id);
-        // dd($order);
+        
+        // 變更訂單狀態
         $order->status = 4;
         $order->save();
 
+        // 變更購物總金額
         $user = User::find($user_id);
         $user->total_shopping_amount += $order->total;
         $user->save();
 
-        $user_level = UserLevel::orderBy('level_up_line', 'desc')->where('level_up_line', '<', $user->total_shopping_amount)->first();
+        // 檢查會員是否升級
+        $user_level = UserLevel::orderBy('level_up_line', 'desc')->where('level_up_line', '<=', $user->total_shopping_amount)->first();
         if ($user_level->id != $user->user_level_id) {
             $user->user_level_id = $user_level->id;
             $user->save();
             $response['level_up'] = __('frontend.user-order-level-up') . $user_level->name;
         }
 
+        // 確認訂單優惠，發放購物金
         if ($order->coupon['coupon_type'] == 2) {
             $user->reward_money += $order->coupon['coupon_amount'];
             $user->save();
@@ -253,7 +260,6 @@ class UserController extends Controller
 
     public function orderReturnStore(Request $request)
     {
-        $user_id = Auth::user()->id;
         $return_items = $request->all();
         foreach (array_keys($return_items) as $return_item_id) {
             $order_item = OrderItem::find($return_item_id);
@@ -264,15 +270,34 @@ class UserController extends Controller
             $return_item->quantity = $return_items[$return_item_id];
             $return_item->price = $order_item->price;
             $return_item->is_return = 1;
-            // dd($return_item);
             $return_item->save();
         }
 
+        // 變更訂單狀態
         $order = Order::getOrderWithReturnedItems($order_id);
-        // dd($order['status']);
-        $return_total = Order::getReturnOrderTotal($request->order_id);
+        $return_total = Order::getReturnOrderTotal($order_id);
+        // dd($return_total);
         $user = User::find($order->user_id);
-        // $refund = $return_total;
+        $order['status'] = 5;
+        $order->save();
+
+        $response = __('frontend.response-return');
+
+        // 檢查會員等級是否降級
+        $user_id = Auth::user()->id;
+        $user = User::with('userLevel')->find($user_id);
+        $user['total_shopping_amount'] -= $return_total;
+        if ($user['total_shopping_amount'] < $user->userLevel['level_up_line']) {
+            // dd($user);
+            $user_level = UserLevel::orderBy('level_up_line', 'desc')->where('level_up_line', '<', $user->total_shopping_amount)->first();
+            $user->user_level_id = $user_level->id;
+            // dd($user->user_level_id);
+            $response .= __('frontend.response-return-level-down') . $user_level['name'] . '！ ';
+            // dd($response);
+        }
+        $user->save();
+
+        // 檢查購物金優惠是否失效
         if ($order->coupon) {
             if ($order->coupon['coupon_type'] == 2) {
                 if ($order['subtotal'] - $return_total < $order->coupon['coupon_line']) {
@@ -287,29 +312,12 @@ class UserController extends Controller
                     $reward_history['amount'] = $undo_reward_money;
                     $reward_history['total'] = $user['reward_money'];
                     $reward_history->save();
+                    return response($response . __('frontend.response-return-undo-reward') . $order->coupon['coupon_amount']);
                 }
             }
         }
 
-        $order['status'] = 5;
-        $order->save();
-        
-        // $return_order_items = OrderItem::where('order_id', $order_id)->where('is_return', 1)->get();
-        // dd($return_order_items);
-        // $subtotal = 0;
-        // foreach ($return_order_items as $return_order_item) {
-        //     $item_subtotal = $return_order_item['price'] * $return_order_item['quantity'];
-        //     $subtotal += $item_subtotal;
-        // }
-        // dd($subtotal);
-        // if ($subtotal == $order['subtotal']) {
-        //     // dd('h1');
-        // }
-        // dd($order);
-
-        // dd($return_items);
-        // dd($request->all());
-        return response(__('frontend.response-return'));
+        return response($response);
     }
 
     public function returned()

@@ -21,6 +21,7 @@ class MessageController extends Controller
         $message->name = $request->name;
         $message->email = $request->email;
         $message->message = $request->message;
+        $message->subject = 1;
         $check = $message->save();
         if ($check) {
             request()->session()->flash('success', __('frontend.response-success'));

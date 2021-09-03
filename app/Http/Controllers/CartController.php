@@ -243,7 +243,7 @@ class CartController extends Controller
 
             $product = Product::find($cart->id);
             $product->stock -= $cart->quantity;
-            $product->save(); 
+            $product->save();
         }
 
         if ($reward_money > 0) {
@@ -262,13 +262,8 @@ class CartController extends Controller
         \Cart::session($user_id)->clear();
 
         return view('cart.order-confirm', compact('order'))
-        ->with('categories', $this->categories);;
+            ->with('categories', $this->categories);;
     }
-
-    // public function orderConfirm()
-    // {
-        
-    // }
 
     public function checkCoupon1($total)
     {
@@ -276,9 +271,10 @@ class CartController extends Controller
             ['coupon_line', '=', Coupon::where([
                 ['coupon_line', '<', $total],
                 ['coupon_type', '=', 1],
+                ['status', '=', 'active'],
             ])->get()->max('coupon_line')],
             ['coupon_type', '=', 1],
-        ])->first();        
+        ])->first();
     }
 
     public function checkCoupon2($total)
@@ -287,6 +283,7 @@ class CartController extends Controller
             ['coupon_line', '=', Coupon::where([
                 ['coupon_line', '<', $total],
                 ['coupon_type', '=', 2],
+                ['status', '=', 'active'],
             ])->get()->max('coupon_line')],
             ['coupon_type', '=', 2],
         ])->first();

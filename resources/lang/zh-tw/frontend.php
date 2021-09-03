@@ -19,6 +19,8 @@ return [
     'user-tab-qacenter' => '問答中心',
 
     // user
+    'user-profile-total-shopping-amount' => '總消費金額',
+    'user-profile-to-next-level' => '升級為',
     'user-profile-name' => '姓名',
     'user-profile-phone' => '手機',
     'user-profile-address' => '地址',
@@ -93,7 +95,9 @@ return [
     'response-coupon-reward' => '您從此筆訂單獲得購物金',
     'response-received' => '商品收到後請立即檢查是否有瑕疵，若有問題請與客服聯絡',
     'response-canceled' => '訂單已取消，退回購物金：',
-    'response-return' => '退貨處理中，客服人員將近快與您聯繫',
+    'response-return' => '退貨處理中，客服人員將近快與您聯繫。 ',
+    'response-return-undo-reward' => '收回此筆訂單購物金優惠： ',
+    'response-return-level-down' => '會員降級為: ',
     'response-no-login' => '請先登入',
     'response-wishlist-added' => '此商品已收藏',
     'response-wishlist-success' => '成功加入收藏',
