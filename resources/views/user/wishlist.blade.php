@@ -61,7 +61,7 @@ $title = __('frontend.user-tab-wishlist');
                     </td>
                     <td class="product-des text-center" data-title="Description">
                         <p class="product-name"><a
-                                href="{{ route('product-detail', $wishlist->product['slug']) }}">{{ $wishlist->product['title'] }}</a>
+                                href="{{ route('product-detail', $wishlist->product['id']) }}">{{ $wishlist->product['title'] }}</a>
                         </p>
                         <p class="product-des">{!! $wishlist['summary'] !!}</p>
                     </td>

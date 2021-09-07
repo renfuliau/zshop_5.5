@@ -17,7 +17,7 @@ class User
      */
     public function handle($request, Closure $next)
     {
-
+        // dd(123);
         if (empty(session('user'))) {
             return redirect()->route('z-login');
         }

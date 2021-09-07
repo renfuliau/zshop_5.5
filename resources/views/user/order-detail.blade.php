@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'ZShop - 訂單明細')
+@section('title', 'ZShop - ' . __('frontend.user-order-detail'))
 
 @section('main-content')
 
@@ -47,11 +47,12 @@
                                 @foreach ($order->orderItems as $orderItem)
                                     <tr>
                                         @if ($orderItem['is_return'] == 0)
-                                            <td class="image text-center"><img src="{{ $orderItem->product->productImg[0]->filepath }}"
+                                            <td class="image text-center"><img
+                                                    src="{{ $orderItem->product->productImg[0]->filepath }}"
                                                     alt="{{ $orderItem->product->productImg[0]->filepath }}"></td>
                                             <td class="product-des text-center" data-title="Description">
                                                 <p class="product-name"><a
-                                                        href="{{ route('product-detail', $orderItem->product['slug']) }}"
+                                                        href="{{ route('product-detail', $orderItem->product['id']) }}"
                                                         target="_blank">{{ $orderItem->product['title'] }}</a></p>
                                             </td>
                                             <td class="price text-center" data-title="Price">
@@ -141,24 +142,20 @@
                             </div>
                         </div>
                         <div class="col-12 text-center mt-5">
-                            @if ($order->user['status'] == 'active')
-                                @if ($order->status && $order->status < 4) <button
-                                        class="btn mx-5 received-button">
-                                        {{ __('frontend.user-order-received-btn') }}</button>
-                                    <button
-                                        class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
-                                @elseif ($order->status == 4)
-                                    <a class="btn text-white"
-                                        href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
-                                @else
-                                    @if (App::getLocale() == 'zh-tw')
-                                        <h5 class="text-danger">{{ $order_status[$order->status] }}</h5>
-                                    @else
-                                        <h5 class="text-danger">{{ $order_status_en[$order->status] }}</h5>
-                                    @endif
-                                @endif
+                            @if ($order->status && $order->status < 4) <button
+                                    class="btn mx-5 received-button">
+                                    {{ __('frontend.user-order-received-btn') }}</button>
+                                <button
+                                    class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
+                            @elseif ($order->status == 4)
+                                <a class="btn text-white"
+                                    href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
                             @else
-                                <h5 class="text-center">{{ __('frontend.user-order-inactive') }}</h5>
+                                @if (App::getLocale() == 'zh-tw')
+                                    <h5 class="text-danger">{{ $order_status[$order->status] }}</h5>
+                                @else
+                                    <h5 class="text-danger">{{ $order_status_en[$order->status] }}</h5>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -181,11 +178,12 @@
                                 @foreach ($order->orderItems as $orderItem)
                                     @if ($orderItem['is_return'] == 1)
                                         <tr>
-                                            <td class="image text-center"><img src="{{ $orderItem->product->productImg[0]->filepath }}"
-                                                alt="{{ $orderItem->product->productImg[0]->filepath }}"></td>
+                                            <td class="image text-center"><img
+                                                    src="{{ $orderItem->product->productImg[0]->filepath }}"
+                                                    alt="{{ $orderItem->product->productImg[0]->filepath }}"></td>
                                             <td class="product-des text-center" data-title="Description">
                                                 <p class="product-name"><a
-                                                        href="{{ route('product-detail', $orderItem->product['slug']) }}"
+                                                        href="{{ route('product-detail', $orderItem->product['id']) }}"
                                                         target="_blank">{{ $orderItem->product['title'] }}</a>
                                                 </p>
                                             </td>
@@ -251,7 +249,8 @@
                                         @else
                                             {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
                                             <li class="total last" id="order_total_price">
-                                                {{ __('frontend.user-order-return-total') }}<span>$ {{ $return_total }}</span></li>
+                                                {{ __('frontend.user-order-return-total') }}<span>$
+                                                    {{ $return_total }}</span></li>
                                             @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
                                                 <li class="coupon">
                                                     {{ __('frontend.user-order-coupon2-cancel') }}：

@@ -81,9 +81,9 @@ class UserController extends Controller
         // dd($data);
         $status = $user->fill($data)->save();
         if ($status) {
-            request()->session()->flash('success', '個人資料已更新');
+            request()->session()->flash('success', __('frontend.user-profile-update-success'));
         } else {
-            request()->session()->flash('error', '發生錯誤，請稍後再試!');
+            request()->session()->flash('error', __('frontend.user-profile-update-error'));
         }
         return redirect()->back();
     }
@@ -207,7 +207,7 @@ class UserController extends Controller
             $user->save();
             $reward_money_history = new RewardMoneyHistory();
             $reward_money_history->user_id = $user_id;
-            $reward_money_history->reward_item = $order->order_number . '訂單優惠，贈送購物金';
+            $reward_money_history->reward_item = $order->order_number . __('frontend.user-order-coupon-reward');
             $reward_money_history->amount = $order->coupon['coupon_amount'];
             $reward_money_history->total = $user->reward_money;
             $reward_money_history->save();
@@ -308,7 +308,7 @@ class UserController extends Controller
             
                     $reward_history = new RewardMoneyHistory();
                     $reward_history['user_id'] = $user['id'];
-                    $reward_history['reward_item'] = $order['order_number'] . '，訂單退款';
+                    $reward_history['reward_item'] = $order['order_number'] . '，' . __('frontend.user-order-return');
                     $reward_history['amount'] = $undo_reward_money;
                     $reward_history['total'] = $user['reward_money'];
                     $reward_history->save();

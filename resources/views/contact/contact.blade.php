@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'ZShop - 聯絡客服')
+@section('title', 'ZShop - ' . __('frontend.contact'))
 
 @section('main-content')
 <!-- readcrumbs -->
@@ -12,7 +12,7 @@
                     <ul class="bread-list">
                         <li><a href="{{ route('index') }}">{{ __('frontend.index') }}<i class="ti-arrow-right"></i></a>
                         </li>
-                        <li class="active"><a href="javascript:void(0);">聯絡客服</a></li>
+                        <li class="active"><a href="javascript:void(0);">{{ __('frontend.contact') }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -29,26 +29,26 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label>姓名<span>*</span></label>
-                                                <input name="name" id="name" type="text" placeholder="輸入您的姓名">
+                                                <label>{{ __('frontend.contact-name') }}<span>*</span></label>
+                                                <input name="name" id="name" type="text" placeholder="{{ __('frontend.contact-name-placeholder') }}">
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Email<span>*</span></label>
-                                                <input name="email" type="email" id="email" placeholder="輸入您的 Email">
+                                                <input name="email" type="email" id="email" placeholder="{{ __('frontend.contact-email-placeholder') }}">
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group message">
-                                                <label>留言<span>*</span></label>
+                                                <label>{{ __('frontend.contact-message') }}<span>*</span></label>
                                                 <textarea name="message" id="message" cols="30" rows="4"
-                                                    placeholder="輸入您的寶貴意見"></textarea>
+                                                    placeholder="{{ __('frontend.contact-message-placeholder') }}"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group button">
-                                                <button type="submit" class="btn ">送出</button>
+                                                <button type="submit" class="btn ">{{ __('frontend.submit') }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                         <div class="card">
                             <img class="card-img-top" src="{{ $photo_path }}" alt="{{ $photo_path }}">
                             <div class="card-body text-center">
-                                <h5 class="card-title">加入 ZShop 與客服線上互動</h5>
+                                <h5 class="card-title">{{ __('frontend.contact-info') }}</h5>
                             </div>
                         </div>
                     </div>

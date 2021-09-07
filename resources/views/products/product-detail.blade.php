@@ -14,7 +14,7 @@
                         <li><a href="{{ route('index') }}">{{ __('frontend.index') }}<i class="ti-arrow-right"></i></a>
                         </li>
                         <li><a
-                                href="{{ route('productlist', ['slug' => $product_detail->category->slug, 'title' => $product_detail->category->title]) }}">
+                                href="{{ route('productlist-category', ['slug' => $product_detail->category->slug, 'title' => $product_detail->category->title]) }}">
                                 {{ $product_detail->category->title }}<i class="ti-arrow-right"></i></a></li>
                         <li class="active"><a href="javascript:void(0);">{{ $product_detail->title }}</a></li>
                     </ul>
@@ -55,8 +55,12 @@
                                 <h4>{{ $product_detail->title }}</h4>
                                 <p class="description">{!! $product_detail->summary !!}</p>
                                 <p class="price">
+                                    @if ($product_detail->price == $product_detail->special_price)
+                                    <span class="discount">${{ $product_detail->special_price }}</span>
+                                    @else
                                     <span class="discount">${{ $product_detail->special_price }}</span>
                                     <s>${{ $product_detail->price }}</s>
+                                    @endif
                                 </p>
                             </div>
 

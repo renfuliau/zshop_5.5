@@ -37,15 +37,14 @@ Route::group(['prefix' => 'zshop', 'middleware' => ['language']], function () {
     Route::post('/contact-store', 'MessageController@messageStore')->name('contact-store');
 
     // 商品搜尋 商品分類 商品介紹
-    Route::get('/product', 'ProductController@productlistByCategory')->name('productlist');
     Route::get('/productlist-category/{slug}', 'ProductController@productlistByCategory')->name('productlist-category');
     Route::get('/productlist-category/{slug}/{sub_slug}', 'ProductController@productSubcategory')->name('productlist-subcategory');
     Route::get('/product-detail/{slug}', 'ProductController@productDetail')->name('product-detail');
     Route::post('/product/search', 'ProductController@productSearch')->name('product-search');
-    Route::get('/product-brand/{slug}', 'ProductController@productBrand')->name('product-brand');
+    // Route::get('/product/search/{keyword}', 'ProductController@productSearch')->name('product-search');
 
     //購物車
-    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware(['user', 'user_status']);
+    Route::post('/add-to-cart', 'CartController@addToCart')->name('add-to-cart')->middleware(['user']);
     Route::get('/cart', 'CartController@cart')->name('cart')->middleware(['user', 'user_status']); 
     Route::post('/change-product-qty', 'CartController@changeProductQty')->name('change-qty')->middleware('user'); 
     Route::post('/remove_item', 'CartController@removeItem')->name('remove-cart-item')->middleware('user');
@@ -58,7 +57,7 @@ Route::group(['prefix' => 'zshop', 'middleware' => ['language']], function () {
 Route::group(['prefix' => 'zshop/user', 'middleware' => ['user', 'language']], function () {
     // 個人中心 購物金 訂單查詢 退貨查詢 收藏清單 問答中心
     Route::get('/profile', 'UserController@profile')->name('user-profile');
-    Route::post('/profile/{id}', 'UserController@profileUpdate')->name('user-profile-update');
+    Route::post('/profile/{id}', 'UserController@profileUpdate')->name('user-profile-update')->middleware('user_status');
     Route::get('/change-password', 'UserController@changePassword')->name('user-change-password');
     Route::post('/change-password', 'UserController@changPasswordStore')->name('user-change-password-update');
 
@@ -67,10 +66,10 @@ Route::group(['prefix' => 'zshop/user', 'middleware' => ['user', 'language']], f
     Route::get('/orders', 'UserController@orders')->name('user-orders');
     Route::get('/order-detail/{order_number}', 'UserController@orderDetail')->name('user-order-detail');
     Route::post('/order-message-store', 'UserController@orderMessageStore')->name('order-message-store');
-    Route::post('/order-received', 'UserController@orderReceived')->middleware('user_status');
-    Route::post('/order-cancel', 'UserController@orderCancel')->middleware('user_status');
-    Route::get('/order-return/{order_id}/{order_number}', 'UserController@orderReturn')->name('order-return')->middleware('user_status');
-    Route::post('/order-return-store', 'UserController@orderReturnStore')->name('order-return-store')->middleware('user_status');
+    Route::post('/order-received', 'UserController@orderReceived');
+    Route::post('/order-cancel', 'UserController@orderCancel');
+    Route::get('/order-return/{order_id}/{order_number}', 'UserController@orderReturn')->name('order-return');
+    Route::post('/order-return-store', 'UserController@orderReturnStore')->name('order-return-store');
 
     Route::get('/returned', 'UserController@returned')->name('user-returned');
 

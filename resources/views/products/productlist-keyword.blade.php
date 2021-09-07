@@ -109,7 +109,7 @@
                                 <div class="col-lg-4 col-md-6 col-sm-6">
                                     <div class="single-product">
                                         <div class="product-img">
-                                            <a href="{{ route('product-detail', $product->slug) }}">
+                                            <a href="{{ route('product-detail', $product->id) }}">
                                                 @php
                                                 $photo = $product->productImg[0]->filepath;
                                                 @endphp
@@ -123,14 +123,18 @@
                                     <div class="list-content row">
                                         <div class="product-content col-8">
                                             <h3 class="title"><a
-                                                    href="{{ route('product-detail', $product->slug) }}">{{ $product->title }}</a>
+                                                    href="{{ route('product-detail', $product->id) }}">{{ $product->title }}</a>
                                             </h3>
                                             <p class="des pt-2">{!! html_entity_decode($product->summary) !!}</p>
                                         </div>
                                         <div class="product-price col-4 d-flex d-flex align-items-end flex-column">
-                                            <del>{{ __('frontend.product-price') }} ${{ $product->price }}</del>
-                                            <h5 class="text-danger">{{ __('frontend.product-special-price') }}
-                                                ${{ $product->special_price }}</h5>
+                                            @if ($product->price == $product->special_price)
+                                                <h5 class="text-danger">$ {{ $product->price }}</h5>
+                                            @else
+                                                <del>{{ __('frontend.product-price') }} ${{ $product->price }}</del>
+                                                <h5 class="text-danger">{{ __('frontend.product-special-price') }}
+                                                    $ {{ $product->special_price }}</h5>
+                                            @endif
                                             <a class="btn cart add-to-cart" @if (!empty(Auth::user()->id))
                                                 data-user_id="{{ Auth::user()->id }}"
                                                 @endif

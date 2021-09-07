@@ -2,6 +2,7 @@
 
 return [
     'index' => '首頁',
+    'cart' => '購物車',
     'add-to-cart' => '加入購物車',
     'add-to-wishlist' => '加入收藏',
     'subtotal' => '小計',
@@ -9,6 +10,22 @@ return [
     'submit' => '送出',
     'quantity' => '數量',
     'return' => '退貨',
+    'coupon' => '折扣',
+    'checkout' => '結帳',
+    'contact' => '聯絡客服',
+
+    // account
+    'log-in-register' => '登入 / 註冊',
+    'log-in' => '登入',
+    'register' => '註冊',
+    'forget-password' => '忘記密碼',
+    'log-in-success' => '登入成功',
+    'log-in-error' => '登入失敗',
+    'register-success' => '註冊成功',
+    'register-error' => '系統錯誤，請聯絡客服!',
+    'password-confirm-error' => '確認密碼錯誤!',
+    'email-existed' => '帳號已存在! 請更換',
+    'log-out-success' => '登出成功',
 
     // tabs
     'user-tab-profile' => '個人中心',
@@ -25,6 +42,8 @@ return [
     'user-profile-phone' => '手機',
     'user-profile-address' => '地址',
     'user-profile-update-btn' => '儲存變更',
+    'user-profile-update-success' => '個人資料已更新',
+    'user-profile-update-error' => '錯誤!',
     'user-profile-reset-password' => '變更密碼',
     'user-profile-placeholder-name' => '請輸入您的姓名',
     'user-profile-placeholder-email' => '請輸入您的 Email',
@@ -54,7 +73,10 @@ return [
     'user-order-received-info' => '收件人資訊',
     'user-order-received-name' => '收件人姓名',
     'user-order-received-phone' => '收件人電話',
+    'user-order-received-post-code' => '郵遞區號',
     'user-order-received-address' => '收件人地址',
+    'user-order-coupon-reward' => '訂單優惠：贈送購物金',
+    'user-order-coupon-reward-cancel' => '訂單取消，購物金退回',
     'user-order-qa' => '訂單客服',
     'user-order-qa-placeholder' => '輸入您的問題',
     'user-order-received-btn' => '收到商品',
@@ -67,6 +89,7 @@ return [
     'user-order-coupon2-cancel' => '取消購物金優惠',
     'user-order-return-reward-money' => '退回購物金',
     'user-order-return-total' => '預計退款',
+    'user-order-return' => '訂單退款',
     'user-order-inactive' => '用戶停權中!',
 
     // wishlist
@@ -105,7 +128,31 @@ return [
     'response-cart-out-of-stock' => '超出該商品庫存',
     'response-cart-success' => '成功加入購物車',
     'response-cart-remove' => '該商品已移出購物車',
+    'response-user-inactive' => '會員停權中，無法使用此功能！',
 
     // cart
-    'cart-user-inactive' => '無法使用購物車，會員停權中',
+    'cart-is-empty' => '購物車是空的!',
+    'cart-continue-shopping' => '繼續選購!',
+    'cart-product-img' => '商品圖片',
+    'cart-product-title' => '商品名稱',
+    'cart-product-price' => '單價',
+    'cart-choose-coupon' => '選擇優惠',
+    'cart-use-reward-money' => '使用購物金',
+    'cart-present-reward-money' => '目前購物金',
+    'cart-coupon-reward' => '優惠獎勵',
+    'cart-checkout-used' => '結帳使用',
+    'cart-order-detail' => '訂單明細',
+    'cart-order-confirm' => '感謝您的購買',
+    'cart-order-number' => '訂單號碼',
+    'cart-keep-shopping' => '繼續選購',
+    'cart-title-order-confirm' => '訂單確認',
+
+    // contact
+    'contact-name' => '姓名',
+    'contact-name-placeholder' => '請輸入您的姓名',
+    'contact-message' => '留言',
+    'contact-message-placeholder' => '請輸入您的寶貴意見',
+    'contact-email-placeholder' => '請輸入您的 Email',
+    'contact-submit' => '送出',
+    'contact-info' => '加入 ZShop 與客服線上互動',
 ];

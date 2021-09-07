@@ -32,9 +32,9 @@ class Product extends Model
     //     return $this->hasMany('App\Models\ProductReview','product_id','id')->where('status','active')->orderBy('id','DESC');
     // }
 
-    public static function getProductBySlug($slug)
+    public static function getProductById($id)
     {
-        return Product::with('category')->with('productImg')->where('slug', $slug)->first();
+        return Product::with('category')->with('productImg')->where('id', $id)->first();
     }
 
     public static function getStock($product_id)

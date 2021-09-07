@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'ZShop - 註冊')
+@section('title', 'ZShop - ' . __('frontend.register'))
 
 @section('main-content')
     <!-- Shop Login -->

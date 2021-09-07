@@ -14,7 +14,7 @@
                         <li><a href="{{ route('index') }}">{{ __('frontend.index') }}<i class="ti-arrow-right"></i></a>
                         </li>
                         <li><a
-                                href="{{ route('productlist', ['slug' => $product_detail->category->slug, 'title' => $product_detail->category->title]) }}">
+                                href="{{ route('productlist-category', ['slug' => $product_detail->category->slug, 'title' => $product_detail->category->title]) }}">
                                 {{ $product_detail->category->title }}<i class="ti-arrow-right"></i></a></li>
                         <li class="active"><a href="javascript:void(0);">{{ $product_detail->title }}</a></li>
                     </ul>

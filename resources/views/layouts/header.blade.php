@@ -8,32 +8,32 @@
                     <div class="right-content">
                         <ul class="list-main">
                             @auth
-                            {{-- todo --}}
-                            <li><i class="ti-location-pin"></i><a
-                                    href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
-                            </li>
-                            <li><i class="ti-user"></i> <a
-                                    href="{{ route('user-profile') }}">{{ __('auth.header-user-center') }}</a>
-                            </li>
-                            <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
-                                    <span
-                                        class="cartTotalQuantity">{{ \Cart::session(Auth::user()->id)->getTotalQuantity() }}</span>
-                                </a></li>
-                            <li><i class="ti-email"></i><a
-                                    href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
-                            </li>
-                            <li><i class="ti-shift-right-alt"></i><a
-                                    href="{{ route('z-logout') }}">{{ __('auth.header-logout') }}</a></li>
+                                {{-- todo --}}
+                                <li><i class="ti-location-pin"></i><a
+                                        href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
+                                </li>
+                                <li><i class="ti-user"></i> <a
+                                        href="{{ route('user-profile') }}">{{ __('auth.header-user-center') }}</a>
+                                </li>
+                                <li><a href="{{ route('cart') }}" class="single-icon"><i class="ti-shopping-cart"></i>
+                                        <span
+                                            class="cartTotalQuantity">{{ \Cart::session(Auth::user()->id)->getTotalQuantity() }}</span>
+                                    </a></li>
+                                <li><i class="ti-email"></i><a
+                                        href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
+                                </li>
+                                <li><i class="ti-shift-right-alt"></i><a
+                                        href="{{ route('z-logout') }}">{{ __('auth.header-logout') }}</a></li>
 
                             @else
-                            <li><i class="ti-location-pin"></i><a
-                                    href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
-                            </li>
-                            <li><i class="ti-power-off"></i><a
-                                    href="{{ route('z-login') }}">{{ __('auth.header-login-register') }}</a></li>
-                            <li><i class="ti-email"></i><a
-                                    href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
-                            </li>
+                                <li><i class="ti-location-pin"></i><a
+                                        href="{{ route('locale-change') }}">{{ __('auth.header-language') }}</a>
+                                </li>
+                                <li><i class="ti-power-off"></i><a
+                                        href="{{ route('z-login') }}">{{ __('auth.header-login-register') }}</a></li>
+                                <li><i class="ti-email"></i><a
+                                        href="{{ route('contact') }}">{{ __('auth.header-contact') }}</a>
+                                </li>
                             @endauth
                         </ul>
                     </div>
@@ -50,11 +50,10 @@
                     <!-- Logo -->
                     <div class="logo">
                         @php
-                        // dd($cart_total_qty);
-                        $settings = DB::table('settings')->get();
+                            // dd($cart_total_qty);
+                            $settings = DB::table('settings')->get();
                         @endphp
-                        <a href="{{ route('index') }}"><img
-                                src="@foreach ($settings as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
+                        <a href="{{ route('index') }}"><img src="@foreach ($settings as $data) {{ $data->logo }} @endforeach" alt="logo"></a>
                     </div>
                     <!--/ End Logo -->
                     <div class="mobile-nav"></div>
@@ -68,15 +67,15 @@
                                     <div class="nav-inner col-12">
                                         <ul class="nav main-menu menu navbar-nav d-flex justify-content-between">
                                             @foreach ($categories as $category)
-                                            @if (App::getLocale() == 'zh-tw')
-                                            <li><a
-                                                    href="{{ route('productlist', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
-                                            </li>
-                                            @else
-                                            <li><a
-                                                    href="{{ route('productlist', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->slug }}</a>
-                                            </li>
-                                            @endif
+                                                @if (App::getLocale() == 'zh-tw')
+                                                    <li><a
+                                                            href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->title }}</a>
+                                                    </li>
+                                                @else
+                                                    <li><a
+                                                            href="{{ route('productlist-category', ['slug' => $category->slug, 'title' => $category->title]) }}">{{ $category->slug }}</a>
+                                                    </li>
+                                                @endif
                                             @endforeach
                                         </ul>
                                     </div>
@@ -95,15 +94,24 @@
                             {{ csrf_field() }}
 
                             @if (!empty($keyword))
-                            <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="search"
-                                value="{{ $keyword }}" aria-label="Search">
+                                <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="search"
+                                    value="{{ $keyword }}" aria-label="Search">
                             @else
-                            <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="search"
-                                placeholder="{{ __('auth.header-search-placeholder') }}" aria-label="Search">
+                                <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="search"
+                                    placeholder="{{ __('auth.header-search-placeholder') }}" aria-label="Search">
                             @endif
                             <button id="search-btn" class="col-4 btn btn-outline-success my-sm-0"
                                 type="submit">{{ __('auth.header-search-btn') }}</button>
                         </form>
+                        {{-- @if (!empty($keyword))
+                            <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="text"
+                                value="{{ $keyword }}" aria-label="Search">
+                            <a class="col-4 search-btn" href="{{ route('product-search', ['keyword' => $keyword]) }}">搜尋</a>
+                        @else
+                            <input id="keyword" name="keyword" class="form-control col-7 mr-sm-2" type="text"
+                                placeholder="{{ __('auth.header-search-placeholder') }}" aria-label="Search">
+                            <a class="col-4 search-btn" href="{{ route('product-search', ['keyword' => '']) }}">搜尋</a>
+                        @endif --}}
                     </div>
                 </div>
             </div>

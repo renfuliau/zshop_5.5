@@ -253,7 +253,7 @@ class CartController extends Controller
 
             $reward_money_history = new RewardMoneyHistory();
             $reward_money_history->user_id = $user_id;
-            $reward_money_history->reward_item = $order->order_number . '結帳使用';
+            $reward_money_history->reward_item = $order->order_number . __('frontend.cart-checkout-used');
             $reward_money_history->amount = $reward_money * (-1);
             $reward_money_history->total = $user->reward_money;
             $reward_money_history->save();

@@ -34,7 +34,7 @@ class FrontendController extends Controller
             ->with('categories', $this->categories);
     }
 
-    public function locale(Request $request)
+    public function locale()
     {
         $language = App::getLocale();
         switch ($language) {
@@ -65,12 +65,12 @@ class FrontendController extends Controller
     public function loginSubmit(Request $request)
     {
         $data = $request->all();
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password'], 'status' => 'active'])) {
+        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             Session::put('user', $data['email']);
-            request()->session()->flash('success', '登入成功');
+            request()->session()->flash('success', __('frontend.log-in-success'));
             return redirect()->route('index');
         } else {
-            request()->session()->flash('error', '無效 Email 或密碼');
+            request()->session()->flash('error', __('frontend.log-in-error'));
             return redirect()->back();
         }
     }
@@ -88,9 +88,9 @@ class FrontendController extends Controller
                 'password' => 'required|min:6|confirmed',
             ],
             [
-                'unique' => ':attribute 已存在，請更換 :attribute 註冊',
+                'unique' => ':attribute ' . __('frontend.email-existed') . ' :attribute',
                 'min' => __('passwords.password'),
-                'confirmed' => '確認密碼錯誤，請重新輸入!',
+                'confirmed' => __('frontend.password-confirm-error'),
             ]
         );
 
@@ -99,10 +99,10 @@ class FrontendController extends Controller
         // dd($check);
         Session::put('user', $data['email']);
         if ($check) {
-            request()->session()->flash('success', '註冊成功');
+            request()->session()->flash('success', __('frontend.register-success'));
             return redirect()->route('z-login');
         } else {
-            request()->session()->flash('error', '系統錯誤，請聯絡客服!');
+            request()->session()->flash('error', __('frontend.register-error'));
             return back();
         }
     }
@@ -111,7 +111,7 @@ class FrontendController extends Controller
     {
         Session::forget('user');
         Auth::logout();
-        request()->session()->flash('success', '成功登出');
+        request()->session()->flash('success', __('frontend.log-out-success'));
         return redirect()->route('index');
     }
 

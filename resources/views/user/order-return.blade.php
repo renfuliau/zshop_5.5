@@ -61,7 +61,7 @@ $title = __('frontend.return');
                             <td class="image" data-title="No"><img src="{{ $order_item->product->productImg[0]->filepath }}" alt="{{ $order_item->product->productImg[0]->filepath }}"></td>
                             <td class="product-des" data-title="Description">
                                 <p class="product-name"><a
-                                        href="{{ route('product-detail', $order_item->Product['slug']) }}"
+                                        href="{{ route('product-detail', $order_item->product['id']) }}"
                                         target="_blank">{{ $order_item->Product['title'] }}</a></p>
                             </td>
                             <td class="price" data-title="Price">

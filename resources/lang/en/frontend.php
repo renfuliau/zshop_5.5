@@ -2,6 +2,7 @@
 
 return [
     'index' => 'ZShop',
+    'cart' => 'Cart',
     'add-to-cart' => 'Add To Cart',
     'add-to-wishlist' => 'Wishlist',
     'subtotal' => 'Subtotal',
@@ -9,6 +10,22 @@ return [
     'submit' => 'Submit',
     'quantity' => 'Quantity',
     'return' => 'return',
+    'coupon' => 'coupon',
+    'checkout' => 'checkout',
+    'contact' => 'Contact',
+
+    // account
+    'log-in-register' => 'Login / Register',
+    'log-in' => 'Login',
+    'register' => 'Register',
+    'forget-password' => 'Forget Password',
+    'log-in-success' => 'Login success',
+    'log-in-error' => 'Error!',
+    'register-success' => 'Registration success!',
+    'register-error' => 'Error!',
+    'password-confirm-error' => 'Confirm Password Error!',
+    'email-existed' => 'is existed! Please change',
+    'log-out-success' => 'Logout success!',
 
     // tab
     'user-tab-profile' => 'Profile',
@@ -25,6 +42,8 @@ return [
     'user-profile-phone' => 'Phone',
     'user-profile-address' => 'Address',
     'user-profile-update-btn' => 'Update Profile',
+    'user-profile-update-success' => 'Update success!',
+    'user-profile-update-error' => 'Error!',
     'user-profile-reset-password' => 'Reset Password',
     'user-profile-placeholder-name' => 'Enter Name',
     'user-profile-placeholder-email' => 'Enter Email',
@@ -54,7 +73,10 @@ return [
     'user-order-received-info' => 'Received Information',
     'user-order-received-name' => 'Received Name',
     'user-order-received-phone' => 'Received Phone',
+    'user-order-received-post-code' => 'Post Code',
     'user-order-received-address' => 'Received Address',
+    'user-order-coupon-reward' => 'coupon reward',
+    'user-order-coupon-reward-cancel' => 'coupon reward cancel',
     'user-order-qa' => 'Order Q&A',
     'user-order-qa-placeholder' => 'Enter question',
     'user-order-received-btn' => 'Received',
@@ -67,6 +89,7 @@ return [
     'user-order-coupon2-cancel' => 'Coupon canceled',
     'user-order-return-reward-money' => 'Refund reward money',
     'user-order-return-total' => 'Expected refund',
+    'user-order-return' => 'Order return',
     'user-order-inactive' => 'User inactive!',
 
     // wishlist
@@ -105,7 +128,31 @@ return [
     'response-cart-out-of-stock' => 'Out of stock!',
     'response-cart-success' => 'Success!',
     'response-cart-remove' => 'Success!',
+    'response-user-inactive' => 'User inactive!',
 
     // cart
-    'cart-user-inactive' => 'User inactive! Not allow using cart!',
+    'cart-is-empty' => 'Cart is empty!',
+    'cart-continue-shopping' => 'Continue shopping!',
+    'cart-product-img' => 'Product image',
+    'cart-product-title' => 'Product name',
+    'cart-product-price' => 'Unit price',
+    'cart-choose-coupon' => 'Choose a coupon',
+    'cart-use-reward-money' => 'Use reward money',
+    'cart-present-reward-money' => 'You have',
+    'cart-coupon-reward' => 'Coupon reward',
+    'cart-checkout-used' => 'Checkout used',
+    'cart-order-detail' => 'Order Detail',
+    'cart-order-confirm' => 'Order is confirmed! Thank you!',
+    'cart-order-number' => 'Order number',
+    'cart-keep-shopping' => 'Keep Shopping',
+    'cart-title-order-confirm' => 'Order Confirm',
+
+    // contact
+    'contact-name' => 'Name',
+    'contact-name-placeholder' => 'Enter your name',
+    'contact-message' => 'Message',
+    'contact-message-placeholder' => 'Enter your message',
+    'contact-email-placeholder' => 'Enter your email',
+    'contact-submit' => 'Submit',
+    'contact-info' => 'Join the official account of LINE to contact us',
 ];

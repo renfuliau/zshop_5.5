@@ -50,9 +50,15 @@ $title = __('frontend.user-tab-profile');
                                 {{ __('frontend.user-profile-total-shopping-amount') . ': $ ' . $profile->total_shopping_amount }}</small>
                         </h5>
                         @if (!empty($next_user_level))
-                            <h6 class="text-left"><small>
+                            @if (App::getLocale() == 'zh-tw')
+                                <h6 class="text-left text-primary"><small>
                                     ({{ '$ ' . $amount_to_level_up . ' ' . __('frontend.user-profile-to-next-level') . ' ' . $next_user_level['name'] }})</small>
-                            </h6>
+                                </h6>
+                            @else
+                                <h6 class="text-left text-primary"><small>
+                                    ({{ '$ ' . $amount_to_level_up . ' ' . __('frontend.user-profile-to-next-level') . ' ' . $next_user_level['name_en'] }})</small>
+                                </h6>
+                            @endif
                         @endif
                         <div class="card">
                             <div class="card-body mt-4">

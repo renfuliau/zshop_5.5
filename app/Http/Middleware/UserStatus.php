@@ -21,10 +21,11 @@ class UserStatus
             // dd(Auth::user()->status);
             $user_status = Auth::user()->status;
             if ($user_status == 'inactive') {
-                request()->session()->flash('error', __('frontend.cart-user-inactive'));
+                request()->session()->flash('error', __('frontend.response-user-inactive'));
                 return redirect()->route('index');
             }
         }
+        // dd(123);
         
         return $next($request);
     }

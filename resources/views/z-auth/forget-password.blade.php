@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'ZShop - 忘記密碼')
+@section('title', 'ZShop - ' . __('frontend.forget-password'))
 
 @section('main-content')
     <div class="container">
