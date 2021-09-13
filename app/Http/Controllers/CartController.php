@@ -114,7 +114,7 @@ class CartController extends Controller
             'qty' => $cart_item->quantity,
         ];
         $coupon1 = $this->checkCoupon1($total);
-        if ($coupon1->id != $coupon1_id) {
+        if (! empty($coupon1) && $coupon1->id != $coupon1_id) {
             $response['coupon1'] = [
                 'coupon_id' => $coupon1->id,
                 'coupon_amount' => $coupon1->coupon_amount,
@@ -122,7 +122,7 @@ class CartController extends Controller
             ];
         }
         $coupon2 = $this->checkCoupon2($total);
-        if ($coupon2->id != $coupon2_id) {
+        if (! empty($coupon2) && $coupon2->id != $coupon2_id) {
             $response['coupon2'] = [
                 'coupon_id' => $coupon2->id,
                 'coupon_amount' => $coupon2->coupon_amount,

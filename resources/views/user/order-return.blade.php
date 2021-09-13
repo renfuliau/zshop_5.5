@@ -45,56 +45,58 @@ $title = __('frontend.return');
                     <tbody id="cart_item_list">
                         {{ csrf_field() }}
                         @foreach ($order->orderItems as $key => $order_item)
-                        <tr>
-                            <td>
-                                <p>
-                                    {{-- <input type="hidden" name="order_item_id" id="order_item_id" value="{{ $order_item->id }}">
-                                    --}}
-                                    <input type="checkbox" class="custom-check" id="order_item{{ $order_item->id }}"
-                                        value="0" autocomplete="off" data-order_item_id="{{ $order_item->id }}">
-                                    <label for="custom-check{{ $order_item->order_id }}"></label>
-                                </p>
-                            </td>
-                            @php
-                            $photo = explode(',', $order_item->Product['photo']);
-                            @endphp
-                            <td class="image" data-title="No"><img src="{{ $order_item->product->productImg[0]->filepath }}" alt="{{ $order_item->product->productImg[0]->filepath }}"></td>
-                            <td class="product-des" data-title="Description">
-                                <p class="product-name"><a
-                                        href="{{ route('product-detail', $order_item->product['id']) }}"
-                                        target="_blank">{{ $order_item->Product['title'] }}</a></p>
-                            </td>
-                            <td class="price" data-title="Price">
-                                <input class="price_input{{ $order_item->id }}" type="number"
-                                    order_item="{{ $order_item->price }}" style="display:none;">
-                                <span>$ {{ $order_item->price }}</span>
-                            </td>
-                            <td class="qty" data-title="Qty">
-                                <!-- Input Order -->
-                                <div class="input-group">
-                                    <div class="button minus">
-                                        <button type="button" class="btn btn-primary btn-number"
-                                            data-type="minus" data-field="quant{{ $order_item->id }}"><i class="ti-minus"></i>
-                                        </button>
+                            @if ($orderItemArray[$order_item['product_id']] != 0 && $order_item['is_return'] == 0)
+                            <tr>
+                                <td>
+                                    <p>
+                                        {{-- <input type="hidden" name="order_item_id" id="order_item_id" value="{{ $order_item->id }}">
+                                        --}}
+                                        <input type="checkbox" class="custom-check" id="order_item{{ $order_item->id }}"
+                                            value="0" autocomplete="off" data-order_item_id="{{ $order_item->id }}">
+                                        <label for="custom-check{{ $order_item->order_id }}"></label>
+                                    </p>
+                                </td>
+                                @php
+                                $photo = explode(',', $order_item->Product['photo']);
+                                @endphp
+                                <td class="image" data-title="No"><img src="{{ $order_item->product->productImg[0]->filepath }}" alt="{{ $order_item->product->productImg[0]->filepath }}"></td>
+                                <td class="product-des" data-title="Description">
+                                    <p class="product-name"><a
+                                            href="{{ route('product-detail', $order_item->product['id']) }}"
+                                            target="_blank">{{ $order_item->Product['title'] }}</a></p>
+                                </td>
+                                <td class="price" data-title="Price">
+                                    <input class="price_input{{ $order_item->id }}" type="number"
+                                        order_item="{{ $order_item->price }}" style="display:none;">
+                                    <span>$ {{ $order_item->price }}</span>
+                                </td>
+                                <td class="qty" data-title="Qty">
+                                    <!-- Input Order -->
+                                    <div class="input-group">
+                                        <div class="button minus">
+                                            <button type="button" class="btn btn-primary btn-number"
+                                                data-type="minus" data-field="quant{{ $order_item->id }}"><i class="ti-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" name="quant{{ $order_item->id }}"
+                                            class="input-number input-number{{ $order_item->id }}" autocomplete="off"
+                                            data-min="1" data-max="{{ $orderItemArray[$order_item['product_id']] }}"
+                                            data-order_item_id="{{ $order_item->id }}" data-price="{{ $order_item->price }}"
+                                            order_item="{{ $order_item->quantity }}" value="{{ $orderItemArray[$order_item['product_id']] }}">
+                                        <input type="hidden" name="qty_id[]" order_item="{{ $order_item->id }}">
+                                        <div class="button plus">
+                                            <button type="button" class="btn btn-primary btn-number" data-type="plus"
+                                                data-field="quant{{ $order_item->id }}"> <i class="ti-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <input type="text" name="quant{{ $order_item->id }}"
-                                        class="input-number input-number{{ $order_item->id }}" autocomplete="off"
-                                        data-min="0" data-max="{{ $order_item->quantity }}"
-                                        data-order_item_id="{{ $order_item->id }}" data-price="{{ $order_item->price }}"
-                                        order_item="{{ $order_item->quantity }}" value="{{ $order_item->quantity }}">
-                                    <input type="hidden" name="qty_id[]" order_item="{{ $order_item->id }}">
-                                    <div class="button plus">
-                                        <button type="button" class="btn btn-primary btn-number" data-type="plus"
-                                            data-field="quant{{ $order_item->id }}"> <i class="ti-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!--/ End Input Order -->
-                            </td>
-                            <td class="total-amount{{ $order_item->id }} cart_single_price" data-title="Total">
-                                <span class="money">$ {{ $order_item->price * $order_item->quantity }}</span>
-                            </td>
-                        </tr>
+                                    <!--/ End Input Order -->
+                                </td>
+                                <td class="total-amount{{ $order_item->id }} cart_single_price" data-title="Total">
+                                    <span class="money">$ {{ $order_item->price * $orderItemArray[$order_item['product_id']] }}</span>
+                                </td>
+                            </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

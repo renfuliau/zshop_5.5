@@ -147,7 +147,7 @@
                                     {{ __('frontend.user-order-received-btn') }}</button>
                                 <button
                                     class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
-                            @elseif ($order->status == 4)
+                            @elseif ($order->status >= 4 && $order->subtotal > $return_total)
                                 <a class="btn text-white"
                                     href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
                             @else
@@ -214,7 +214,7 @@
                                             </li> --}}
                                             <li class="total last" id="order_total_price">
                                                 {{ __('frontend.user-order-return-total') }}<span>$
-                                                    {{ $order['total'] + $order->reward_money }}</span>
+                                                    {{ $order['subtotal'] - $order->coupon['coupon_amount'] }}</span>
                                             </li>
                                         @else
                                             {{-- <li class="reward_money">{{ __('frontend.user-order-return-reward-money') }}： <span>$ {{ $order->reward_money }}</span>
@@ -226,7 +226,7 @@
                                                         -{{ $order->coupon['coupon_amount'] }}</span></li>
                                                 <li class="total last" id="order_total_price">
                                                     {{ __('frontend.user-order-return-total') }}<span>$
-                                                        {{ $order->subtotal - $order->coupon['coupon_amount'] }}</span>
+                                                        {{ $order->subtotal }}</span>
                                                 </li>
                                             @else
                                                 <li class="total last" id="order_total_price">

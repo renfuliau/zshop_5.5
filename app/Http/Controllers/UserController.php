@@ -250,11 +250,20 @@ class UserController extends Controller
 
     public function orderReturn($order_id, $order_number)
     {
-        $user_id = Auth::user()->id;
-        $order = Order::with('orderItems')->where('user_id', $user_id)->find($order_id);
-        // dd($order);
+        // $user_id = Auth::user()->id;
+        $order = Order::with('orderItems')->find($order_id);
+        $orderItemArray = [];
+        foreach ($order->orderItems as $orderItem) {
+            if ($orderItem['is_return'] == 0) {
+                // array_push($orderItemArray, [$orderItem['product_id'] => $orderItem['quantity']]);
+                $orderItemArray[$orderItem['product_id']] = $orderItem['quantity'];
+            } else {
+                $orderItemArray[$orderItem['product_id']] -= $orderItem['quantity'];
+            }
+        }
+        // dd($orderItemArray);
 
-        return view('user.order-return', compact('order'))
+        return view('user.order-return', compact('order', 'orderItemArray'))
             ->with('categories', $this->categories);
     }
 
