@@ -203,13 +203,11 @@ $title = __('frontend.return');
                 $(this).attr('value', 1);
                 return_item_object[order_item_id] = $('.input-number' + order_item_id).val();
                 console.log(return_item_object);
-
             } else {
                 console.log("unchecked");
                 $(this).attr('value', 0);
                 delete return_item_object[order_item_id];
                 console.log(return_item_object);
-
             }
             // if ($(".custom-check").prop("checked")) {
             //     var order_item_id = this.getAttribute('data-order-item-id');
@@ -218,29 +216,35 @@ $title = __('frontend.return');
         })
 
         $('.return').click(function() {
-            var r = confirm("你確定要退貨嗎?");
-            if (r == true) {
-                var order_id = $('#order-id').val();
+            if (Object.keys(return_item_object).length == 0) {
+                console.log(typeof(parseInt($('.checkbox_value').val())));
+                alert('請選取要退貨的商品再送出');
+            } else {
+                var r = confirm("你確定要退貨嗎?");
+                if (r == true) {
+                    var order_id = $('#order-id').val();
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
 
-                $.ajax({
-                    method: 'POST',
-                    url: '/zshop/user/order-return-store',
-                    data: return_item_object,
-                    success: function(res) {
-                        alert(res);
-                        window.location = '/zshop/user/returned';
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error(textStatus + " " + errorThrown);
-                    }
-                });
+                    $.ajax({
+                        method: 'POST',
+                        url: '/zshop/user/order-return-store',
+                        data: return_item_object,
+                        success: function(res) {
+                            alert(res);
+                            window.location = '/zshop/user/returned';
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error(textStatus + " " + errorThrown);
+                        }
+                    });
+                }
             }
+            
         })
 </script>
 
