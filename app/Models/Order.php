@@ -17,7 +17,14 @@ class Order extends Model
 
     public function orderItems()
     {
-        return $this->hasMany('App\Models\OrderItem','order_id')->with('product');
+        return $this->hasMany('App\Models\OrderItem', 'order_id')->with('product');
+        // return $this->hasMany('App\Models\OrderItem','order_id')->where('is_return', 0)->with('product');
+    }
+
+    public function returnOrders()
+    {
+        return $this->hasMany('App\Models\ReturnOrder', 'order_id')->with('orderItems');
+        // return $this->hasMany('App\Models\OrderItem','order_id')->where('is_return', 0)->with('product');
     }
 
     public function coupon()
@@ -27,7 +34,7 @@ class Order extends Model
 
     public function messages()
     {
-        return $this->hasMany('App\Models\Message','order_id');
+        return $this->hasMany('App\Models\Message', 'order_id');
     }
 
     public static function getAllOrdersByUser($user_id)
@@ -37,35 +44,59 @@ class Order extends Model
 
     public static function getReturnedOrdersByUser($user_id)
     {
-        return Order::with(['orderItems' => function($query){
+        // return Order::with(['orderItems' => function ($query) {
 
-            $query->where('is_return', 1);
-        
-        }])->where('status', '>', '4')->where('user_id', $user_id)->orderBy('id', 'DESC')->get();
+        //     $query->where('is_return', 1);
+        // }])->where('status', '>', '4')->where('user_id', $user_id)->orderBy('id', 'DESC')->get();
+        return Order::with(['returnOrders' => function($query){
+            $query->orderBy('id', 'desc');
+        }])->where('status', '>', '4')->where('user_id', $user_id)->orderBy('id', 'DESC')    ->get();
     }
 
     public static function getOrderWithReturnedItems($id)
     {
-        return Order::with(['orderItems' => function($query){
-
-            $query->where('is_return', 1);
-        
+        return Order::with(['returnOrders' => function($query){
+            $query->orderBy('id', 'desc');
         }])->find($id);
     }
 
-    public static function getReturnOrderTotal($id)
+    public static function getReturnOrderTotalAll($id)
     {
-        $order = Order::with(['orderItems' => function($query){
+        // $order = Order::with(['orderItems' => function($query){
+        //     $query->where('is_return', 1);
+        // }])->find($id);
 
-            $query->where('is_return', 1);
-        
-        }])->find($id);
+        $order = Order::with('returnOrders')->find($id);
+        // dd($order->returnOrders[count($order->returnOrders) - 1]);
 
         $return_total = 0;
-        foreach ($order->orderItems as $return_order_item) {
-            $item_subtotal = $return_order_item['price'] * $return_order_item['quantity'];
-            $return_total += $item_subtotal;
+        foreach ($order->returnOrders as $key => $return_order) {
+            if (count($order->returnOrders) != $key + 1) {
+                foreach ($return_order->orderItems as $order_item) {
+                    $item_subtotal = $order_item['price'] * $order_item['quantity'];
+                    $return_total += $item_subtotal;
+                }
+            }
         }
+        // $return_total -= $order->returnOrders[count($order->returnOrders) - 1];
+
+        return $return_total;
+    }
+
+    public static function getReturnOrderTotal($id, $return_order_id)
+    {
+        $order = Order::with('returnOrders')->find($id);
+        // dd($order);
+
+        $return_total = 0;
+        foreach ($order->returnOrders as $return_order) {
+            if ($return_order['id'] == $return_order_id) {
+                foreach ($return_order->orderItems as $order_item) {
+                    $item_subtotal = $order_item['price'] * $order_item['quantity'];
+                    $return_total += $item_subtotal;
+                }
+            }
+        }       
 
         return $return_total;
     }

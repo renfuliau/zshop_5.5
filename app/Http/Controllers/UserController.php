@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\Category;
-use App\Models\Message;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\RewardMoneyHistory;
-use App\Models\UserLevel;
-use App\Models\Wishlist;
-use App\Rules\MatchOldPassword;
 use App\User;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Message;
+use App\Models\Category;
+use App\Models\Wishlist;
+use App\Models\OrderItem;
+use App\Models\UserLevel;
+use App\Models\ReturnOrder;
 use Illuminate\Http\Request;
+use App\Rules\MatchOldPassword;
+use App\Models\RewardMoneyHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,6 +23,8 @@ class UserController extends Controller
     protected $categories;
     protected $order_status_array;
     protected $order_status_array_en;
+    protected $return_status_array;
+    protected $return_status_array_en;
     protected $title;
 
     public function __construct()
@@ -54,6 +57,15 @@ class UserController extends Controller
             6 => 'Returned',
         ];
 
+        $this->return_status_array = [
+            0 => '尚未退款',
+            1 => '退款完成',
+        ];
+
+        $this->return_status_array_en = [
+            0 => 'Porcessing',
+            1 => 'refunded',
+        ];
     }
 
     public function profile()
@@ -63,7 +75,7 @@ class UserController extends Controller
         // dd($profile->user_level_id);
         $user_level = UserLevel::getUserLevel($profile->user_level_id);
         $next_user_level = UserLevel::orderBy('level_up_line', 'asc')->where('level_up_line', '>', $profile->total_shopping_amount)->first();
-        if (! empty($next_user_level)) {
+        if (!empty($next_user_level)) {
             # code...
             $amount_to_level_up = $next_user_level['level_up_line'] - $profile->total_shopping_amount;
         }
@@ -144,31 +156,34 @@ class UserController extends Controller
 
     public function orderDetail($order_number)
     {
-        $order = Order::with('orderItems')->with('coupon')->with('user')->where('order_number', $order_number)->first();
-        // dd($order);
+        $order = Order::with('orderItems')->with('coupon')->with('user')->with('returnOrders')->where('order_number', $order_number)->first();
+        // dd($order->returnOrders[0]->orderItems[0]->product->productImg[0]->filepath);
         $messages = Message::where('order_id', $order['id'])->orderBy('created_at', 'asc')->get();
         // dd($messages);
-        $return_total = 0;
+        $return_total_array = [];
         if ($order['status'] > 4) {
-            foreach ($order->orderItems as $orderItem) {
-                if ($orderItem['is_return'] == 1) {
+            foreach ($order->returnOrders as $returnOrder) {
+                $return_total = 0;
+                foreach ($returnOrder->orderItems as $orderItem) {
                     $return_total += ($orderItem['price'] * $orderItem['quantity']);
                 }
+                array_push($return_total_array, $return_total);
             }
         }
-        // dd($return_total);
-        return view('user.order-detail', compact('order', 'messages', 'return_total'))
+        // dd($return_total_array);                     
+        return view('user.order-detail', compact('order', 'messages', 'return_total_array'))
             ->with('categories', $this->categories)
+            ->with('return_status', $this->return_status_array)
+            ->with('return_status_en', $this->return_status_array_en)
             ->with('order_status', $this->order_status_array)
             ->with('order_status_en', $this->order_status_array_en);
-
     }
 
     public function orderMessageStore(Request $request)
     {
         $user_id = Auth::user()->id;
         $message = new Message();
-        $message_data = $request->all();    
+        $message_data = $request->all();
         $message_data['user_id'] = $user_id;
         $message_data['subject'] = 1;
         $message->fill($message_data);
@@ -183,7 +198,7 @@ class UserController extends Controller
         $user_id = Auth::user()->id;
         $order_id = $request->order_id;
         $order = Order::with('coupon')->where('user_id', $user_id)->find($order_id);
-        
+
         // 變更訂單狀態
         $order->status = 4;
         $order->save();
@@ -251,14 +266,17 @@ class UserController extends Controller
     public function orderReturn($order_id, $order_number)
     {
         // $user_id = Auth::user()->id;
-        $order = Order::with('orderItems')->find($order_id);
+        $order = Order::with('orderItems')->with('returnOrders')->find($order_id);
         $orderItemArray = [];
         foreach ($order->orderItems as $orderItem) {
-            if ($orderItem['is_return'] == 0) {
-                // array_push($orderItemArray, [$orderItem['product_id'] => $orderItem['quantity']]);
-                $orderItemArray[$orderItem['product_id']] = $orderItem['quantity'];
-            } else {
-                $orderItemArray[$orderItem['product_id']] -= $orderItem['quantity'];
+            $orderItemArray[$orderItem['product_id']] = $orderItem['quantity'];
+        }
+        // dd($orderItemArray);
+        if (!empty($order->returnOrders)) {
+            foreach ($order->returnOrders as $returnOrder) {
+                foreach ($returnOrder->orderItems as $orderItem) {
+                    $orderItemArray[$orderItem['product_id']] -= $orderItem['quantity'];
+                }
             }
         }
         // dd($orderItemArray);
@@ -270,21 +288,34 @@ class UserController extends Controller
     public function orderReturnStore(Request $request)
     {
         $return_items = $request->all();
+        // dd(array_keys($return_items)[0]);
+        // if (array_keys($return_items)[0]) {
+        //     # code...
+        // }
+        $order_item_0 = OrderItem::with('order')->find(array_keys($return_items)[0]);
+        $return_order = new ReturnOrder();
+        $return_order['user_id'] = $order_item_0->order['user_id'];
+        $return_order['order_id'] = $order_item_0->order['id'];
+        $return_order['is_refund'] = 0;
+        $return_order->save();
+        // dd($return_order->id);
         foreach (array_keys($return_items) as $return_item_id) {
             $order_item = OrderItem::find($return_item_id);
             $order_id = $order_item->order_id;
             $return_item = new OrderItem();
-            $return_item->order_id = $order_item->order_id;
+            $return_item->order_id = $return_order->id;
             $return_item->product_id = $order_item->product_id;
             $return_item->quantity = $return_items[$return_item_id];
             $return_item->price = $order_item->price;
             $return_item->is_return = 1;
             $return_item->save();
         }
+        // dd(ReturnOrder::with('orderItems')->find($return_order->id));
 
         // 變更訂單狀態
         $order = Order::getOrderWithReturnedItems($order_id);
-        $return_total = Order::getReturnOrderTotal($order_id);
+        $return_total_all = Order::getReturnOrderTotalAll($order_id);
+        $return_total = Order::getReturnOrderTotal($order_id, $return_order['id']);
         // dd($return_total);
         $user = User::find($order->user_id);
         $order['status'] = 5;
@@ -298,8 +329,8 @@ class UserController extends Controller
         $user['total_shopping_amount'] -= $return_total;
         if ($user['total_shopping_amount'] < $user->userLevel['level_up_line']) {
             // dd($user);
-            $user_level = UserLevel::orderBy('level_up_line', 'desc')->where('level_up_line', '<', $user->total_shopping_amount)->first();
-            $user->user_level_id = $user_level->id;
+            $user_level = UserLevel::orderBy('level_up_line', 'desc')->where('status', 'active')->where('level_up_line', '<', $user->total_shopping_amount)->first();
+            $user['user_level_id'] = $user_level['id'];
             // dd($user->user_level_id);
             $response .= __('frontend.response-return-level-down') . $user_level['name'] . '！ ';
             // dd($response);
@@ -307,22 +338,23 @@ class UserController extends Controller
         $user->save();
 
         // 檢查購物金優惠是否失效
-        if ($order->coupon) {
-            if ($order->coupon['coupon_type'] == 2) {
-                if ($order['subtotal'] - $return_total < $order->coupon['coupon_line']) {
-                    $undo_reward_money = $order->coupon['coupon_amount'] * -1;
+        if (
+            $order->coupon && $order->coupon['coupon_type'] == 2 &&
+            $order['subtotal'] - $return_total_all >= $order->coupon['coupon_line']
+        ) {
+            if ($order['subtotal'] - $return_total_all - $return_total < $order->coupon['coupon_line']) {
+                $undo_reward_money = $order->coupon['coupon_amount'] * -1;
 
-                    $user['reward_money'] += $undo_reward_money;
-                    $user->save();
-            
-                    $reward_history = new RewardMoneyHistory();
-                    $reward_history['user_id'] = $user['id'];
-                    $reward_history['reward_item'] = $order['order_number'] . '，' . __('frontend.user-order-return');
-                    $reward_history['amount'] = $undo_reward_money;
-                    $reward_history['total'] = $user['reward_money'];
-                    $reward_history->save();
-                    return response($response . __('frontend.response-return-undo-reward') . $order->coupon['coupon_amount']);
-                }
+                $user['reward_money'] += $undo_reward_money;
+                $user->save();
+
+                $reward_history = new RewardMoneyHistory();
+                $reward_history['user_id'] = $user['id'];
+                $reward_history['reward_item'] = $order['order_number'] . '，' . __('frontend.user-order-coupon2-cancel');
+                $reward_history['amount'] = $undo_reward_money;
+                $reward_history['total'] = $user['reward_money'];
+                $reward_history->save();
+                return response($response . __('frontend.response-return-undo-reward') . $order->coupon['coupon_amount']);
             }
         }
 
@@ -332,26 +364,43 @@ class UserController extends Controller
     public function returned()
     {
         $profile = Auth()->user();
-        $return_orders = Order::getReturnedOrdersByUser($profile->id);
-        foreach ($return_orders as $return_order) {
-            $total = 0;
-            foreach ($return_order->orderItems as $orderItem) {
-                $total += $orderItem['price'] * $orderItem['quantity'];
+        $orders = Order::getReturnedOrdersByUser($profile->id);
+        // dd($orders);
+        // foreach ($orders as $order) {
+        //     $total = 0;
+        //     foreach ($order->returnOrders as $returnOrder) {
+        //         foreach ($returnOrder->orderItems as $orderItem) {
+        //             $total += $orderItem['price'] * $orderItem['quantity'];
+        //         }
+        //     }
+        //     $order['total'] = $total;
+        // }
+        $orders_return_total_array = [];
+        foreach ($orders as $order) {
+            $return_total_array = [];
+            foreach ($order->returnOrders as $returnOrder) {
+                $return_total = 0;
+                foreach ($returnOrder->orderItems as $orderItem) {
+                    $return_total += ($orderItem['price'] * $orderItem['quantity']);
+                }
+                array_push($return_total_array, $return_total);
             }
-            $return_order['total'] = $total;
+            $orders_return_total_array[$order->id] = $return_total_array;
         }
+        // dd($orders_return_total_array);
 
         return view('user.returned')
             ->with('categories', $this->categories)
-            ->with('order_status', $this->order_status_array)
-            ->with('order_status_en', $this->order_status_array_en)
+            ->with('return_status', $this->return_status_array)
+            ->with('return_status_en', $this->return_status_array_en)
             ->with('profile', $profile)
-            ->with('return_orders', $return_orders);
+            ->with('orders', $orders)
+            ->with('orders_total', $orders_return_total_array);
     }
 
     // public function returnDetail($order_number)
     // {
-        
+
     // }
 
     public function wishlist()

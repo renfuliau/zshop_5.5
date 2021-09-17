@@ -147,7 +147,7 @@
                                     {{ __('frontend.user-order-received-btn') }}</button>
                                 <button
                                     class="btn mx-5 cancel-button">{{ __('frontend.user-order-cancel-btn') }}</button>
-                            @elseif ($order->status >= 4 && $order->subtotal > $return_total)
+                            @elseif ($order->status >= 4 && $order->subtotal > array_sum($return_total_array))
                                 <a class="btn text-white"
                                     href="{{ route('order-return', ['order_number' => $order->order_number, 'order_id' => $order->id]) }}">{{ __('frontend.user-order-return-btn') }}</a>
                             @else
@@ -162,12 +162,25 @@
                     @if ($order['status'] > 4)
                         {{-- <h5 class="py-3 text-center">退貨</h5> --}}
 
-                        <table class="table shopping-summery bg-danger" style="height: auto;">
+                        @foreach ($order->returnOrders as $key => $returnOrder)
+                            @if ($returnOrder->is_refund == 0)
+                                <table class="table shopping-summery bg-danger" style="height: auto;">
+                            @else
+                                <table class="table shopping-summery bg-success" style="height: auto;">
+                            @endif
                             <thead>
                                 <tr class="main-hading">
-                                    <h5 class="py-3 text-center">{{ __('frontend.return') }}</h5>
+                                    @if (App::getLocale() == 'zh-tw')
+                                        <h5 class="py-3 text-center">
+                                            {{ __('frontend.return') . ' (' . $return_status[$returnOrder['is_refund']] . ')' }}
+                                        </h5>
+                                    @else
+                                        <h5 class="py-3 text-center">
+                                            {{ __('frontend.return') . ' (' . $return_status_en[$returnOrder['is_refund']] . ')' }}
+                                        </h5>
+                                    @endif
 
-                                    <th>{{ __('frontend.user-wishlist-img') }}</th>
+                                    {{-- <th>{{ __('frontend.user-wishlist-img') }}</th> --}}
                                     <th class="col-4">{{ __('frontend.user-wishlist-title') }}</th>
                                     <th class="text-center">{{ __('frontend.user-wishlist-price') }}</th>
                                     <th class="text-center">{{ __('frontend.quantity') }}</th>
@@ -175,92 +188,99 @@
                                 </tr>
                             </thead>
                             <tbody id="cart_item_list">
-                                @foreach ($order->orderItems as $orderItem)
-                                    @if ($orderItem['is_return'] == 1)
-                                        <tr>
-                                            <td class="image text-center"><img
-                                                    src="{{ $orderItem->product->productImg[0]->filepath }}"
-                                                    alt="{{ $orderItem->product->productImg[0]->filepath }}"></td>
-                                            <td class="product-des text-center" data-title="Description">
-                                                <p class="product-name"><a
-                                                        href="{{ route('product-detail', $orderItem->product['id']) }}"
-                                                        target="_blank">{{ $orderItem->product['title'] }}</a>
-                                                </p>
-                                            </td>
-                                            <td class="price text-center" data-title="Price">
-                                                <span>$ {{ $orderItem->price }}</span>
-                                            </td>
-                                            <td class="qty text-center" data-title="Qty">
-                                                <span>{{ $orderItem->quantity }}</span>
-                                            </td>
-                                            <td class="cart_single_price text-right" data-title="Total">
-                                                <span class="money pr-4">$
-                                                    {{ $orderItem->price * $orderItem->quantity }}</span>
-                                            </td>
-                                        </tr>
-                                    @endif
+                                @foreach ($returnOrder->orderItems as $orderItem)
+                                    <tr>
+                                        {{-- <td class="image text-center"></td> --}}
+                                        <td class="product-des text-center" data-title="Description">
+                                            <p class="product-name"><a
+                                                    href="{{ route('product-detail', $orderItem->product['id']) }}"
+                                                    target="_blank">{{ $orderItem->product['title'] }}</a>
+                                            </p>
+                                        </td>
+                                        <td class="price text-center" data-title="Price">
+                                            <span>$ {{ $orderItem->price }}</span>
+                                        </td>
+                                        <td class="qty text-center" data-title="Qty">
+                                            <span>{{ $orderItem->quantity }}</span>
+                                        </td>
+                                        <td class="cart_single_price text-right" data-title="Total">
+                                            <span class="money pr-4">$
+                                                {{ $orderItem->price * $orderItem->quantity }}</span>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
-                        </table>
-                        <div class="single-widget col-12 mb-5 pb-5">
-                            <div class="content">
-                                <ul>
-                                    @if ($order['subtotal'] == $return_total)
-                                        @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 1)
-                                            <li class="coupon">{{ __('frontend.user-order-coupon1-cancel') }}：
-                                                {{ $order->coupon['name'] }}<span>$
-                                                    -{{ $order->coupon['coupon_amount'] }}</span></li>
-                                            {{-- <li class="reward_money">{{ __('frontend.user-order-return-reward-money') }}： <span>$ {{ $order->reward_money }}</span>
-                                            </li> --}}
-                                            <li class="total last" id="order_total_price">
-                                                {{ __('frontend.user-order-return-total') }}<span>$
-                                                    {{ $order['subtotal'] - $order->coupon['coupon_amount'] }}</span>
-                                            </li>
-                                        @else
-                                            {{-- <li class="reward_money">{{ __('frontend.user-order-return-reward-money') }}： <span>$ {{ $order->reward_money }}</span>
-                                            </li> --}}
-                                            @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
+                            </table>
+                            <div class="single-widget col-12 mb-5 pb-5">
+                                <div class="content">
+                                    <ul>
+                                        @if ($order['subtotal'] == array_sum($return_total_array))
+                                            @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 1)
                                                 <li class="coupon">
-                                                    {{ __('frontend.user-order-coupon2-cancel') }}：
+                                                    {{ __('frontend.user-order-coupon1-cancel') }}：
                                                     {{ $order->coupon['name'] }}<span>$
                                                         -{{ $order->coupon['coupon_amount'] }}</span></li>
+                                                {{-- <li class="reward_money">{{ __('frontend.user-order-return-reward-money') }}： <span>$ {{ $order->reward_money }}</span>
+                                                </li> --}}
                                                 <li class="total last" id="order_total_price">
                                                     {{ __('frontend.user-order-return-total') }}<span>$
-                                                        {{ $order->subtotal }}</span>
+                                                        {{ $order['subtotal'] - $order->coupon['coupon_amount'] }}</span>
                                                 </li>
                                             @else
-                                                <li class="total last" id="order_total_price">
-                                                    {{ __('frontend.user-order-return-total') }}<span>$
-                                                        {{ $order->subtotal }}</span></li>
+                                                {{-- <li class="reward_money">{{ __('frontend.user-order-return-reward-money') }}： <span>$ {{ $order->reward_money }}</span>
+                                                </li> --}}
+                                                @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
+                                                    <li class="coupon">
+                                                        {{ __('frontend.user-order-coupon2-cancel') }}：
+                                                        {{ $order->coupon['name'] }}<span>$
+                                                            -{{ $order->coupon['coupon_amount'] }}</span></li>
+                                                    <li class="total last" id="order_total_price">
+                                                        {{ __('frontend.user-order-return-total') }}<span>$
+                                                            {{ $order->subtotal }}</span>
+                                                    </li>
+                                                @else
+                                                    <li class="total last" id="order_total_price">
+                                                        {{ __('frontend.user-order-return-total') }}<span>$
+                                                            {{ $order->subtotal }}</span></li>
+                                                @endif
+
                                             @endif
 
-                                        @endif
-
-                                    @elseif (!empty($order->coupon) && $order->coupon['coupon_type'] == 1 &&
-                                        $order['subtotal'] - $return_total < $order->coupon['coupon_line'])
-                                            <li class="coupon">{{ __('frontend.user-order-coupon1-cancel') }}：
-                                                {{ $order->coupon['name'] }}<span>$
-                                                    -{{ $order->coupon['coupon_amount'] }}</span></li>
-                                            {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
-                                            <li class="total last" id="order_total_price">
-                                                {{ __('frontend.user-order-return-total') }}<span>$
-                                                    {{ $return_total - $order->coupon['coupon_amount'] }}</span>
-                                            </li>
-                                        @else
-                                            {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
-                                            <li class="total last" id="order_total_price">
-                                                {{ __('frontend.user-order-return-total') }}<span>$
-                                                    {{ $return_total }}</span></li>
-                                            @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2)
+                                        @elseif (!empty($order->coupon) && $order->coupon['coupon_type'] == 1 &&
+                                            $order['subtotal'] - array_sum($return_total_array) < $order->
+                                                coupon['coupon_line'])
                                                 <li class="coupon">
-                                                    {{ __('frontend.user-order-coupon2-cancel') }}：
+                                                    {{ __('frontend.user-order-coupon1-cancel') }}：
                                                     {{ $order->coupon['name'] }}<span>$
                                                         -{{ $order->coupon['coupon_amount'] }}</span></li>
-                                            @endif
-                                    @endif
-                                </ul>
+                                                {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
+                                                <li class="total last" id="order_total_price">
+                                                    {{ __('frontend.user-order-return-total') }}<span>$
+                                                        {{ $return_total_array[$key] - $order->coupon['coupon_amount'] }}</span>
+                                                </li>
+                                            @else
+                                                {{-- <li class="reward_money">使用購物金： <span>$ -{{ $order->reward_money }}</span></li> --}}
+                                                <li class="total last" id="order_total_price">
+                                                    {{ __('frontend.user-order-return-total') }}<span>$
+                                                        {{ $return_total_array[$key] }}</span></li>
+
+                                        @endif
+                                        {{-- @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2 && $order['subtotal'] - array_sum($return_total_array) < $order->coupon['coupon_line'])
+                                            <li class="coupon">
+                                                {{ __('frontend.user-order-coupon2-cancel') }}：
+                                                {{ $order->coupon['name'] }}<span>$
+                                                    -{{ $order->coupon['coupon_amount'] }}</span></li>
+                                        @endif --}}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
+                        @endforeach
+                        @if (!empty($order->coupon) && $order->coupon['coupon_type'] == 2 && $order['subtotal'] - array_sum($return_total_array) < $order->coupon['coupon_line'])
+                            <h6 class="text-right mb-5 pb-5">
+                                {{ __('frontend.user-order-coupon2-cancel') }}：
+                                {{ $order->coupon['name'] }}<span>$
+                                    -{{ $order->coupon['coupon_amount'] }}</span></h6>
+                        @endif
                     @endif
                 </div>
             </div>

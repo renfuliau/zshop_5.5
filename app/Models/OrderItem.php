@@ -19,4 +19,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo('App\Models\Product')->with('productImg');
     }
+
+    public function returnOrder()
+    {
+        return $this->belongsTo('App\Models\ReturnOrder');
+    }
 }

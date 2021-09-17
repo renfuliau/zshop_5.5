@@ -43,32 +43,34 @@ $title = __('frontend.user-tab-return');
         <table class="table shopping-summery">
             <thead>
                 <tr class="main-hading">
-                    <th>{{ __('frontend.user-order-number') }}</th>
                     <th>{{ __('frontend.user-order-date') }}</th>
+                    <th>{{ __('frontend.user-order-number') }}</th>
                     <th class="text-center">{{ __('frontend.user-order-total') }}</th>
                     <th class="text-center">{{ __('frontend.user-order-status') }}</th>
                     <th class="text-center">{{ __('frontend.user-order-detail') }}</th>
                 </tr>
             </thead>
             <tbody>
-                @if($return_orders)
-                @foreach($return_orders as $key => $value)
-                <tr>
-                    <td class="text-center date" data-title="date"><span>{{$value['created_at']}}</span></td>
-                    <td class="text-center order_number" data-title="order_number">
-                        <span>{{$value['order_number']}}</span></td>
-                    <td class="text-center amount" data-title="amount"><span>$ {{$value['total']}}</span></td>
-                    @if (App::getLocale() == 'zh-tw')
-                    <td class="text-center total" data-title="total"><span>{{$order_status[$value['status']]}}</span>
-                    </td>
-                    @else
-                    <td class="text-center total" data-title="total"><span>{{$order_status_en[$value['status']]}}</span>
-                    </td>
-                    @endif
-                    <td class="text-center text-center"><a href="{{route('user-order-detail', $value['order_number'])}}"><i
-                                class="ti-layout-media-overlay-alt-2"></i></a></td>
-                </tr>
-                @endforeach
+                @if($orders)
+                    @foreach($orders as $order)
+                        @foreach ($order->returnOrders as $key => $returnOrder)
+                            <tr>
+                                <td class="text-center date" data-title="date"><span>{{$returnOrder['created_at']}}</span></td>
+                                <td class="text-center order_number" data-title="order_number">
+                                    <span>{{$order['order_number']}}</span></td>
+                                <td class="text-center amount" data-title="amount"><span>$ {{$orders_total[$order['id']][$key]}}</span></td>
+                                @if (App::getLocale() == 'zh-tw')
+                                <td class="text-center total" data-title="total"><span>{{$return_status[$returnOrder['is_refund']]}}</span>
+                                </td>
+                                @else
+                                <td class="text-center total" data-title="total"><span>{{$return_status_en[$returnOrder['is_refund']]}}</span>
+                                </td>
+                                @endif
+                                <td class="text-center text-center"><a href="{{route('user-order-detail', $order['order_number'])}}"><i
+                                            class="ti-layout-media-overlay-alt-2"></i></a></td>
+                            </tr>
+                        @endforeach
+                    @endforeach
                 @endif
             </tbody>
         </table>

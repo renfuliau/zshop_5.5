@@ -211,7 +211,7 @@ class CartController extends Controller
         }
         $subtotal = intval(\Cart::session($user_id)->getTotal());
         $reward_money = $request->reward_money;
-        $total = $subtotal - $reward_money;
+        $total = $subtotal;
         $order = new Order();
         $order_data = $request->all();
         $order_data['order_number'] = date("Ymd") . time();
@@ -269,7 +269,7 @@ class CartController extends Controller
     {
         return Coupon::where([
             ['coupon_line', '=', Coupon::where([
-                ['coupon_line', '<', $total],
+                ['coupon_line', '<=', $total],
                 ['coupon_type', '=', 1],
                 ['status', '=', 'active'],
             ])->get()->max('coupon_line')],
@@ -281,7 +281,7 @@ class CartController extends Controller
     {
         return Coupon::where([
             ['coupon_line', '=', Coupon::where([
-                ['coupon_line', '<', $total],
+                ['coupon_line', '<=', $total],
                 ['coupon_type', '=', 2],
                 ['status', '=', 'active'],
             ])->get()->max('coupon_line')],
